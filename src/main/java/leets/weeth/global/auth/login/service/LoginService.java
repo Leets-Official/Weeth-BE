@@ -1,7 +1,7 @@
 package leets.weeth.global.auth.login.service;
 
-import leets.weeth.domain.user.entity.User;
-import leets.weeth.domain.user.repository.UserRepository;
+import leets.weeth.domain.user.domain.entity.User;
+import leets.weeth.domain.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

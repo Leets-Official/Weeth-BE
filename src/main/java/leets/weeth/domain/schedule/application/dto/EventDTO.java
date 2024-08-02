@@ -1,0 +1,30 @@
+package leets.weeth.domain.schedule.application.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
+
+public class EventDTO {
+
+    public record Response(
+            Long id,
+            String title,
+            String content,
+            String location,
+            String requiredItem,
+            LocalDateTime start,
+            LocalDateTime end,
+            LocalDateTime createdAt,
+            LocalDateTime modifiedAt
+    ) {}
+
+    public record Save(
+            @NotBlank String title,
+            @NotBlank String content,
+            @NotBlank String location,
+            @NotBlank String requiredItem,
+            @NotNull LocalDateTime start,
+            @NotNull LocalDateTime end
+    ) {}
+}
