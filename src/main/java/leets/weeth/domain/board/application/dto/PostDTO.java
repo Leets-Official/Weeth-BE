@@ -8,4 +8,9 @@ public class PostDTO {
             @NotNull String title,
             @NotNull String content
     ){}
+
+    public record Update(
+            @NotNull String title,
+            @NotNull String content
+    ){}
 }
