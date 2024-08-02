@@ -1,6 +1,8 @@
 package leets.weeth.domain.schedule.application.usecase;
 
 import leets.weeth.domain.schedule.application.mapper.EventMapper;
+import leets.weeth.domain.schedule.domain.entity.Event;
+import leets.weeth.domain.schedule.domain.service.EventDeleteService;
 import leets.weeth.domain.schedule.domain.service.EventGetService;
 import leets.weeth.domain.schedule.domain.service.EventSaveService;
 import leets.weeth.domain.schedule.domain.service.EventUpdateService;
@@ -19,6 +21,7 @@ public class EventUseCaseImpl implements EventUseCase {
     private final EventGetService eventGetService;
     private final EventSaveService eventSaveService;
     private final EventUpdateService eventUpdateService;
+    private final EventDeleteService eventDeleteService;
     private final EventMapper mapper;
 
     @Override
@@ -36,6 +39,12 @@ public class EventUseCaseImpl implements EventUseCase {
     public void update(Long eventId, Update dto, Long userId) {
         User user = userGetService.find(userId);
         eventUpdateService.update(eventId, dto, user);
+    }
+
+    @Override
+    public void delete(Long eventId) {
+        Event event = eventGetService.find(eventId);
+        eventDeleteService.delete(event);
     }
 
 }
