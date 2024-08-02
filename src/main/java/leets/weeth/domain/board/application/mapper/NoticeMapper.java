@@ -11,4 +11,7 @@ import org.mapstruct.ReportingPolicy;
 public interface NoticeMapper {
 
     Notice from(NoticeDTO.Save dto, User user);
+
+//    @Mapping(target = "user", source = "user")
+    Notice update(Long noticeId, NoticeDTO.Update dto, User user);
 }
