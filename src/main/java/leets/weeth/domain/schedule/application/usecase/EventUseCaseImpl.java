@@ -4,6 +4,8 @@ import leets.weeth.domain.schedule.application.mapper.EventMapper;
 import leets.weeth.domain.schedule.domain.service.EventGetService;
 import leets.weeth.domain.schedule.domain.service.EventSaveService;
 import leets.weeth.domain.schedule.domain.service.EventUpdateService;
+import leets.weeth.domain.user.domain.entity.User;
+import leets.weeth.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,7 @@ import static leets.weeth.domain.schedule.application.dto.EventDTO.*;
 @RequiredArgsConstructor
 public class EventUseCaseImpl implements EventUseCase {
 
+    private final UserGetService userGetService;
     private final EventGetService eventGetService;
     private final EventSaveService eventSaveService;
     private final EventUpdateService eventUpdateService;
@@ -24,13 +27,15 @@ public class EventUseCaseImpl implements EventUseCase {
     }
 
     @Override
-    public void save(Save dto) {
-        eventSaveService.save(mapper.from(dto));
+    public void save(Save dto, Long userId) {
+        User user = userGetService.find(userId);
+        eventSaveService.save(mapper.from(dto, user));
     }
 
     @Override
-    public void update(Long eventId, Update dto) {
-        eventUpdateService.update(eventId, dto);
+    public void update(Long eventId, Update dto, Long userId) {
+        User user = userGetService.find(userId);
+        eventUpdateService.update(eventId, dto, user);
     }
 
 }
