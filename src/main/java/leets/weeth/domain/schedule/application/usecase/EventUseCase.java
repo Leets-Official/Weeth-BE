@@ -6,7 +6,7 @@ public interface EventUseCase {
 
     Response find(Long eventId);
 
-    void save(Save dto);
+    void save(Save dto, Long userId);
 
-    void update(Long eventId, Update dto);
+    void update(Long eventId, Update dto, Long userId);
 }
