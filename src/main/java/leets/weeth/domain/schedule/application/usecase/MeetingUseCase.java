@@ -1,12 +1,14 @@
 package leets.weeth.domain.schedule.application.usecase;
 
-import leets.weeth.domain.schedule.application.dto.MeetingDTO;
-
-import static leets.weeth.domain.schedule.application.dto.MeetingDTO.Response;
+import static leets.weeth.domain.schedule.application.dto.MeetingDTO.*;
 
 public interface MeetingUseCase {
 
     Response find(Long eventId);
 
-    void save(MeetingDTO.Save dto, Long userId);
+    void save(Save dto, Long userId);
+
+    void update(Update dto, Long userId, Long meetingId);
+
+    void delete(Long meetingId);
 }

@@ -30,4 +30,14 @@ public class MeetingDTO {
             @NotNull Integer weekNumber,
             @NotNull Integer cardinal
     ) {}
+
+    public record Update(
+            @NotBlank String title,
+            @NotBlank String content,
+            @NotBlank String location,
+            @NotNull LocalDateTime start,
+            @NotNull LocalDateTime end,
+            @NotNull Integer weekNumber,
+            @NotNull Integer cardinal
+    ) {}
 }
