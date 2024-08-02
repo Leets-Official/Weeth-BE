@@ -2,6 +2,7 @@ package leets.weeth.domain.schedule.application.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -24,7 +25,16 @@ public class EventDTO {
             @NotBlank String content,
             @NotBlank String location,
             @NotBlank String requiredItem,
-            @NotNull LocalDateTime start,
-            @NotNull LocalDateTime end
+            @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end
+    ) {}
+
+    public record Update(
+            @NotBlank String title,
+            @NotBlank String content,
+            @NotBlank String location,
+            @NotBlank String requiredItem,
+            @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end
     ) {}
 }

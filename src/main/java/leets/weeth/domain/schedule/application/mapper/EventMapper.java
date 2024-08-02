@@ -6,8 +6,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 
-import static leets.weeth.domain.schedule.application.dto.EventDTO.Response;
-import static leets.weeth.domain.schedule.application.dto.EventDTO.Save;
+import static leets.weeth.domain.schedule.application.dto.EventDTO.*;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface EventMapper {
@@ -16,4 +15,6 @@ public interface EventMapper {
 
     @Mapping(target = "id", ignore = true)
     Event from(Save dto);
+
+    Event update(Long id, Update dto);
 }
