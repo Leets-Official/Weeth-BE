@@ -28,4 +28,10 @@ public class EventAdminController {
         eventUseCase.update(eventId, dto, userId);
         return CommonResponse.createSuccess();
     }
+
+    @DeleteMapping("/{eventId}")
+    public CommonResponse<Void> delete(@PathVariable Long eventId) {
+        eventUseCase.delete(eventId);
+        return CommonResponse.createSuccess();
+    }
 }

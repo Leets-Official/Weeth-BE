@@ -9,4 +9,6 @@ public interface EventUseCase {
     void save(Save dto, Long userId);
 
     void update(Long eventId, Update dto, Long userId);
+
+    void delete(Long eventId);
 }
