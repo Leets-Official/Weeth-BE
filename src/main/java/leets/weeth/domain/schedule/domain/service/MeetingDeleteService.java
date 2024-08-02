@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MeetingSaveService {
+public class MeetingDeleteService {
 
     private final MeetingRepository meetingRepository;
 
-    public void save(Meeting meeting) {
-        meetingRepository.save(meeting);
+    public void delete(Meeting meeting) {
+        meetingRepository.delete(meeting);
     }
 }
