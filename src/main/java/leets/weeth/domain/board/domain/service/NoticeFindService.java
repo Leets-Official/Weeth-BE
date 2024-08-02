@@ -6,6 +6,8 @@ import leets.weeth.global.common.error.exception.custom.NoticeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class NoticeFindService {
@@ -16,4 +18,9 @@ public class NoticeFindService {
         return noticeRepository.findById(noticeId)
                 .orElseThrow(NoticeNotFoundException::new);
     }
+
+    public List<Notice> find() {
+        return noticeRepository.findAll();
+    }
+
 }
