@@ -4,17 +4,16 @@ import jakarta.persistence.*;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.global.common.entity.BaseEntity;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 @SuperBuilder
-@Table(name = "boards")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board extends BaseEntity {
 
     @Id
@@ -25,7 +24,7 @@ public class Board extends BaseEntity {
     private String title;
 
     @Column(columnDefinition = "TEXT")
-    private String Content;
+    private String content;
 
     // List<Comment>
     // List<String> urls
