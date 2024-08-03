@@ -6,12 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static leets.weeth.domain.schedule.application.dto.ScheduleDTO.Response;
 
@@ -24,23 +22,29 @@ public class ScheduleUseCaseImpl implements ScheduleUseCase {
 
     @Override
     public List<Response> findByMonthly(LocalDateTime start, LocalDateTime end) {
-        List<Response> schedules = eventGetService.find(start, end);
-        schedules.addAll(meetingGetService.find(start, end));
-        return schedules;
+        List<Response> events = eventGetService.find(start, end);
+        List<Response> meetings = meetingGetService.find(start, end);
+
+        return Stream.of(events, meetings)
+                .flatMap(Collection::stream)
+                .sorted(Comparator.comparing(Response::start))
+                .toList();
     }
 
     @Override
     public Map<Integer, List<Response>> findByYearly(LocalDateTime start, LocalDateTime end) {
-        List<Response> schedules = eventGetService.find(start, end);
-        schedules.addAll(meetingGetService.find(start, end));
+        List<Response> events = eventGetService.find(start, end);
+        List<Response> meetings = meetingGetService.find(start, end);
 
-        return schedules.stream()
+        return Stream.of(events, meetings)
+                .flatMap(Collection::stream)    // 병합
+                .sorted(Comparator.comparing(Response::start))  // 스케줄 시작 시간으로 정렬
                 .flatMap(schedule -> {
                     List<Map.Entry<Integer, Response>> monthEventPairs = new ArrayList<>();
 
                     int left = schedule.start().getMonthValue();
                     int right = schedule.end().getMonthValue() + 1;
-                    IntStream.range(left, right)
+                    IntStream.range(left, right)    // 기간 내 포함된 달 계산
                             .forEach(month -> monthEventPairs.add(
                                     new AbstractMap.SimpleEntry<>(month, schedule))
                             );
