@@ -18,4 +18,8 @@ public interface UserUseCase {
     void update(Update dto, Long userId);
 
     void accept(Long userId);
+
+    void leave(Long userId);
+
+    void ban(Long userId);
 }

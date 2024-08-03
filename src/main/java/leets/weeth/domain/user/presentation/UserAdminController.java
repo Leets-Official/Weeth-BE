@@ -28,5 +28,11 @@ public class UserAdminController {
         return CommonResponse.createSuccess();
     }
 
+    @DeleteMapping
+    public CommonResponse<Void> ban(@RequestParam Long userId) {
+        userUseCase.ban(userId);
+        return CommonResponse.createSuccess();
+    }
+
 
 }

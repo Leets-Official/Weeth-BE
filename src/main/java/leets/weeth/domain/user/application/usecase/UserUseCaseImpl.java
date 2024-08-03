@@ -1,7 +1,8 @@
 package leets.weeth.domain.user.application.usecase;
 
 import leets.weeth.domain.user.application.mapper.UserMapper;
-import leets.weeth.domain.user.domain.entity.enums.Status;
+import leets.weeth.domain.user.domain.entity.User;
+import leets.weeth.domain.user.domain.service.UserDeleteService;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.domain.user.domain.service.UserSaveService;
 import leets.weeth.domain.user.domain.service.UserUpdateService;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static leets.weeth.domain.user.application.dto.UserDTO.*;
-import static leets.weeth.domain.user.domain.entity.enums.Status.*;
+import static leets.weeth.domain.user.domain.entity.enums.Status.ACTIVE;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class UserUseCaseImpl implements UserUseCase {
     private final UserMapper mapper;
     private final PasswordEncoder passwordEncoder;
     private final UserUpdateService userUpdateService;
+    private final UserDeleteService userDeleteService;
 
     @Override
     public void apply(SignUp dto) {
@@ -59,11 +61,25 @@ public class UserUseCaseImpl implements UserUseCase {
 
     @Override
     public void update(Update dto, Long userId) {
-        userUpdateService.update(dto, userId);
+        User user = userGetService.find(userId);
+        userUpdateService.update(user, dto);
     }
 
     @Override
     public void accept(Long userId) {
-        userUpdateService.accept(userId);
+        User user = userGetService.find(userId);
+        userUpdateService.accept(user);
+    }
+
+    @Override
+    public void leave(Long userId) {
+        User user = userGetService.find(userId);
+        userDeleteService.leave(user);
+    }
+
+    @Override
+    public void ban(Long userId) {
+        User user = userGetService.find(userId);
+        userDeleteService.ban(user);
     }
 }
