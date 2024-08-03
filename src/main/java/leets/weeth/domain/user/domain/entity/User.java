@@ -91,7 +91,7 @@ public class User extends BaseEntity {
         this.password = passwordEncoder.encode(dto.password());
         this.studentId = dto.studentId();
         this.tel = dto.tel();
-        this.department = Department.valueOf(dto.department());
+        this.department = Department.to(dto.department());
     }
 
     public void accept() {

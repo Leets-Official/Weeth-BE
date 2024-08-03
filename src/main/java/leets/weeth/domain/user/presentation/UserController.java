@@ -54,7 +54,7 @@ public class UserController {
 
     @DeleteMapping
     public CommonResponse<Void> leave(@CurrentUser Long userId) {
-        userDeleteService.leave(userId);
+        userUseCase.leave(userId);
         return CommonResponse.createSuccess();
     }
 }

@@ -34,10 +34,7 @@ public interface UserMapper {
     User update(Long id, Status status);
 
     default Department toEnum(String before) {
-        return Arrays.stream(Department.values())
-                .filter(department -> department.getValue().equals(before))
-                .findAny()
-                .orElseThrow(DepartmentNotFoundException::new);
+        return Department.to(before);
     }
 
     default String toString(Department department) {

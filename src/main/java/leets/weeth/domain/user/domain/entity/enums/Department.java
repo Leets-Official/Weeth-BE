@@ -1,7 +1,10 @@
 package leets.weeth.domain.user.domain.entity.enums;
 
+import leets.weeth.global.common.error.exception.custom.DepartmentNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
@@ -15,4 +18,11 @@ public enum Department {
     BUSINESS("경영학과");   // 더 필요한 학과는 추후 추가할 예정
 
     private final String value;
+
+    public static Department to(String before) {
+        return Arrays.stream(Department.values())
+                .filter(department -> department.getValue().equals(before))
+                .findAny()
+                .orElseThrow(DepartmentNotFoundException::new);
+    }
 }
