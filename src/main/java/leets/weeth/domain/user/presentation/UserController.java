@@ -2,7 +2,6 @@ package leets.weeth.domain.user.presentation;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import leets.weeth.domain.user.application.dto.UserDTO;
 import leets.weeth.domain.user.application.usecase.UserUseCase;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.global.auth.annotation.CurrentUser;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import static leets.weeth.domain.user.application.dto.UserDTO.*;
-import static leets.weeth.domain.user.application.dto.UserDTO.SignUp;
 
 @Tag(name = "UserController", description = "사용자 관련 컨트롤러")
 @RestController
@@ -44,5 +42,11 @@ public class UserController {
     @GetMapping
     public CommonResponse<Response> find(@CurrentUser Long userId) {
         return CommonResponse.createSuccess(userUseCase.find(userId));
+    }
+
+    @PatchMapping
+    public CommonResponse<Void> update(@RequestBody @Valid Update dto, @CurrentUser Long userId) {
+        userUseCase.update(dto, userId);
+        return CommonResponse.createSuccess();
     }
 }

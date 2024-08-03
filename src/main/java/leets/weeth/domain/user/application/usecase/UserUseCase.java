@@ -1,7 +1,5 @@
 package leets.weeth.domain.user.application.usecase;
 
-import leets.weeth.domain.user.application.dto.UserDTO;
-
 import java.util.List;
 import java.util.Map;
 
@@ -14,4 +12,6 @@ public interface UserUseCase {
     Map<Integer, List<Response>> findAll();
 
     Response find(Long userId);
+
+    void update(Update dto, Long userId);
 }

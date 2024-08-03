@@ -1,6 +1,5 @@
 package leets.weeth.domain.user.application.usecase;
 
-import leets.weeth.domain.user.application.dto.UserDTO;
 import leets.weeth.domain.user.application.mapper.UserMapper;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.domain.user.domain.service.UserSaveService;
@@ -45,5 +44,10 @@ public class UserUseCaseImpl implements UserUseCase {
     @Override
     public Response find(Long userId) {
         return mapper.to(userGetService.find(userId));
+    }
+
+    @Override
+    public void update(Update dto, Long userId) {
+
     }
 }
