@@ -2,6 +2,7 @@ package leets.weeth.domain.user.application.mapper;
 
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.entity.enums.Department;
+import leets.weeth.domain.user.domain.entity.enums.Status;
 import leets.weeth.global.common.error.exception.custom.DepartmentNotFoundException;
 import org.mapstruct.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +30,8 @@ public interface UserMapper {
     AdminResponse toAdminResponse(User user);
 
     User update(Update dto, Long id);
+
+    User update(Long id, Status status);
 
     default Department toEnum(String before) {
         return Arrays.stream(Department.values())

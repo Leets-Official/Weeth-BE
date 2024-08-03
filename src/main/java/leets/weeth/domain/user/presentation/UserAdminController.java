@@ -4,9 +4,7 @@ import leets.weeth.domain.user.application.dto.UserDTO;
 import leets.weeth.domain.user.application.usecase.UserUseCase;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,6 +20,12 @@ public class UserAdminController {
     @GetMapping("/all")
     public CommonResponse<List<AdminResponse>> findAll() {
         return CommonResponse.createSuccess(userUseCase.findAllByAdmin());
+    }
+
+    @PatchMapping
+    public CommonResponse<Void> accept(@RequestParam Long userId) {
+        userUseCase.accept(userId);
+        return CommonResponse.createSuccess();
     }
 
 

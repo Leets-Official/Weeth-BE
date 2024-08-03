@@ -4,6 +4,7 @@ import leets.weeth.domain.user.application.mapper.UserMapper;
 import leets.weeth.domain.user.domain.entity.enums.Status;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.domain.user.domain.service.UserSaveService;
+import leets.weeth.domain.user.domain.service.UserUpdateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class UserUseCaseImpl implements UserUseCase {
     private final UserSaveService userSaveService;
     private final UserMapper mapper;
     private final PasswordEncoder passwordEncoder;
+    private final UserUpdateService userUpdateService;
 
     @Override
     public void apply(SignUp dto) {
@@ -57,6 +59,11 @@ public class UserUseCaseImpl implements UserUseCase {
 
     @Override
     public void update(Update dto, Long userId) {
+        userUpdateService.update(dto, userId);
+    }
 
+    @Override
+    public void accept(Long userId) {
+        userUpdateService.accept(userId);
     }
 }
