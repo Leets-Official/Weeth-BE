@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static leets.weeth.domain.user.application.dto.UserDTO.*;
+
 @Service
 @RequiredArgsConstructor
 public class UserUseCaseImpl implements UserUseCase {
@@ -24,12 +26,12 @@ public class UserUseCaseImpl implements UserUseCase {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void apply(UserDTO.SignUp dto) {
+    public void apply(SignUp dto) {
         userSaveService.save(mapper.from(dto, passwordEncoder));
     }
 
     @Override
-    public Map<Integer, List<UserDTO.Response>> findAll() {
+    public Map<Integer, List<Response>> findAll() {
         return userGetService.findAll().stream()
                 .flatMap(user -> Stream.concat(
                         user.getCardinals().stream()
@@ -38,5 +40,10 @@ public class UserUseCaseImpl implements UserUseCase {
                 ))
                 .collect(Collectors.groupingBy(Map.Entry::getKey,   // key = 기수, value = 유저 정보
                         Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
+    }
+
+    @Override
+    public Response find(Long userId) {
+        return mapper.to(userGetService.find(userId));
     }
 }

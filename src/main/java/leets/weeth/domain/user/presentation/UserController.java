@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import leets.weeth.domain.user.application.dto.UserDTO;
 import leets.weeth.domain.user.application.usecase.UserUseCase;
 import leets.weeth.domain.user.domain.service.UserGetService;
+import leets.weeth.global.auth.annotation.CurrentUser;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+import static leets.weeth.domain.user.application.dto.UserDTO.*;
 import static leets.weeth.domain.user.application.dto.UserDTO.SignUp;
 
 @Tag(name = "UserController", description = "사용자 관련 컨트롤러")
@@ -23,7 +25,7 @@ public class UserController {
     private final UserUseCase userUseCase;
     private final UserGetService userGetService;
 
-    @PostMapping
+    @PostMapping("/apply")
     public CommonResponse<Void> apply(@RequestBody @Valid SignUp dto) {
         userUseCase.apply(dto);
         return CommonResponse.createSuccess();
@@ -35,7 +37,12 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public CommonResponse<Map<Integer, List<UserDTO.Response>>> findAll() {
+    public CommonResponse<Map<Integer, List<Response>>> findAll() {
         return CommonResponse.createSuccess(userUseCase.findAll());
+    }
+
+    @GetMapping
+    public CommonResponse<Response> find(@CurrentUser Long userId) {
+        return CommonResponse.createSuccess(userUseCase.find(userId));
     }
 }
