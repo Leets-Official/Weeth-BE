@@ -1,6 +1,7 @@
 package leets.weeth.domain.user.domain.entity;
 
 import jakarta.persistence.*;
+import leets.weeth.domain.attendance.domain.entity.Attendance;
 import leets.weeth.domain.user.application.converter.CardinalListConverter;
 import leets.weeth.domain.user.application.dto.UserDTO;
 import leets.weeth.domain.user.domain.entity.enums.Department;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -60,6 +62,10 @@ public class User extends BaseEntity {
     private Integer attendanceCount;
 
     private Integer attendanceRate;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Attendance> attendances = new ArrayList<>();
+    // 출석 리스트 매핑 -> applyOB시 해당 기수 출석으로 초기화
 
     @PrePersist
     public void init() {
