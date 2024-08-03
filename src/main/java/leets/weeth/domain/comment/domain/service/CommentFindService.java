@@ -1,0 +1,19 @@
+package leets.weeth.domain.comment.domain.service;
+
+import leets.weeth.domain.comment.domain.entity.Comment;
+import leets.weeth.domain.comment.domain.repository.CommentRepository;
+import leets.weeth.global.common.error.exception.custom.CommentNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class CommentFindService {
+
+    private final CommentRepository commentRepository;
+
+    public Comment find(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(CommentNotFoundException::new);
+    }
+}
