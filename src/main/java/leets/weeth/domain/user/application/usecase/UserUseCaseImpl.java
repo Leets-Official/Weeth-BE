@@ -2,6 +2,7 @@ package leets.weeth.domain.user.application.usecase;
 
 import leets.weeth.domain.user.application.mapper.UserMapper;
 import leets.weeth.domain.user.domain.entity.User;
+import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.domain.user.domain.service.UserDeleteService;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.domain.user.domain.service.UserSaveService;
@@ -69,6 +70,12 @@ public class UserUseCaseImpl implements UserUseCase {
     public void accept(Long userId) {
         User user = userGetService.find(userId);
         userUpdateService.accept(user);
+    }
+
+    @Override
+    public void update(Long userId, String role) {
+        User user = userGetService.find(userId);
+        userUpdateService.update(user, role);
     }
 
     @Override

@@ -2,6 +2,7 @@ package leets.weeth.domain.user.presentation;
 
 import leets.weeth.domain.user.application.dto.UserDTO;
 import leets.weeth.domain.user.application.usecase.UserUseCase;
+import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +35,9 @@ public class UserAdminController {
         return CommonResponse.createSuccess();
     }
 
-
+    @PatchMapping("/role")
+    public CommonResponse<Void> updateRole(@RequestParam Long userId, @RequestParam String role) {
+        userUseCase.update(userId, role);
+        return CommonResponse.createSuccess();
+    }
 }

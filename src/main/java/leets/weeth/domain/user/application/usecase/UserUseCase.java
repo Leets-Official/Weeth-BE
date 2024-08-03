@@ -1,5 +1,7 @@
 package leets.weeth.domain.user.application.usecase;
 
+import leets.weeth.domain.user.domain.entity.enums.Role;
+
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +20,8 @@ public interface UserUseCase {
     void update(Update dto, Long userId);
 
     void accept(Long userId);
+
+    void update(Long userId, String role);
 
     void leave(Long userId);
 
