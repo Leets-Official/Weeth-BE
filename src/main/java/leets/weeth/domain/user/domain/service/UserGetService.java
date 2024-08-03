@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static leets.weeth.domain.user.domain.entity.enums.Status.ACTIVE;
-
 @Service
 @RequiredArgsConstructor
 public class UserGetService {
@@ -23,7 +21,7 @@ public class UserGetService {
     }
 
     public Boolean check(String email) {
-        return userRepository.existsByEmail(email);
+        return !userRepository.existsByEmail(email);
     }
 
     public List<User> findAllByStatus(Status status) {

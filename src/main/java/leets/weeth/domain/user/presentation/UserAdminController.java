@@ -1,15 +1,13 @@
 package leets.weeth.domain.user.presentation;
 
-import leets.weeth.domain.user.application.dto.UserDTO;
 import leets.weeth.domain.user.application.usecase.UserUseCase;
-import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static leets.weeth.domain.user.application.dto.UserDTO.*;
+import static leets.weeth.domain.user.application.dto.UserDTO.AdminResponse;
 
 @RestController
 @RequiredArgsConstructor

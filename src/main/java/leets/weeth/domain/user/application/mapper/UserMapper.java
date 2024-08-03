@@ -2,12 +2,8 @@ package leets.weeth.domain.user.application.mapper;
 
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.entity.enums.Department;
-import leets.weeth.domain.user.domain.entity.enums.Status;
-import leets.weeth.global.common.error.exception.custom.DepartmentNotFoundException;
 import org.mapstruct.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Arrays;
 
 import static leets.weeth.domain.user.application.dto.UserDTO.*;
 
@@ -17,7 +13,7 @@ public interface UserMapper {
     @Mappings({
             @Mapping(target = "cardinals", expression = "java( java.util.List.of(dto.cardinal()) )"),
             @Mapping(target = "password", expression = "java( passwordEncoder.encode(dto.password()) )"),
-            @Mapping(target = "department", expression = "java( toEnum(dto.department()) )")
+            @Mapping(target = "department", expression = "java( leets.weeth.domain.user.domain.entity.enums.Department.to(dto.department()) )")
     })
     User from(SignUp dto, @Context PasswordEncoder passwordEncoder);
 
@@ -25,13 +21,9 @@ public interface UserMapper {
     Response to(User user);
 
     @Mappings({
-            @Mapping(target = "absenceCount", ignore = true),
+            // 수정: 출석률, 출석 횟수, 결석 횟수 매핑 추후 추가 예정
     })
     AdminResponse toAdminResponse(User user);
-
-    default Department toEnum(String before) {
-        return Department.to(before);
-    }
 
     default String toString(Department department) {
         return department.getValue();

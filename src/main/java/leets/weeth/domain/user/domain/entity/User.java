@@ -106,11 +106,6 @@ public class User extends BaseEntity {
         this.role = Role.valueOf(role);
     }
 
-    public Integer getCurrentCardinal() {
-        return this.cardinals.stream().max(Integer::compareTo)
-                .orElse(0);
-    }
-
     public boolean notContains(Integer cardinal) {
         return !this.cardinals.contains(cardinal);
     }

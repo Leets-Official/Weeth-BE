@@ -3,7 +3,6 @@ package leets.weeth.domain.user.presentation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import leets.weeth.domain.user.application.usecase.UserUseCase;
-import leets.weeth.domain.user.domain.service.UserDeleteService;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.global.auth.annotation.CurrentUser;
 import leets.weeth.global.common.response.CommonResponse;
@@ -23,7 +22,6 @@ public class UserController {
 
     private final UserUseCase userUseCase;
     private final UserGetService userGetService;
-    private final UserDeleteService userDeleteService;
 
     @PostMapping("/apply")
     public CommonResponse<Void> apply(@RequestBody @Valid SignUp dto) {

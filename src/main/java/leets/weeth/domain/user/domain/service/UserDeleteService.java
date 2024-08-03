@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserDeleteService {
 
-    private final UserRepository userRepository;
-
     @Transactional
     public void leave(User user) {
         user.leave();

@@ -25,12 +25,12 @@ import static leets.weeth.domain.user.domain.entity.enums.Status.ACTIVE;
 @RequiredArgsConstructor
 public class UserUseCaseImpl implements UserUseCase {
 
-    private final UserGetService userGetService;
     private final UserSaveService userSaveService;
-    private final UserMapper mapper;
-    private final PasswordEncoder passwordEncoder;
+    private final UserGetService userGetService;
     private final UserUpdateService userUpdateService;
     private final UserDeleteService userDeleteService;
+    private final UserMapper mapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void apply(SignUp dto) {
@@ -99,7 +99,7 @@ public class UserUseCaseImpl implements UserUseCase {
 
         if (user.notContains(cardinal)) {
             userUpdateService.applyOB(user, cardinal);
-            // 해당 기수 출석 일정 생성
+            // 수정: 해당 기수 출석 일정 생성
         }
     }
 
