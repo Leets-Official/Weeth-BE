@@ -37,8 +37,9 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
 
     @Override
     public void update(Update dto, Long userId, Long meetingId) {
+        Meeting meeting = meetingGetService.find(meetingId);
         User user = userGetService.find(userId);
-        meetingUpdateService.update(dto, user, meetingId);
+        meetingUpdateService.update(dto, user, meeting);
     }
 
     @Override

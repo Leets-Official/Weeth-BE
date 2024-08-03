@@ -38,7 +38,8 @@ public class EventUseCaseImpl implements EventUseCase {
     @Override
     public void update(Long eventId, Update dto, Long userId) {
         User user = userGetService.find(userId);
-        eventUpdateService.update(eventId, dto, user);
+        Event event = eventGetService.find(eventId);
+        eventUpdateService.update(event, dto, user);
     }
 
     @Override
@@ -46,5 +47,4 @@ public class EventUseCaseImpl implements EventUseCase {
         Event event = eventGetService.find(eventId);
         eventDeleteService.delete(event);
     }
-
 }
