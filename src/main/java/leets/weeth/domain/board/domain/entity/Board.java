@@ -29,6 +29,8 @@ public class Board extends BaseEntity {
     // List<Comment>
     // List<String> urls
 
+    Integer commentCount;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
