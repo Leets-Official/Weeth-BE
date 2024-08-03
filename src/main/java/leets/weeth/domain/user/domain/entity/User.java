@@ -66,6 +66,7 @@ public class User extends BaseEntity {
         status = Status.WAITING;
         role = Role.USER;
         attendanceCount = 0;
+        attendanceRate = 0;
     }
 
     public void updateRefreshToken(String updatedToken) {
@@ -90,7 +91,7 @@ public class User extends BaseEntity {
         this.password = passwordEncoder.encode(dto.password());
         this.studentId = dto.studentId();
         this.tel = dto.tel();
-        this.department = Department.valueOf(dto.department());
+        this.department = Department.to(dto.department());
     }
 
     public void accept() {
@@ -105,11 +106,9 @@ public class User extends BaseEntity {
         this.role = Role.valueOf(role);
     }
 
-    public Integer getCurrentCardinal() {
-        return this.cardinals.stream().max(Integer::compareTo)
-                .orElse(0);
+    public boolean notContains(Integer cardinal) {
+        return !this.cardinals.contains(cardinal);
     }
-
 
     public void reset(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(studentId);
