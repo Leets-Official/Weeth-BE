@@ -6,6 +6,8 @@ import leets.weeth.domain.user.domain.service.UserDeleteService;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.domain.user.domain.service.UserSaveService;
 import leets.weeth.domain.user.domain.service.UserUpdateService;
+import leets.weeth.global.common.error.exception.custom.StudentIdExistsException;
+import leets.weeth.global.common.error.exception.custom.TelExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,7 @@ public class UserUseCaseImpl implements UserUseCase {
 
     @Override
     public void apply(SignUp dto) {
+        validate(dto);
         userSaveService.save(mapper.from(dto, passwordEncoder));
     }
 
@@ -61,6 +64,7 @@ public class UserUseCaseImpl implements UserUseCase {
 
     @Override
     public void update(Update dto, Long userId) {
+        validate(dto, userId);
         User user = userGetService.find(userId);
         userUpdateService.update(user, dto, passwordEncoder);
     }
@@ -103,5 +107,19 @@ public class UserUseCaseImpl implements UserUseCase {
     public void reset(Long userId) {
         User user = userGetService.find(userId);
         userUpdateService.reset(user, passwordEncoder);
+    }
+
+    private void validate(SignUp dto) {
+        if(userGetService.validateStudentId(dto.studentId()))
+            throw new StudentIdExistsException();
+        if(userGetService.validateTel(dto.tel()))
+            throw new TelExistsException();
+    }
+
+    private void validate(Update dto, Long userId) {
+        if(userGetService.validateStudentId(dto.studentId(), userId))
+            throw new StudentIdExistsException();
+        if(userGetService.validateTel(dto.tel(), userId))
+            throw new TelExistsException();
     }
 }

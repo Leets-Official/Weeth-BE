@@ -33,4 +33,20 @@ public class UserGetService {
     public List<User> findAll() {
         return userRepository.findAll();
     }
+
+    public boolean validateStudentId(String studentId) {
+        return userRepository.existsByStudentId(studentId);
+    }
+
+    public boolean validateStudentId(String studentId, Long userId) {
+        return userRepository.existsByStudentIdAndIdIsNot(studentId, userId);
+    }
+
+    public boolean validateTel(String tel) {
+        return userRepository.existsByTel(tel);
+    }
+
+    public boolean validateTel(String tel, Long userId) {
+        return userRepository.existsByTelAndIdIsNot(tel, userId);
+    }
 }
