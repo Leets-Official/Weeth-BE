@@ -2,7 +2,6 @@ package leets.weeth.domain.user.application.usecase;
 
 import leets.weeth.domain.user.application.mapper.UserMapper;
 import leets.weeth.domain.user.domain.entity.User;
-import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.domain.user.domain.service.UserDeleteService;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.domain.user.domain.service.UserSaveService;
@@ -63,7 +62,7 @@ public class UserUseCaseImpl implements UserUseCase {
     @Override
     public void update(Update dto, Long userId) {
         User user = userGetService.find(userId);
-        userUpdateService.update(user, dto);
+        userUpdateService.update(user, dto, passwordEncoder);
     }
 
     @Override
@@ -88,5 +87,21 @@ public class UserUseCaseImpl implements UserUseCase {
     public void ban(Long userId) {
         User user = userGetService.find(userId);
         userDeleteService.ban(user);
+    }
+
+    @Override
+    public void applyOB(Long userId, Integer cardinal) {
+        User user = userGetService.find(userId);
+
+        if (user.notContains(cardinal)) {
+            userUpdateService.applyOB(user, cardinal);
+            // 해당 기수 출석 일정 생성
+        }
+    }
+
+    @Override
+    public void reset(Long userId) {
+        User user = userGetService.find(userId);
+        userUpdateService.reset(user, passwordEncoder);
     }
 }

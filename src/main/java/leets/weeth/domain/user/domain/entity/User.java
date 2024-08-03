@@ -111,6 +111,9 @@ public class User extends BaseEntity {
                 .orElse(0);
     }
 
+    public boolean notContains(Integer cardinal) {
+        return !this.cardinals.contains(cardinal);
+    }
 
     public void reset(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(studentId);

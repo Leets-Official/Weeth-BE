@@ -36,8 +36,20 @@ public class UserAdminController {
     }
 
     @PatchMapping("/role")
-    public CommonResponse<Void> updateRole(@RequestParam Long userId, @RequestParam String role) {
+    public CommonResponse<Void> update(@RequestParam Long userId, @RequestParam String role) {
         userUseCase.update(userId, role);
+        return CommonResponse.createSuccess();
+    }
+
+    @PatchMapping("/apply")
+    public CommonResponse<Void> applyOB(@RequestParam Long userId, @RequestParam Integer cardinal) {
+        userUseCase.applyOB(userId, cardinal);
+        return CommonResponse.createSuccess();
+    }
+
+    @PatchMapping("/reset")
+    public CommonResponse<Void> resetPassword(@RequestParam Long userId) {
+        userUseCase.reset(userId);
         return CommonResponse.createSuccess();
     }
 }
