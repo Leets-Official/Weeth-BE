@@ -29,10 +29,6 @@ public interface UserMapper {
     })
     AdminResponse toAdminResponse(User user);
 
-    User update(Update dto, Long id);
-
-    User update(Long id, Status status);
-
     default Department toEnum(String before) {
         return Department.to(before);
     }
