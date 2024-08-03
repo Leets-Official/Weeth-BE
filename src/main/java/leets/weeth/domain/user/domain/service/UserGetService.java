@@ -1,6 +1,7 @@
 package leets.weeth.domain.user.domain.service;
 
 import leets.weeth.domain.user.domain.entity.User;
+import leets.weeth.domain.user.domain.entity.enums.Status;
 import leets.weeth.domain.user.domain.repository.UserRepository;
 import leets.weeth.global.common.error.exception.custom.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,11 @@ public class UserGetService {
         return userRepository.existsByEmail(email);
     }
 
+    public List<User> findAllByStatus(Status status) {
+        return userRepository.findAllByStatusOrderByName(status);
+    }
+
     public List<User> findAll() {
-        return userRepository.findAllByStatusOrderByName(ACTIVE);
+        return userRepository.findAll();
     }
 }

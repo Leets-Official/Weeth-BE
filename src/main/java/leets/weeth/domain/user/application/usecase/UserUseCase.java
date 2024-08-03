@@ -9,9 +9,11 @@ public interface UserUseCase {
 
     void apply(SignUp dto);
 
+    Response find(Long userId);
+
     Map<Integer, List<Response>> findAll();
 
-    Response find(Long userId);
+    List<AdminResponse> findAllByAdmin();
 
     void update(Update dto, Long userId);
 }

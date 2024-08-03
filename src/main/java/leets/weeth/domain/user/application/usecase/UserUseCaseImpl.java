@@ -1,6 +1,7 @@
 package leets.weeth.domain.user.application.usecase;
 
 import leets.weeth.domain.user.application.mapper.UserMapper;
+import leets.weeth.domain.user.domain.entity.enums.Status;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.domain.user.domain.service.UserSaveService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static leets.weeth.domain.user.application.dto.UserDTO.*;
+import static leets.weeth.domain.user.domain.entity.enums.Status.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +33,7 @@ public class UserUseCaseImpl implements UserUseCase {
 
     @Override
     public Map<Integer, List<Response>> findAll() {
-        return userGetService.findAll().stream()
+        return userGetService.findAllByStatus(ACTIVE).stream()
                 .flatMap(user -> Stream.concat(
                         user.getCardinals().stream()
                                 .map(cardinal -> new AbstractMap.SimpleEntry<>(cardinal, mapper.to(user))), // 기수별 Map
@@ -39,6 +41,13 @@ public class UserUseCaseImpl implements UserUseCase {
                 ))
                 .collect(Collectors.groupingBy(Map.Entry::getKey,   // key = 기수, value = 유저 정보
                         Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
+    }
+
+    @Override
+    public List<AdminResponse> findAllByAdmin() {
+        return userGetService.findAll().stream()
+                .map(mapper::toAdminResponse)
+                .toList();
     }
 
     @Override
