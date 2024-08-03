@@ -41,7 +41,7 @@ public class Schedule extends BaseEntity {
     private User user;
 
     public void updateUpperClass(EventDTO.Update dto, User user) {
-        this.title = dto.title();;
+        this.title = dto.title();
         this.content = dto.content();
         this.location = dto.location();
         this.start = dto.start();
@@ -50,7 +50,7 @@ public class Schedule extends BaseEntity {
     }
 
     public void updateUpperClass(MeetingDTO.Update dto, User user) {
-        this.title = dto.title();;
+        this.title = dto.title();
         this.content = dto.content();
         this.location = dto.location();
         this.start = dto.start();
