@@ -3,7 +3,9 @@ package leets.weeth.domain.comment.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.board.domain.entity.Post;
+import leets.weeth.domain.comment.application.dto.CommentDTO;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.global.common.entity.BaseEntity;
 import lombok.*;
@@ -37,6 +39,11 @@ public class Comment extends BaseEntity {
     private Post post;
 
     @ManyToOne
+    @JoinColumn(name="notice_id")
+    @JsonBackReference
+    private Notice notice;
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -50,4 +57,15 @@ public class Comment extends BaseEntity {
     public void addChild(Comment child) {
         this.children.add(child);
     }
+
+    //TODO 문자열 상수처리
+    public void markAsDeleted() {
+        this.isDeleted = true;
+        this.content = "삭제된 댓글입니다.";
+    }
+
+    public void update(CommentDTO.Update dto) {
+            this.content = dto.content();
+    }
+
 }
