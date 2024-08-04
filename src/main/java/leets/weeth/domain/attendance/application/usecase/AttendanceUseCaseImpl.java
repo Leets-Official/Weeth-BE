@@ -5,19 +5,16 @@ import leets.weeth.domain.attendance.application.mapper.AttendanceMapper;
 import leets.weeth.domain.attendance.domain.entity.Attendance;
 import leets.weeth.domain.attendance.domain.entity.enums.Status;
 import leets.weeth.domain.attendance.domain.service.AttendanceUpdateService;
-import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.schedule.domain.service.MeetingGetService;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.global.common.error.exception.custom.AttendanceNotFoundException;
-import leets.weeth.global.common.error.exception.custom.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor

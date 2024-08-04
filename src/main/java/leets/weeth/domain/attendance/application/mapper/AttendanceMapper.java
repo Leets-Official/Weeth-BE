@@ -2,7 +2,6 @@ package leets.weeth.domain.attendance.application.mapper;
 
 import leets.weeth.domain.attendance.application.dto.AttendanceDTO;
 import leets.weeth.domain.attendance.domain.entity.Attendance;
-import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.user.domain.entity.User;
 import org.mapstruct.*;
 

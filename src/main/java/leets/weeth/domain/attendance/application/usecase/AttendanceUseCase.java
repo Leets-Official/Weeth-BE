@@ -1,8 +1,7 @@
 package leets.weeth.domain.attendance.application.usecase;
 
-import leets.weeth.domain.attendance.application.dto.AttendanceDTO;
-
-import static leets.weeth.domain.attendance.application.dto.AttendanceDTO.*;
+import static leets.weeth.domain.attendance.application.dto.AttendanceDTO.Detail;
+import static leets.weeth.domain.attendance.application.dto.AttendanceDTO.Main;
 
 public interface AttendanceUseCase {
     void checkIn(Long userId);
