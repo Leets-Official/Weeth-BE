@@ -145,10 +145,4 @@ public class User extends BaseEntity {
         attendanceCount++;
         attendanceRate = (attendanceCount * 100) / (attendanceCount + absenceCount);
     }
-
-    public Integer getCurrentCardinal() {
-        return this.cardinals.stream()
-                .max(Integer::compareTo)
-                .orElseThrow(CardinalNotFoundException::new);
-    }
 }
