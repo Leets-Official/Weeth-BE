@@ -9,6 +9,7 @@ import leets.weeth.domain.user.domain.entity.enums.Position;
 import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.domain.user.domain.entity.enums.Status;
 import leets.weeth.global.common.entity.BaseEntity;
+import leets.weeth.global.common.error.exception.custom.CardinalNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -125,13 +126,15 @@ public class User extends BaseEntity {
     }
 
     public void initAttendance() {
-        this.attendances.clear();;
+        this.attendances.clear();
         this.attendanceCount = 0;
         this.attendanceRate = 0;
     }
 
     public boolean isCurrent(Integer cardinal) {
-        Integer max = this.cardinals.stream().max(Integer::compareTo).get();
+        Integer max = this.cardinals.stream().max(Integer::compareTo)
+                .orElseThrow(CardinalNotFoundException::new);
+
         return max < cardinal;
     }
 }
