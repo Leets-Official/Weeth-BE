@@ -104,13 +104,18 @@ public class UserUseCaseImpl implements UserUseCase {
         userDeleteService.ban(user);
     }
 
-    @Override
+    @Override @Transactional
     public void applyOB(Long userId, Integer cardinal) {
         User user = userGetService.find(userId);
 
         if (user.notContains(cardinal)) {
             userUpdateService.applyOB(user, cardinal);
-            // 수정: 해당 기수 출석 일정 생성
+
+            if(user.isCurrent(cardinal)) {
+                user.initAttendance();
+                List<Meeting> meetings = meetingGetService.find(cardinal);
+                attendanceSaveService.save(user, meetings);
+            }
         }
     }
 

@@ -123,4 +123,15 @@ public class User extends BaseEntity {
     public void add(Attendance attendance) {
         this.attendances.add(attendance);
     }
+
+    public void initAttendance() {
+        this.attendances.clear();;
+        this.attendanceCount = 0;
+        this.attendanceRate = 0;
+    }
+
+    public boolean isCurrent(Integer cardinal) {
+        Integer max = this.cardinals.stream().max(Integer::compareTo).get();
+        return max < cardinal;
+    }
 }
