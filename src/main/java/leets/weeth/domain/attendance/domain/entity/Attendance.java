@@ -47,4 +47,12 @@ public class Attendance extends BaseEntity {
     public void attend() {
         this.status = Status.ATTEND;
     }
+
+    public void close() {
+        this.status = Status.ABSENT;
+    }
+
+    public boolean isAttend() {
+        return this.status == Status.ATTEND;
+    }
 }

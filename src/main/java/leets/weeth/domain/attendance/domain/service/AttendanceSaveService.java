@@ -22,6 +22,7 @@ public class AttendanceSaveService {
             meetings.forEach(meeting -> {
                 Attendance attendance = attendanceRepository.save(new Attendance(meeting, user));
                 user.add(attendance);
+                meeting.add(attendance);
         });
         }
     }

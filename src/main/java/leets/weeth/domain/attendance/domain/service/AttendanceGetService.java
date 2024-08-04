@@ -11,7 +11,7 @@ public class AttendanceGetService {
 
     private final AttendanceRepository attendanceRepository;
 
-    public Attendance find() {
+    public Attendance findAll() {
         return null;
     }
 }

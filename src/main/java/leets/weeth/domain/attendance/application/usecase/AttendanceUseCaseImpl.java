@@ -5,10 +5,12 @@ import leets.weeth.domain.attendance.application.mapper.AttendanceMapper;
 import leets.weeth.domain.attendance.domain.entity.Attendance;
 import leets.weeth.domain.attendance.domain.entity.enums.Status;
 import leets.weeth.domain.attendance.domain.service.AttendanceUpdateService;
+import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.schedule.domain.service.MeetingGetService;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.global.common.error.exception.custom.AttendanceNotFoundException;
+import leets.weeth.global.common.error.exception.custom.MeetingNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -62,5 +64,19 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
                 .toList();
 
         return mapper.toDetailDto(user, responses);
+    }
+
+    @Override
+    public void close(LocalDate now, Integer cardinal) {
+        List<Meeting> meetings = meetingGetService.find(cardinal);
+
+        List<Attendance> attendances = meetings.stream()
+                .filter(meeting -> meeting.getStart().toLocalDate().isEqual(now)
+                        && meeting.getEnd().toLocalDate().isEqual(now))
+                .findAny()
+                .map(Meeting::getAttendances)
+                .orElseThrow(MeetingNotFoundException::new);
+
+        attendanceUpdateService.close(attendances);
     }
 }
