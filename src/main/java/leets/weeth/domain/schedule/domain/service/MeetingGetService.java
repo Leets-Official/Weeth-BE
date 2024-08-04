@@ -28,4 +28,8 @@ public class MeetingGetService {
                 .map(meeting -> mapper.toScheduleDTO(meeting, true))
                 .toList();
     }
+
+    public List<Meeting> find(Integer cardinal) {
+        return meetingRepository.findAllByCardinalOrderByStartAsc(cardinal);
+    }
 }

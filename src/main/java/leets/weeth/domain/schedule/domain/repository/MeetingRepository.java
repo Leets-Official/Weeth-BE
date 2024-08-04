@@ -9,4 +9,6 @@ import java.util.List;
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
 
     List<Meeting> findByStartLessThanEqualAndEndGreaterThanEqualOrderByStartAsc(LocalDateTime start, LocalDateTime end);
+
+    List<Meeting> findAllByCardinalOrderByStartAsc(int cardinal);
 }
