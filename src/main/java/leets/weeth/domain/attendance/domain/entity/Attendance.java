@@ -43,4 +43,8 @@ public class Attendance extends BaseEntity {
         this.meeting = meeting;
         this.user = user;
     }
+
+    public void attend() {
+        this.status = Status.ATTEND;
+    }
 }

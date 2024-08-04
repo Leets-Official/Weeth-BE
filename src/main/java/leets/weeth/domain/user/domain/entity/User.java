@@ -62,6 +62,8 @@ public class User extends BaseEntity {
 
     private Integer attendanceCount;
 
+    private Integer absenceCount;
+
     private Integer attendanceRate;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -73,6 +75,7 @@ public class User extends BaseEntity {
         status = Status.WAITING;
         role = Role.USER;
         attendanceCount = 0;
+        absenceCount = 0;
         attendanceRate = 0;
     }
 
@@ -128,6 +131,7 @@ public class User extends BaseEntity {
     public void initAttendance() {
         this.attendances.clear();
         this.attendanceCount = 0;
+        this.absenceCount = 0;
         this.attendanceRate = 0;
     }
 
@@ -136,5 +140,10 @@ public class User extends BaseEntity {
                 .orElseThrow(CardinalNotFoundException::new);
 
         return max < cardinal;
+    }
+
+    public void attend() {
+        attendanceCount++;
+        attendanceRate = (attendanceCount * 100) / (attendanceCount + absenceCount);
     }
 }
