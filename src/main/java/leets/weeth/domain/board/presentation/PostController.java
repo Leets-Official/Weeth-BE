@@ -8,6 +8,9 @@ import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,14 +20,19 @@ public class PostController {
     private final PostUseCaseImpl postUseCase;
 
     @PostMapping
-    public CommonResponse<String> save(@RequestBody @Valid PostDTO.Save dto, @CurrentUser Long userId) {
-        postUseCase.save(dto, userId);
+    public CommonResponse<String> save(@RequestPart @Valid PostDTO.Save dto,
+                                       @RequestPart(value = "files", required = false) List<MultipartFile> files,
+                                       @CurrentUser Long userId) {
+        postUseCase.save(dto, files, userId);
         return CommonResponse.createSuccess("게시글 생성 성공");
     }
 
     @PatchMapping("/{postId}")
-    public CommonResponse<String> update(@PathVariable Long postId, @RequestBody @Valid PostDTO.Update dto, @CurrentUser Long userId) throws UserNotMatchException {
-        postUseCase.update(postId, dto, userId);
+    public CommonResponse<String> update(@PathVariable Long postId,
+                                         @RequestPart @Valid PostDTO.Update dto,
+                                         @RequestPart(value = "files", required = false) List<MultipartFile> files,
+                                         @CurrentUser Long userId) throws UserNotMatchException {
+        postUseCase.update(postId, dto, files, userId);
         return CommonResponse.createSuccess("게시글 수정 성공");
     }
 
