@@ -26,6 +26,6 @@ public interface NoticeMapper {
     @Mapping(target = "name", source = "user.name")
     @Mapping(target = "comments", source = "comments")
     @Mapping(target = "time", source = "modifiedAt")
-    BoardDTO.Response to(Notice notice);
+    NoticeDTO.Response to(Notice notice);
 
 }

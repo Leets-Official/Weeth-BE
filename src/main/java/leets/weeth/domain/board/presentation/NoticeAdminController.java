@@ -3,7 +3,7 @@ package leets.weeth.domain.board.presentation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import leets.weeth.domain.board.application.dto.NoticeDTO;
-import leets.weeth.domain.board.application.usecase.NoticeUsecaseImpl;
+import leets.weeth.domain.board.application.usecase.NoticeUsecase;
 import leets.weeth.global.auth.annotation.CurrentUser;
 import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
 import leets.weeth.global.common.response.CommonResponse;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/api/v1/admin/notices")
 public class NoticeAdminController {
 
-    private final NoticeUsecaseImpl noticeUsecase;
+    private final NoticeUsecase noticeUsecase;
 
     @PostMapping
     public CommonResponse<String> save(@RequestPart @Valid NoticeDTO.Save dto,

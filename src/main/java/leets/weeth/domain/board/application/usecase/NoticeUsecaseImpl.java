@@ -25,8 +25,10 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     private final NoticeFindService noticeFindService;
     private final NoticeUpdateService noticeUpdateService;
     private final NoticeDeleteService noticeDeleteService;
+
     private final UserGetService userGetService;
     private final FileSaveService fileSaveService;
+
     private final NoticeMapper mapper;
 
     @Override
@@ -36,6 +38,21 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
         List<String> fileUrls;
         fileUrls = fileSaveService.uploadFiles(files);
         noticeSaveService.save(mapper.from(request, fileUrls, user));
+    }
+
+    @Override
+    public NoticeDTO.Response findNotice(Long noticeId) {
+        Notice notice = noticeFindService.find(noticeId);
+        return mapper.to(notice);
+    }
+
+    @Override
+    public List<NoticeDTO.Response> findNotices() {
+        List<Notice> notices = noticeFindService.find();
+
+        return notices.stream()
+                .map(mapper::to)
+                .toList();
     }
 
     @Override

@@ -10,6 +10,10 @@ public interface NoticeUsecase {
 
     void save(NoticeDTO.Save dto, List<MultipartFile> files, Long userId);
 
+    NoticeDTO.Response findNotice(Long noticeId);
+
+    List<NoticeDTO.Response> findNotices();
+
     void update(Long noticeId, NoticeDTO.Update dto, List<MultipartFile> files, Long userId) throws UserNotMatchException;
 
     void delete(Long noticeId, Long userId) throws UserNotMatchException;
