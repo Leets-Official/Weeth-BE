@@ -1,6 +1,6 @@
 package leets.weeth.domain.board.domain.service;
 
-import leets.weeth.domain.board.domain.entity.Post;
+import jakarta.transaction.Transactional;
 import leets.weeth.domain.board.domain.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,6 +11,7 @@ public class PostDeleteService {
 
     private final PostRepository postRepository;
 
+    @Transactional
     public void delete(Long postId) {
         postRepository.deleteById(postId);
     }
