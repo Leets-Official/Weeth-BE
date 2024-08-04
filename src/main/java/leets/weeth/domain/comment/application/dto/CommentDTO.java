@@ -21,12 +21,11 @@ public class CommentDTO {
 
     @Builder
     public record Response(
-            Long userId,
             Long id,
             String name,
             String content,
-            List<CommentDTO.Response> children,
-            LocalDateTime time //modifiedAt
+            LocalDateTime time, //modifiedAt
+            List<CommentDTO.Response> children
     ){}
 
 }

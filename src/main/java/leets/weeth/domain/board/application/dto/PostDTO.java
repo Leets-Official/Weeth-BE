@@ -16,4 +16,5 @@ public class PostDTO {
             @NotNull String title,
             @NotNull String content
     ){}
+
 }

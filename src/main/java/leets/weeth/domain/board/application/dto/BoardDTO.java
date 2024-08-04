@@ -14,10 +14,9 @@ public class BoardDTO {
             String name,
             String title,
             String content,
-            LocalDateTime createdAt,
-            LocalDateTime modifiedAt,
+            LocalDateTime time,//modifiedAt
+            Integer commentCount,
             List<String> fileUrls,
-            List<CommentDTO.Response> comments,
-            Integer commentCount
+            List<CommentDTO.Response> comments
     ){}
 }
