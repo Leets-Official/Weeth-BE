@@ -6,6 +6,8 @@ import leets.weeth.global.common.error.exception.custom.CommentNotFoundException
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CommentFindService {
@@ -15,5 +17,9 @@ public class CommentFindService {
     public Comment find(Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(CommentNotFoundException::new);
+    }
+
+    public List<Comment> find() {
+        return commentRepository.findAll();
     }
 }
