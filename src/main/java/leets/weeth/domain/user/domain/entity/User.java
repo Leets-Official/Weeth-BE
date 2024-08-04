@@ -68,7 +68,6 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Attendance> attendances = new ArrayList<>();
-    // 출석 리스트 매핑 -> applyOB시 해당 기수 출석으로 초기화
 
     @PrePersist
     public void init() {
@@ -145,5 +144,11 @@ public class User extends BaseEntity {
     public void attend() {
         attendanceCount++;
         attendanceRate = (attendanceCount * 100) / (attendanceCount + absenceCount);
+    }
+
+    public Integer getCurrentCardinal() {
+        return this.cardinals.stream()
+                .max(Integer::compareTo)
+                .orElseThrow(CardinalNotFoundException::new);
     }
 }
