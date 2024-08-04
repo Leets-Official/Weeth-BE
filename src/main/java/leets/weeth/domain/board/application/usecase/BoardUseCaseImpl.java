@@ -22,12 +22,24 @@ public class BoardUseCaseImpl implements BoardUseCase {
     private final PostMapper postMapper;
 
     @Override
+    public BoardDTO.Response findNotice(Long noticeId) {
+        Notice notice = noticeFindService.find(noticeId);
+        return noticeMapper.to(notice);
+    }
+
+    @Override
     public List<BoardDTO.Response> findNotices() {
         List<Notice> notices = noticeFindService.find();
 
         return notices.stream()
                 .map(noticeMapper::to)
                 .toList();
+    }
+
+    @Override
+    public BoardDTO.Response findPost(Long postId) {
+        Post post = postFindService.find(postId);
+        return postMapper.to(post);
     }
 
     @Override
