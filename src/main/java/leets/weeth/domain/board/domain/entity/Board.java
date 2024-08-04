@@ -40,6 +40,16 @@ public class Board extends BaseEntity {
     @Convert(converter = FileListConverter.class)
     private List<String> fileUrls = new ArrayList<>();
 
+    public void incrementCommentCount(){
+        commentCount++;
+    }
+
+    public void decrementCommentCount(){
+        if(this.commentCount > 0){
+            commentCount--;
+        }
+    }
+
     public void updateUpperClass(NoticeDTO.Update dto, List<String> fileUrls){
         this.title = dto.title();
         this.content = dto.content();

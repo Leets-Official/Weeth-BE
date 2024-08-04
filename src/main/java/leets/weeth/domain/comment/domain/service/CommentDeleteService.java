@@ -15,4 +15,5 @@ public class CommentDeleteService {
     public void delete(Long commentId) {
         commentRepository.deleteById(commentId);
     }
+
 }

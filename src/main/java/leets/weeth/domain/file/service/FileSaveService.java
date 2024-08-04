@@ -45,6 +45,7 @@ public class FileSaveService {
         return UUID.randomUUID() + "." + getFileExtension(file.getOriginalFilename());
     }
 
+    //Todo 상수처리
     private String extractUrl(String fileName) {
         return "https://" + s3Client.getUrl(bucket, fileName).getHost() + s3Client.getUrl(bucket, fileName).getFile();
     }
