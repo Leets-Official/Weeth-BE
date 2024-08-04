@@ -119,4 +119,8 @@ public class User extends BaseEntity {
     public void reset(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(studentId);
     }
+
+    public void add(Attendance attendance) {
+        this.attendances.add(attendance);
+    }
 }

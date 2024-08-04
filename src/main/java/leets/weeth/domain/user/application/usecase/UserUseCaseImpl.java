@@ -1,5 +1,9 @@
 package leets.weeth.domain.user.application.usecase;
 
+import jakarta.transaction.Transactional;
+import leets.weeth.domain.attendance.domain.service.AttendanceSaveService;
+import leets.weeth.domain.schedule.domain.entity.Meeting;
+import leets.weeth.domain.schedule.domain.service.MeetingGetService;
 import leets.weeth.domain.user.application.mapper.UserMapper;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserDeleteService;
@@ -31,6 +35,8 @@ public class UserUseCaseImpl implements UserUseCase {
     private final UserDeleteService userDeleteService;
     private final UserMapper mapper;
     private final PasswordEncoder passwordEncoder;
+    private final AttendanceSaveService attendanceSaveService;
+    private final MeetingGetService meetingGetService;
 
     @Override
     public void apply(SignUp dto) {
@@ -69,10 +75,15 @@ public class UserUseCaseImpl implements UserUseCase {
         userUpdateService.update(user, dto, passwordEncoder);
     }
 
-    @Override
+    @Override @Transactional
     public void accept(Long userId) {
         User user = userGetService.find(userId);
-        userUpdateService.accept(user);
+
+        if (user.isInactive()) {
+            userUpdateService.accept(user);
+            List<Meeting> meetings = meetingGetService.find(user.getCardinals().get(0));
+            attendanceSaveService.save(user, meetings);
+        }
     }
 
     @Override
