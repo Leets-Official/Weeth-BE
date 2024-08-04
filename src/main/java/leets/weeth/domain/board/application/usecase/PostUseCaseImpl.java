@@ -19,14 +19,16 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PostUseCaseImpl implements PostUsecase{
+public class PostUseCaseImpl implements PostUsecase {
 
     private final PostSaveService postSaveService;
     private final PostFindService postFindService;
     private final PostUpdateService postUpdateService;
     private final PostDeleteService postDeleteService;
+
     private final UserGetService userGetService;
     private final FileSaveService fileSaveService;
+
     private final PostMapper mapper;
 
     @Override
@@ -36,6 +38,21 @@ public class PostUseCaseImpl implements PostUsecase{
         List<String> fileUrls;
         fileUrls = fileSaveService.uploadFiles(files);
         postSaveService.save(mapper.from(request, fileUrls, user));
+    }
+
+    @Override
+    public PostDTO.Response findPost(Long postId) {
+        Post post = postFindService.find(postId);
+        return mapper.to(post);
+    }
+
+    @Override
+    public List<PostDTO.Response> findPosts() {
+        List<Post> posts = postFindService.find();
+
+        return posts.stream()
+                .map(mapper::to)
+                .toList();
     }
 
     /*

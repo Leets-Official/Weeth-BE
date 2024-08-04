@@ -10,6 +10,10 @@ public interface PostUsecase {
 
     void save(PostDTO.Save request, List<MultipartFile> files, Long userId);
 
+    PostDTO.Response findPost(Long postId);
+
+    List<PostDTO.Response> findPosts();
+
     void update(Long postId, PostDTO.Update dto, List<MultipartFile> files, Long userId) throws UserNotMatchException;
 
     void delete(Long postId, Long userId) throws UserNotMatchException;

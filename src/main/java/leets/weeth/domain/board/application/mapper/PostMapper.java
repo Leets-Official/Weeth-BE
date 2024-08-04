@@ -26,6 +26,6 @@ public interface PostMapper {
     @Mapping(target = "name", source = "user.name")
     @Mapping(target = "comments", source = "comments")
     @Mapping(target = "time", source = "modifiedAt")
-    BoardDTO.Response to(Post post);
+    PostDTO.Response to(Post post);
 
 }

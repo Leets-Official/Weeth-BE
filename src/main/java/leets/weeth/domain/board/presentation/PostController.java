@@ -2,7 +2,7 @@ package leets.weeth.domain.board.presentation;
 
 import jakarta.validation.Valid;
 import leets.weeth.domain.board.application.dto.PostDTO;
-import leets.weeth.domain.board.application.usecase.PostUseCaseImpl;
+import leets.weeth.domain.board.application.usecase.PostUsecase;
 import leets.weeth.global.auth.annotation.CurrentUser;
 import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
 import leets.weeth.global.common.response.CommonResponse;
@@ -17,14 +17,24 @@ import java.util.List;
 @RequestMapping("/api/v1/posts")
 public class PostController {
 
-    private final PostUseCaseImpl postUseCase;
+    private final PostUsecase postUsecase;
 
     @PostMapping
     public CommonResponse<String> save(@RequestPart @Valid PostDTO.Save dto,
                                        @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                        @CurrentUser Long userId) {
-        postUseCase.save(dto, files, userId);
+        postUsecase.save(dto, files, userId);
         return CommonResponse.createSuccess("게시글 생성 성공");
+    }
+
+    @GetMapping
+    public CommonResponse<List<PostDTO.Response>> findPosts() {
+        return CommonResponse.createSuccess(postUsecase.findPosts());
+    }
+
+    @GetMapping("/{postId}")
+    public CommonResponse<PostDTO.Response> findPost(@PathVariable Long postId) {
+        return CommonResponse.createSuccess(postUsecase.findPost(postId));
     }
 
     @PatchMapping("/{postId}")
@@ -32,13 +42,13 @@ public class PostController {
                                          @RequestPart @Valid PostDTO.Update dto,
                                          @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                          @CurrentUser Long userId) throws UserNotMatchException {
-        postUseCase.update(postId, dto, files, userId);
+        postUsecase.update(postId, dto, files, userId);
         return CommonResponse.createSuccess("게시글 수정 성공");
     }
 
     @DeleteMapping("/{postId}")
     public CommonResponse<String> delete(@PathVariable Long postId, @CurrentUser Long userId) throws UserNotMatchException {
-        postUseCase.delete(postId, userId);
+        postUsecase.delete(postId, userId);
         return CommonResponse.createSuccess("게시글 삭제 성공");
     }
 
