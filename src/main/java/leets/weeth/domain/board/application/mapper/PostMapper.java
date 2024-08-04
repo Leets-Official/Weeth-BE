@@ -10,18 +10,22 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = CommentMapper.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PostMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", source = "user")
-    Post from(PostDTO.Save dto, User user);
+    Post from(PostDTO.Save dto, List<String> fileUrls, User user);
 
-    @Mapping(target = "id", source = "postId")
-    @Mapping(target = "user", source = "user")
-    Post update(Long postId, PostDTO.Update dto, User user);
+//    @Mapping(target = "id", source = "postId")
+//    @Mapping(target = "user", source = "user")
+//    Post update(Long postId, PostDTO.Update dto, User user);
 
     @Mapping(target = "name", source = "user.name")
     @Mapping(target = "comments", source = "comments")
+    @Mapping(target = "time", source = "modifiedAt")
     BoardDTO.Response to(Post post);
+
 }
