@@ -1,8 +1,6 @@
 package leets.weeth.domain.comment.application.usecase;
 
-import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.board.domain.entity.Post;
-import leets.weeth.domain.board.domain.service.NoticeFindService;
 import leets.weeth.domain.board.domain.service.PostFindService;
 import leets.weeth.domain.comment.application.dto.CommentDTO;
 import leets.weeth.domain.comment.application.mapper.CommentMapper;
@@ -34,6 +32,7 @@ public class PostCommentUsecaseImpl implements PostCommentUsecase {
     private final CommentMapper commentMapper;
 
     @Override
+    @Transactional
     public void savePostComment(CommentDTO.Save dto, Long postId, Long userId) {
         User user = userGetService.find(userId);
         Post post = postFindService.find(postId);
@@ -42,7 +41,7 @@ public class PostCommentUsecaseImpl implements PostCommentUsecase {
         if(!(dto.parentCommentId() == null)) {
             parentComment = commentFindService.find(dto.parentCommentId());
         }
-        Comment comment = commentMapper.from(dto, post, user, parentComment);
+        Comment comment = commentMapper.fromCommentDto(dto, post, user, parentComment);
         commentSaveService.save(comment);
 
         // 부모 댓글이 없다면 새 댓글로 추가
@@ -67,6 +66,7 @@ public class PostCommentUsecaseImpl implements PostCommentUsecase {
 
 
     @Override
+    @Transactional
     public void deletePostComment(Long commentId, Long userId) throws UserNotMatchException {
         User user = userGetService.find(userId);
         Comment comment = validateOwner(commentId, userId);

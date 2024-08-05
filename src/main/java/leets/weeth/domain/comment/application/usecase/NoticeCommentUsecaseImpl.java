@@ -32,6 +32,7 @@ public class NoticeCommentUsecaseImpl implements NoticeCommentUsecase {
 
 
     @Override
+    @Transactional
     public void saveNoticeComment(CommentDTO.Save dto, Long noticeId, Long userId) {
         User user = userGetService.find(userId);
         Notice notice = noticeFindService.find(noticeId);
@@ -40,7 +41,7 @@ public class NoticeCommentUsecaseImpl implements NoticeCommentUsecase {
         if(!(dto.parentCommentId() == null)) {
             parentComment = commentFindService.find(dto.parentCommentId());
         }
-        Comment comment = commentMapper.from(dto, notice, user, parentComment);
+        Comment comment = commentMapper.fromCommentDto(dto, notice, user, parentComment);
         commentSaveService.save(comment);
 
         // 부모 댓글이 없다면 새 댓글로 추가
@@ -64,6 +65,7 @@ public class NoticeCommentUsecaseImpl implements NoticeCommentUsecase {
     }
 
     @Override
+    @Transactional
     public void deleteNoticeComment(Long commentId, Long userId) throws UserNotMatchException {
         User user = userGetService.find(userId);
         Comment comment = validateOwner(commentId, userId);

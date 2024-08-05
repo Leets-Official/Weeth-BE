@@ -37,13 +37,13 @@ public class PostUseCaseImpl implements PostUsecase {
 
         List<String> fileUrls;
         fileUrls = fileSaveService.uploadFiles(files);
-        postSaveService.save(mapper.from(request, fileUrls, user));
+        postSaveService.save(mapper.fromPostDto(request, fileUrls, user));
     }
 
     @Override
     public PostDTO.Response findPost(Long postId) {
         Post post = postFindService.find(postId);
-        return mapper.to(post);
+        return mapper.toPostDto(post);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class PostUseCaseImpl implements PostUsecase {
         List<Post> posts = postFindService.find();
 
         return posts.stream()
-                .map(mapper::to)
+                .map(mapper::toPostDto)
                 .toList();
     }
 
