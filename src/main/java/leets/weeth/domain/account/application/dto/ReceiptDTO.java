@@ -12,4 +12,10 @@ public class ReceiptDTO {
         LocalDate date,
         List<String> images
     ) {}
+
+    public record Save(
+            String description,
+            Integer price,
+            LocalDate date
+    ) {}
 }

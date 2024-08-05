@@ -12,4 +12,6 @@ import java.util.List;
 public interface ReceiptMapper {
 
     List<ReceiptDTO.Response> to(List<Receipt> account);
+
+    Receipt from(ReceiptDTO.Save dto, List<String> images);
 }
