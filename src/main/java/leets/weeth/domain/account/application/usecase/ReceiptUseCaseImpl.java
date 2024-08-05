@@ -16,9 +16,9 @@ import java.util.List;
 public class ReceiptUseCaseImpl implements ReceiptUseCase {
 
     private final ReceiptDeleteService receiptDeleteService;
-    private ReceiptSaveService receiptSaveService;
-    private FileSaveService fileSaveService;
-    private ReceiptMapper mapper;
+    private final ReceiptSaveService receiptSaveService;
+    private final FileSaveService fileSaveService;
+    private final ReceiptMapper mapper;
 
     @Override
     public void save(ReceiptDTO.Save dto, List<MultipartFile> files) {
