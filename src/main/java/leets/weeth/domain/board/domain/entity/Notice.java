@@ -22,24 +22,12 @@ public class Notice extends Board {
     @JsonManagedReference
     private List<Comment> comments;
 
-
     public void addComment(Comment newComment) {
         this.comments.add(newComment);
     }
 
     public void update(NoticeDTO.Update dto, List<String> fileUrls){
         this.updateUpperClass(dto, fileUrls);
-    }
-
-    public void recalculateCommentCount() {
-        int count = 0;
-        for (Comment comment : getComments()) {
-            if (!comment.getIsDeleted()) {
-                count++;
-                count += comment.getChildren().stream().filter(child -> !child.getIsDeleted()).count();
-            }
-        }
-        this.commentCount = count;
     }
 
 }

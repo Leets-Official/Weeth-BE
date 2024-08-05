@@ -32,15 +32,4 @@ public class Post extends Board {
         this.updateUpperClass(dto, fileUrls);
     }
 
-    public void recalculateCommentCount() {
-        int count = 0;
-        for (Comment comment : getComments()) {
-            if (!comment.getIsDeleted()) {
-                count++;
-                count += comment.getChildren().stream().filter(child -> !child.getIsDeleted()).count();
-            }
-        }
-        this.commentCount = count;
-    }
-
 }
