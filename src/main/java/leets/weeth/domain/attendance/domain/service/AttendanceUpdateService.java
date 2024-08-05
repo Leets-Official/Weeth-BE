@@ -19,7 +19,10 @@ public class AttendanceUpdateService {
 
     public void close(List<Attendance> attendances) {
         attendances.stream()
-                .filter(Attendance::isAttend)
-                .forEach(Attendance::close);
+                .filter(Attendance::isPending)
+                .forEach(attendance -> {
+                    attendance.close();
+                    attendance.getUser().absent();
+                });
     }
 }
