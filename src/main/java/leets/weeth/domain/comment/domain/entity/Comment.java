@@ -29,7 +29,6 @@ public class Comment extends BaseEntity {
 
     private String content;
 
-    @ColumnDefault("FALSE")
     @Column(nullable = false)
     private Boolean isDeleted;
 
@@ -56,6 +55,13 @@ public class Comment extends BaseEntity {
 
     public void addChild(Comment child) {
         this.children.add(child);
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (isDeleted == null) {
+            isDeleted = false;
+        }
     }
 
     //TODO 문자열 상수처리
