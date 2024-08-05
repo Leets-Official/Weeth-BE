@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ReceiptUseCase {
     void save(ReceiptDTO.Save dto, List<MultipartFile> images);
+
+    void delete(Long id);
 }

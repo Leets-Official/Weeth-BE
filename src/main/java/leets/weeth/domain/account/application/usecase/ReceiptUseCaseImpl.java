@@ -2,6 +2,7 @@ package leets.weeth.domain.account.application.usecase;
 
 import leets.weeth.domain.account.application.dto.ReceiptDTO;
 import leets.weeth.domain.account.application.mapper.ReceiptMapper;
+import leets.weeth.domain.account.domain.service.ReceiptDeleteService;
 import leets.weeth.domain.account.domain.service.ReceiptSaveService;
 import leets.weeth.domain.file.service.FileSaveService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReceiptUseCaseImpl implements ReceiptUseCase {
 
+    private final ReceiptDeleteService receiptDeleteService;
     private ReceiptSaveService receiptSaveService;
     private FileSaveService fileSaveService;
     private ReceiptMapper mapper;
@@ -22,5 +24,10 @@ public class ReceiptUseCaseImpl implements ReceiptUseCase {
     public void save(ReceiptDTO.Save dto, List<MultipartFile> files) {
         List<String> images = fileSaveService.uploadFiles(files);
         receiptSaveService.save(mapper.from(dto, images));
+    }
+
+    @Override
+    public void delete(Long id) {
+        receiptDeleteService.delete(id);
     }
 }

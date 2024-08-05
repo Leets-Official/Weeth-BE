@@ -21,4 +21,10 @@ public class ReceiptAdminController {
         receiptUseCase.save(dto, images);
         return CommonResponse.createSuccess();
     }
+
+    @DeleteMapping("/{receiptId}")
+    public CommonResponse<Void> delete(@PathVariable Long receiptId) {
+        receiptUseCase.delete(receiptId);
+        return CommonResponse.createSuccess();
+    }
 }
