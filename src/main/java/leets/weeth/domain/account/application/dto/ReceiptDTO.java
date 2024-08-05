@@ -16,6 +16,7 @@ public class ReceiptDTO {
     public record Save(
             String description,
             Integer price,
-            LocalDate date
+            LocalDate date,
+            Integer cardinal
     ) {}
 }
