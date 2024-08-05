@@ -33,4 +33,14 @@ public class Account extends BaseEntity {
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Receipt> receipts = new ArrayList<>();
+
+    public void spend(Receipt receipt) {
+        this.receipts.add(receipt);
+        this.currentAmount -= receipt.getPrice();
+    }
+
+    public void cancel(Receipt receipt) {
+        this.receipts.remove(receipt);
+        this.currentAmount += receipt.getPrice();
+    }
 }

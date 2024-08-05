@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/receipts")
+@RequestMapping("/api/v1/admin/receipts")
 public class ReceiptAdminController {
 
     private final ReceiptUseCase receiptUseCase;
