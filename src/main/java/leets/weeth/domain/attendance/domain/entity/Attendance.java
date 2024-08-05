@@ -55,4 +55,8 @@ public class Attendance extends BaseEntity {
     public boolean isAttend() {
         return this.status == Status.ATTEND;
     }
+
+    public boolean isWrong(Integer code) {
+        return this.meeting.getCode().equals(code);
+    }
 }

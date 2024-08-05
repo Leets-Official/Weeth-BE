@@ -9,6 +9,7 @@ import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.schedule.domain.service.MeetingGetService;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
+import leets.weeth.global.common.error.exception.custom.AttendanceCodeMismatchException;
 import leets.weeth.global.common.error.exception.custom.AttendanceNotFoundException;
 import leets.weeth.global.common.error.exception.custom.MeetingNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
     private final MeetingGetService meetingGetService;
 
     @Override
-    public void checkIn(Long userId) {
+    public void checkIn(Long userId, Integer code) throws AttendanceCodeMismatchException {
         User user = userGetService.find(userId);
 
         LocalDateTime now = LocalDateTime.now();
@@ -37,6 +38,9 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
                         && attendance.getMeeting().getEnd().isAfter(now))
                 .findAny()
                 .orElseThrow(AttendanceNotFoundException::new);
+
+        if(todayMeeting.isWrong(code))
+            throw new AttendanceCodeMismatchException();
 
         if (todayMeeting.getStatus() == Status.ATTEND)
             attendanceUpdateService.attend(todayMeeting);
