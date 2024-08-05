@@ -1,6 +1,7 @@
 package leets.weeth.domain.board.presentation;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Null;
 import leets.weeth.domain.board.application.dto.PostDTO;
 import leets.weeth.domain.board.application.usecase.PostUsecase;
 import leets.weeth.global.auth.annotation.CurrentUser;
@@ -28,8 +29,8 @@ public class PostController {
     }
 
     @GetMapping
-    public CommonResponse<List<PostDTO.Response>> findPosts() {
-        return CommonResponse.createSuccess(postUsecase.findPosts());
+    public CommonResponse<List<PostDTO.Response>> findPosts(@RequestParam(required = false) Long postId, @RequestParam Integer count) {
+        return CommonResponse.createSuccess(postUsecase.findPosts(postId, count));
     }
 
     @GetMapping("/{postId}")

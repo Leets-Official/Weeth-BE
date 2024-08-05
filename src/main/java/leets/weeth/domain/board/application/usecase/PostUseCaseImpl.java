@@ -1,7 +1,9 @@
 package leets.weeth.domain.board.application.usecase;
 
+import leets.weeth.domain.board.application.dto.NoticeDTO;
 import leets.weeth.domain.board.application.dto.PostDTO;
 import leets.weeth.domain.board.application.mapper.PostMapper;
+import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.board.domain.entity.Post;
 import leets.weeth.domain.board.domain.service.PostDeleteService;
 import leets.weeth.domain.board.domain.service.PostFindService;
@@ -10,8 +12,11 @@ import leets.weeth.domain.board.domain.service.PostUpdateService;
 import leets.weeth.domain.file.service.FileSaveService;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
+import leets.weeth.global.common.error.exception.custom.PostNotFoundException;
 import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,8 +52,20 @@ public class PostUseCaseImpl implements PostUsecase {
     }
 
     @Override
-    public List<PostDTO.Response> findPosts() {
-        List<Post> posts = postFindService.find();
+    public List<PostDTO.Response> findPosts(Long postId, Integer count) {
+
+        Long finalPostId = postFindService.findFinalPostId();
+
+        if(postId==null){   // 첫번째 요청인 경우
+            postId = finalPostId + 1;
+        }
+        if(postId < 1 || postId > finalPostId + 1){
+            throw new PostNotFoundException(); // postId가 1 이하이거나 최대값보다 클경우
+        }
+
+        Pageable pageable = PageRequest.of(0, count); // 첫 페이지, 페이지당 15개 게시글
+
+        List<Post> posts = postFindService.findRecentPosts(postId, pageable);
 
         return posts.stream()
                 .map(mapper::toPostDto)
