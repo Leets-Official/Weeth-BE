@@ -1,8 +1,6 @@
 package leets.weeth.domain.account.application.mapper;
 
-import leets.weeth.domain.account.application.dto.AccountDTO;
 import leets.weeth.domain.account.application.dto.ReceiptDTO;
-import leets.weeth.domain.account.domain.entity.Account;
 import leets.weeth.domain.account.domain.entity.Receipt;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
