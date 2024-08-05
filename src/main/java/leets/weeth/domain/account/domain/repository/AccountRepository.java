@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByCardinal(Integer cardinal);
+
+    boolean existsByCardinal(Integer cardinal);
 }

@@ -16,4 +16,8 @@ public class AccountGetService {
         return accountRepository.findByCardinal(cardinal)
                 .orElseThrow(AccountNotFoundException::new);
     }
+
+    public boolean validate(Integer cardinal) {
+        return accountRepository.existsByCardinal(cardinal);
+    }
 }

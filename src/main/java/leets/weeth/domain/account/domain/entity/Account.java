@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,5 +32,5 @@ public class Account extends BaseEntity {
     private Integer cardinal;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Receipt> receipts;
+    private List<Receipt> receipts = new ArrayList<>();
 }

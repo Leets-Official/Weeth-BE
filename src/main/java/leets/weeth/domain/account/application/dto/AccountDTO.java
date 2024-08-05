@@ -12,4 +12,10 @@ public class AccountDTO {
             Integer cardinal,
             List<ReceiptDTO.Response> receipts
     ) {}
+
+    public record Save(
+            String description,
+            Integer totalAmount,
+            Integer cardinal
+    ) {}
 }
