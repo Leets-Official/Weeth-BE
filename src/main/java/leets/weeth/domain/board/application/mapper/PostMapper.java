@@ -1,6 +1,5 @@
 package leets.weeth.domain.board.application.mapper;
 
-import leets.weeth.domain.board.application.dto.BoardDTO;
 import leets.weeth.domain.board.application.dto.PostDTO;
 import leets.weeth.domain.board.domain.entity.Post;
 import leets.weeth.domain.comment.application.mapper.CommentMapper;
@@ -17,7 +16,7 @@ public interface PostMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", source = "user")
-    Post from(PostDTO.Save dto, List<String> fileUrls, User user);
+    Post fromPostDto(PostDTO.Save dto, List<String> fileUrls, User user);
 
 //    @Mapping(target = "id", source = "postId")
 //    @Mapping(target = "user", source = "user")
@@ -26,6 +25,6 @@ public interface PostMapper {
     @Mapping(target = "name", source = "user.name")
     @Mapping(target = "comments", source = "comments")
     @Mapping(target = "time", source = "modifiedAt")
-    PostDTO.Response to(Post post);
+    PostDTO.Response toPostDto(Post post);
 
 }

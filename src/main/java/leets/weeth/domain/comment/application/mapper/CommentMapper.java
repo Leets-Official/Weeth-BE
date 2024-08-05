@@ -12,16 +12,16 @@ public interface CommentMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "content", source = "dto.content"),
             @Mapping(target = "user", source = "user"),
-            @Mapping(target = "post", source = "post"),
             @Mapping(target = "parent", source = "parent"),
+            @Mapping(target = "post", source = "post"),
+            @Mapping(target = "content", source = "dto.content"),
             @Mapping(target = "createdAt", ignore = true),
             @Mapping(target = "modifiedAt", ignore = true),
+            @Mapping(target = "isDeleted", ignore = true),
             @Mapping(target = "notice", ignore = true),
-            @Mapping(target = "isDeleted", expression =  "java(false)")
     })
-    Comment from(CommentDTO.Save dto, Post post, User user, Comment parent);
+    Comment fromCommentDto(CommentDTO.Save dto, Post post, User user, Comment parent);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
@@ -31,17 +31,13 @@ public interface CommentMapper {
             @Mapping(target = "parent", source = "parent"),
             @Mapping(target = "createdAt", ignore = true),
             @Mapping(target = "modifiedAt", ignore = true),
+            @Mapping(target = "isDeleted", ignore = true),
             @Mapping(target = "post", ignore = true),
-            @Mapping(target = "isDeleted", expression =  "java(false)")
     })
-    Comment from(CommentDTO.Save dto, Notice notice, User user, Comment parent);
+    Comment fromCommentDto(CommentDTO.Save dto, Notice notice, User user, Comment parent);
 
     @Mapping(target = "name", source = "user.name")
     @Mapping(target = "time", source = "modifiedAt")
-    CommentDTO.Response to(Comment comment);
-
-//    @Mapping(target = "id", source = "commentId")
-//    @Mapping(target = "user", source = "user")
-//    Comment update(Long commentId, CommentDTO.Update dto, User user);
+    CommentDTO.Response toCommentDto(Comment comment);
 
 }

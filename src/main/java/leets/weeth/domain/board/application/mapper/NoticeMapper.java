@@ -1,6 +1,5 @@
 package leets.weeth.domain.board.application.mapper;
 
-import leets.weeth.domain.board.application.dto.BoardDTO;
 import leets.weeth.domain.board.application.dto.NoticeDTO;
 import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.comment.application.mapper.CommentMapper;
@@ -17,7 +16,7 @@ public interface NoticeMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", source = "user")
-    Notice from(NoticeDTO.Save dto, List<String> fileUrls, User user);
+    Notice fromNoticeDto(NoticeDTO.Save dto, List<String> fileUrls, User user);
 
 //    @Mapping(target = "id", source = "noticeId")
 //    @Mapping(target = "user", source = "user")
@@ -26,6 +25,6 @@ public interface NoticeMapper {
     @Mapping(target = "name", source = "user.name")
     @Mapping(target = "comments", source = "comments")
     @Mapping(target = "time", source = "modifiedAt")
-    NoticeDTO.Response to(Notice notice);
+    NoticeDTO.Response toNoticeDto(Notice notice);
 
 }
