@@ -10,8 +10,12 @@ import leets.weeth.domain.board.domain.service.NoticeUpdateService;
 import leets.weeth.domain.file.service.FileSaveService;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
+import leets.weeth.global.common.error.exception.custom.InvalidAccessException;
+import leets.weeth.global.common.error.exception.custom.PostNotFoundException;
 import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,8 +51,20 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     }
 
     @Override
-    public List<NoticeDTO.Response> findNotices() {
-        List<Notice> notices = noticeFindService.find();
+    public List<NoticeDTO.Response> findNotices(Long noticeId, Integer count) {
+
+        Long finalPostId = noticeFindService.findFinalPostId();
+
+        if(noticeId==null){   // 첫번째 요청인 경우
+            noticeId = finalPostId + 1;
+        }
+        if(noticeId < 1 || noticeId > finalPostId + 1){
+            throw new PostNotFoundException(); // postId가 1 이하이거나 최대값보다 클경우
+        }
+
+        Pageable pageable = PageRequest.of(0, count); // 첫 페이지, 페이지당 15개 게시글
+
+        List<Notice> notices = noticeFindService.findRecentNotices(noticeId, pageable);
 
         return notices.stream()
                 .map(mapper::toNoticeDto)

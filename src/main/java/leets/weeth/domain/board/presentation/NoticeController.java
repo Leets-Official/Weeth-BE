@@ -5,10 +5,7 @@ import leets.weeth.domain.board.application.dto.NoticeDTO;
 import leets.weeth.domain.board.application.usecase.NoticeUsecase;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,8 +17,8 @@ public class NoticeController {
     private final NoticeUsecase noticeUsecase;
 
     @GetMapping
-    public CommonResponse<List<NoticeDTO.Response>> findNotices() {
-        return CommonResponse.createSuccess(noticeUsecase.findNotices());
+    public CommonResponse<List<NoticeDTO.Response>> findNotices(@RequestParam(required = false) Long noticeId, @RequestParam Integer count) {
+        return CommonResponse.createSuccess(noticeUsecase.findNotices(noticeId, count));
     }
 
     @GetMapping("/{noticeId}")
