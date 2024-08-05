@@ -42,7 +42,7 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
         if(todayMeeting.isWrong(code))
             throw new AttendanceCodeMismatchException();
 
-        if (todayMeeting.getStatus() == Status.ATTEND)
+        if (todayMeeting.getStatus() != Status.ATTEND)
             attendanceUpdateService.attend(todayMeeting);
     }
 
@@ -56,7 +56,7 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
                 .findAny()
                 .orElse(null);
 
-        return mapper.toMainDto(todayMeeting);
+        return mapper.toMainDto(user, todayMeeting);
     }
 
     @Override
