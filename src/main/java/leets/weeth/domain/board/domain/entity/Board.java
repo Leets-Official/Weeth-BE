@@ -31,7 +31,7 @@ public class Board extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    Integer commentCount;
+    private Integer commentCount;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -39,6 +39,13 @@ public class Board extends BaseEntity {
 
     @Convert(converter = FileListConverter.class)
     private List<String> fileUrls = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        if (commentCount == null) {
+            commentCount = 0;
+        }
+    }
 
     public void incrementCommentCount(){
         commentCount++;
