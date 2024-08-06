@@ -1,7 +1,6 @@
 package leets.weeth.domain.board.presentation;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Null;
 import leets.weeth.domain.board.application.dto.PostDTO;
 import leets.weeth.domain.board.application.usecase.PostUsecase;
 import leets.weeth.global.auth.annotation.CurrentUser;
@@ -12,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
+import static leets.weeth.domain.board.domain.entity.enums.ResponseMessage.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class PostController {
                                        @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                        @CurrentUser Long userId) {
         postUsecase.save(dto, files, userId);
-        return CommonResponse.createSuccess("게시글 생성 성공");
+        return CommonResponse.createSuccess(POST_CREATED_SUCCESS.getMessage());
     }
 
     @GetMapping
@@ -44,13 +45,13 @@ public class PostController {
                                          @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                          @CurrentUser Long userId) throws UserNotMatchException {
         postUsecase.update(postId, dto, files, userId);
-        return CommonResponse.createSuccess("게시글 수정 성공");
+        return CommonResponse.createSuccess(POST_UPDATED_SUCCESS.getMessage());
     }
 
     @DeleteMapping("/{postId}")
     public CommonResponse<String> delete(@PathVariable Long postId, @CurrentUser Long userId) throws UserNotMatchException {
         postUsecase.delete(postId, userId);
-        return CommonResponse.createSuccess("게시글 삭제 성공");
+        return CommonResponse.createSuccess(POST_DELETED_SUCCESS.getMessage());
     }
 
 }
