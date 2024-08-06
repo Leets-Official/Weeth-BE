@@ -19,7 +19,7 @@ public class Event extends Schedule {
 
     private String requiredItem;
 
-    private Integer memberCount;
+    private String memberCount;
 
     public void update(Update dto, User user) {
         this.updateUpperClass(dto, user);
