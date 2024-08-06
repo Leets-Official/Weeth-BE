@@ -24,6 +24,7 @@ public enum ExceptionType {
     NOTICE_NOT_FOUND(HttpStatus.BAD_REQUEST, NoticeNotFoundException.class),
     EVENT_NOT_FOUND(HttpStatus.BAD_REQUEST, EventNotFoundException.class),
     POST_NOT_FOUND(HttpStatus.BAD_REQUEST, PostNotFoundException.class),
+    PENALTY_NOT_FOUND(HttpStatus.BAD_REQUEST, PenaltyNotFoundException.class),
     COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, CommentNotFoundException.class),
     INVALID_INPUT_DATE(HttpStatus.BAD_REQUEST, InvalidInputDateException.class),
     NOTICE_TYPE_NOT_MATCH(HttpStatus.BAD_REQUEST, NoticeTypeNotMatchException.class),

@@ -30,7 +30,7 @@ public class penaltyAdminController {
     }
 
     @DeleteMapping
-    public CommonResponse<String> delete(Long penaltyId){
+    public CommonResponse<String> delete(@RequestParam Long penaltyId){
         penaltyUsecase.delete(penaltyId);
         return CommonResponse.createSuccess(PENALTY_DELETE_SUCCESS.getMessage());
     }
