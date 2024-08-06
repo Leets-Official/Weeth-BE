@@ -34,6 +34,7 @@ public class PenaltyUsecaseImpl implements PenaltyUsecase{
     public void save(PenaltyDTO.Save dto) {
         User user = userGetService.find(dto.userId());
         Penalty penalty = mapper.fromPenaltyDto(dto, user);
+
         penaltySaveService.save(penalty);
 
         user.addPenalty(penalty);
@@ -48,16 +49,7 @@ public class PenaltyUsecaseImpl implements PenaltyUsecase{
                 .collect(Collectors.groupingBy(penalty -> penalty.getUser().getId()));
 
         return penaltiesByUser.entrySet().stream()
-                .map(entry -> {
-                    Long userId = entry.getKey();
-                    User user = userGetService.find(userId);
-
-                    List<PenaltyDTO.Penalties> penaltyDTOs = entry.getValue().stream()
-                            .map(mapper::toPenalties)
-                            .toList();
-
-                    return mapper.toPenaltyDto(user, penaltyDTOs);
-                })
+                .map(entry -> toPenaltyDto(entry.getKey(), entry.getValue()))
                 .sorted(Comparator.comparing(PenaltyDTO.Response::userId))
                 .toList();
     }
@@ -65,20 +57,26 @@ public class PenaltyUsecaseImpl implements PenaltyUsecase{
     @Override
     public PenaltyDTO.Response find(Long userId) {
         User user = userGetService.find(userId);
+        List<Penalty> penalties = penaltyFindService.findAll();
 
-        List<PenaltyDTO.Penalties> penalties = penaltyFindService.findAll(userId)
-                .stream()
-                .map(mapper::toPenalties)
-                .toList();
-
-        return mapper.toPenaltyDto(user, penalties);
+        return toPenaltyDto(userId, penalties);
     }
 
     @Override
     public void delete(Long penaltyId) {
         Penalty penalty = penaltyFindService.find(penaltyId);
         penalty.getUser().decrementPenaltyCount();
+
         penaltyDeleteService.delete(penaltyId);
+    }
+
+    private PenaltyDTO.Response toPenaltyDto(Long userId, List<Penalty> penalties) {
+        User user = userGetService.find(userId);
+        List<PenaltyDTO.Penalties> penaltyDTOs = penalties.stream()
+                .map(mapper::toPenalties)
+                .toList();
+
+        return mapper.toPenaltyDto(user, penaltyDTOs);
     }
 
 }
