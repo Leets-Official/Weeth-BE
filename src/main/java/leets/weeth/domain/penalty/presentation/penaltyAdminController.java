@@ -2,11 +2,14 @@ package leets.weeth.domain.penalty.presentation;
 
 import leets.weeth.domain.penalty.application.dto.PenaltyDTO;
 import leets.weeth.domain.penalty.application.usecase.PenaltyUsecase;
+import leets.weeth.domain.penalty.domain.entity.enums.ResponseMessage;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static leets.weeth.domain.penalty.domain.entity.enums.ResponseMessage.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,7 +21,7 @@ public class penaltyAdminController {
     @PostMapping
     public CommonResponse<String> assignPenalty(@RequestBody PenaltyDTO.Save dto){
         penaltyUsecase.save(dto);
-        return CommonResponse.createSuccess("패널티 부여 성공");
+        return CommonResponse.createSuccess(PENALTY_ASSIGN_SUCCESS.getMessage());
     }
 
     @GetMapping
@@ -29,7 +32,7 @@ public class penaltyAdminController {
     @DeleteMapping
     public CommonResponse<String> delete(Long penaltyId){
         penaltyUsecase.delete(penaltyId);
-        return CommonResponse.createSuccess("패널티 삭제 성공");
+        return CommonResponse.createSuccess(PENALTY_DELETE_SUCCESS.getMessage());
     }
 
 }
