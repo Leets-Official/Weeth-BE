@@ -1,6 +1,9 @@
 package leets.weeth.domain.board.domain.entity;
 
 import jakarta.persistence.*;
+import leets.weeth.domain.board.application.dto.NoticeDTO;
+import leets.weeth.domain.board.application.dto.PostDTO;
+import leets.weeth.domain.file.converter.FileListConverter;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.global.common.entity.BaseEntity;
 import lombok.AccessLevel;
@@ -8,6 +11,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @MappedSuperclass
@@ -18,7 +24,6 @@ public class Board extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
     public Long id;
 
     private String title;
@@ -26,11 +31,42 @@ public class Board extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    // List<Comment>
-    // List<String> urls
+    private Integer commentCount;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Convert(converter = FileListConverter.class)
+    private List<String> fileUrls = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        if (commentCount == null) {
+            commentCount = 0;
+        }
+    }
+
+    public void incrementCommentCount(){
+        commentCount++;
+    }
+
+    public void decrementCommentCount(){
+        if(this.commentCount > 0){
+            commentCount--;
+        }
+    }
+
+    public void updateUpperClass(NoticeDTO.Update dto, List<String> fileUrls){
+        this.title = dto.title();
+        this.content = dto.content();
+        this.fileUrls = fileUrls;
+    }
+
+    public void updateUpperClass(PostDTO.Update dto, List<String> fileUrls){
+        this.title = dto.title();
+        this.content = dto.content();
+        this.fileUrls = fileUrls;
+    }
 
 }

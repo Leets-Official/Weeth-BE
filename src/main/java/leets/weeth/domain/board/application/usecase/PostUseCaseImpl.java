@@ -1,5 +1,6 @@
 package leets.weeth.domain.board.application.usecase;
 
+import leets.weeth.domain.board.application.dto.NoticeDTO;
 import leets.weeth.domain.board.application.dto.PostDTO;
 import leets.weeth.domain.board.application.mapper.PostMapper;
 import leets.weeth.domain.board.domain.entity.Notice;
@@ -8,34 +9,82 @@ import leets.weeth.domain.board.domain.service.PostDeleteService;
 import leets.weeth.domain.board.domain.service.PostFindService;
 import leets.weeth.domain.board.domain.service.PostSaveService;
 import leets.weeth.domain.board.domain.service.PostUpdateService;
+import leets.weeth.domain.file.service.FileSaveService;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
-import leets.weeth.global.common.error.exception.custom.UserNotFoundException;
+import leets.weeth.global.common.error.exception.custom.PostNotFoundException;
 import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PostUseCaseImpl implements PostUsecase{
+public class PostUseCaseImpl implements PostUsecase {
 
     private final PostSaveService postSaveService;
     private final PostFindService postFindService;
     private final PostUpdateService postUpdateService;
     private final PostDeleteService postDeleteService;
+
     private final UserGetService userGetService;
+    private final FileSaveService fileSaveService;
+
     private final PostMapper mapper;
 
     @Override
-    public void save(PostDTO.Save request, Long userId) {
+    public void save(PostDTO.Save request, List<MultipartFile> files, Long userId) {
         User user = userGetService.find(userId);
-        postSaveService.save(mapper.from(request, user));
+
+        List<String> fileUrls;
+        fileUrls = fileSaveService.uploadFiles(files);
+        postSaveService.save(mapper.fromPostDto(request, fileUrls, user));
     }
 
     @Override
-    public void update(Long postId, PostDTO.Update dto, Long userId) throws UserNotMatchException {
-        User user = validateOwner(postId, userId);
-        postUpdateService.update(postId, dto, user);
+    public PostDTO.Response findPost(Long postId) {
+        Post post = postFindService.find(postId);
+        return mapper.toPostDto(post);
+    }
+
+    @Override
+    public List<PostDTO.Response> findPosts(Long postId, Integer count) {
+
+        Long finalPostId = postFindService.findFinalPostId();
+
+        if(postId==null){   // 첫번째 요청인 경우
+            postId = finalPostId + 1;
+        }
+        if(postId < 1 || postId > finalPostId + 1){
+            throw new PostNotFoundException(); // postId가 1 이하이거나 최대값보다 클경우
+        }
+
+        Pageable pageable = PageRequest.of(0, count); // 첫 페이지, 페이지당 15개 게시글
+
+        List<Post> posts = postFindService.findRecentPosts(postId, pageable);
+
+        return posts.stream()
+                .map(mapper::toPostDto)
+                .toList();
+    }
+
+    /*
+    게시글 수정 시 파일이 넘어오지 않으면, 파일이 제거됨.
+    수정할 때도 파일을 같이 넘기면, 또 업로드가 발생함 -> 근데 동일한 파일은 재 업로드가 아닌거 같기도 함.
+    -> 테스트 해보기
+     */
+    @Override
+    public void update(Long postId, PostDTO.Update dto, List<MultipartFile> files, Long userId) throws UserNotMatchException {
+        Post post = validateOwner(postId, userId);
+
+        List<String> fileUrls;
+        fileUrls = fileSaveService.uploadFiles(files);
+
+        postUpdateService.update(post, dto, fileUrls);
     }
 
     @Override
@@ -44,14 +93,13 @@ public class PostUseCaseImpl implements PostUsecase{
         postDeleteService.delete(postId);
     }
 
-    private User validateOwner(Long postId, Long userId) throws UserNotMatchException {
+    private Post validateOwner(Long postId, Long userId) throws UserNotMatchException {
         Post post = postFindService.find(postId);
-        User user = userGetService.find(userId);
 
-        if (!post.getUser().equals(user)) {
+        if (!post.getUser().getId().equals(userId)) {
             throw new UserNotMatchException();
         }
-        return user;
+        return post;
     }
 
 }

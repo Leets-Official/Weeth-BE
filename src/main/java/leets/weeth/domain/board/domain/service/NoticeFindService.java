@@ -4,6 +4,7 @@ import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.board.domain.repository.NoticeRepository;
 import leets.weeth.global.common.error.exception.custom.NoticeNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,14 @@ public class NoticeFindService {
 
     public List<Notice> find() {
         return noticeRepository.findAll();
+    }
+
+    public Long findFinalPostId(){
+        return noticeRepository.findLastId();
+    }
+
+    public List<Notice> findRecentNotices(Long postId, Pageable pageable) {
+        return noticeRepository.findRecentNotices(postId, pageable);
     }
 
 }
