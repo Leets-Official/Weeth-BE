@@ -11,7 +11,7 @@ public class ReceiptSaveService {
 
     private final ReceiptRepository receiptRepository;
 
-    public void save(Receipt receipt) {
-        receiptRepository.save(receipt);
+    public Receipt save(Receipt receipt) {
+        return receiptRepository.save(receipt);
     }
 }

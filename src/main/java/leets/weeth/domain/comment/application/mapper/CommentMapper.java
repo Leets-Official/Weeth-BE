@@ -12,27 +12,28 @@ public interface CommentMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "user", source = "user"),
-            @Mapping(target = "parent", source = "parent"),
-            @Mapping(target = "post", source = "post"),
-            @Mapping(target = "content", source = "dto.content"),
             @Mapping(target = "createdAt", ignore = true),
             @Mapping(target = "modifiedAt", ignore = true),
             @Mapping(target = "isDeleted", ignore = true),
             @Mapping(target = "notice", ignore = true),
+            @Mapping(target = "user", source = "user"),
+            @Mapping(target = "parent", source = "parent"),
+            @Mapping(target = "content", source = "dto.content"),
+            @Mapping(target = "post", source = "post"),
     })
     Comment fromCommentDto(CommentDTO.Save dto, Post post, User user, Comment parent);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "content", source = "dto.content"),
-            @Mapping(target = "user", source = "user"),
-            @Mapping(target = "notice", source = "notice"),
-            @Mapping(target = "parent", source = "parent"),
             @Mapping(target = "createdAt", ignore = true),
             @Mapping(target = "modifiedAt", ignore = true),
             @Mapping(target = "isDeleted", ignore = true),
             @Mapping(target = "post", ignore = true),
+            @Mapping(target = "user", source = "user"),
+            @Mapping(target = "parent", source = "parent"),
+            @Mapping(target = "content", source = "dto.content"),
+            @Mapping(target = "notice", source = "notice"),
+
     })
     Comment fromCommentDto(CommentDTO.Save dto, Notice notice, User user, Comment parent);
 

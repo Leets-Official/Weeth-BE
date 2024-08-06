@@ -154,6 +154,15 @@ public class User extends BaseEntity {
 
     public void attend() {
         attendanceCount++;
+        calculateRate();
+    }
+
+    public void absent() {
+        absenceCount++;
+        calculateRate();
+    }
+
+    private void calculateRate() {
         attendanceRate = (attendanceCount * 100) / (attendanceCount + absenceCount);
     }
 
