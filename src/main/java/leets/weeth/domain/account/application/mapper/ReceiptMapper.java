@@ -17,5 +17,6 @@ public interface ReceiptMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "description", source = "dto.description")
+    @Mapping(target = "account", source = "account")
     Receipt from(ReceiptDTO.Save dto, List<String> images, Account account);
 }
