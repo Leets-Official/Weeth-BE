@@ -2,6 +2,7 @@ package leets.weeth.domain.user.domain.entity;
 
 import jakarta.persistence.*;
 import leets.weeth.domain.attendance.domain.entity.Attendance;
+import leets.weeth.domain.penalty.domain.entity.Penalty;
 import leets.weeth.domain.user.application.converter.CardinalListConverter;
 import leets.weeth.domain.user.application.dto.UserDTO;
 import leets.weeth.domain.user.domain.entity.enums.Department;
@@ -66,8 +67,13 @@ public class User extends BaseEntity {
 
     private Integer attendanceRate;
 
+    private Integer penaltyCount;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Attendance> attendances = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Penalty> penalties = new ArrayList<>();
 
     @PrePersist
     public void init() {
@@ -76,6 +82,7 @@ public class User extends BaseEntity {
         attendanceCount = 0;
         absenceCount = 0;
         attendanceRate = 0;
+        penaltyCount = 0;
     }
 
     public void updateRefreshToken(String updatedToken) {
@@ -127,6 +134,10 @@ public class User extends BaseEntity {
         this.attendances.add(attendance);
     }
 
+    public void addPenalty(Penalty penalty){
+        this.penalties.add(penalty);
+    }
+
     public void initAttendance() {
         this.attendances.clear();
         this.attendanceCount = 0;
@@ -154,4 +165,15 @@ public class User extends BaseEntity {
     private void calculateRate() {
         attendanceRate = (attendanceCount * 100) / (attendanceCount + absenceCount);
     }
+
+    public void incrementPenaltyCount() {
+        penaltyCount++;
+    }
+
+    public void decrementPenaltyCount() {
+        if (penaltyCount > 0) {
+            penaltyCount--;
+        }
+    }
+
 }
