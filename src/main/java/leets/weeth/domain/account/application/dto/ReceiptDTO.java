@@ -10,14 +10,14 @@ public class ReceiptDTO {
     public record Response(
         Long id,
         String description,
-        Integer price,
+        Integer amount,
         LocalDate date,
         List<String> images
     ) {}
 
     public record Save(
             String description,
-            @NotNull Integer price,
+            @NotNull Integer amount,
             @NotNull LocalDate date,
             @NotNull Integer cardinal
     ) {}

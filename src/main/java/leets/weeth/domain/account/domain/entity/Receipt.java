@@ -2,6 +2,7 @@ package leets.weeth.domain.account.domain.entity;
 
 import jakarta.persistence.*;
 import leets.weeth.domain.file.converter.FileListConverter;
+import leets.weeth.global.common.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,15 +17,16 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @SuperBuilder
-public class Receipt {
+public class Receipt extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "receipt_id")
     private Long id;
 
     private String description;
 
-    private Integer price;
+    private Integer amount;
 
     private LocalDate date;
 
