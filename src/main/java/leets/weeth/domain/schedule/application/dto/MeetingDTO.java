@@ -18,6 +18,8 @@ public class MeetingDTO {
             Integer weekNumber,
             Integer cardinal,
             Integer code,
+            String name,
+            Integer memberCount,
             LocalDateTime createdAt,
             LocalDateTime modifiedAt
     ) {}

@@ -14,6 +14,7 @@ public class EventDTO {
             String content,
             String location,
             String requiredItem,
+            String name,
             LocalDateTime start,
             LocalDateTime end,
             LocalDateTime createdAt,
