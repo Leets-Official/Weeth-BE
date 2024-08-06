@@ -1,5 +1,7 @@
 package leets.weeth.domain.account.application.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,8 +17,8 @@ public class ReceiptDTO {
 
     public record Save(
             String description,
-            Integer price,
-            LocalDate date,
-            Integer cardinal
+            @NotNull Integer price,
+            @NotNull LocalDate date,
+            @NotNull Integer cardinal
     ) {}
 }
