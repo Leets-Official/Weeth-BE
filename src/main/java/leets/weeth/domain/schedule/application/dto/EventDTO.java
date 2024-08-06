@@ -14,6 +14,8 @@ public class EventDTO {
             String content,
             String location,
             String requiredItem,
+            String name,
+            Integer memberCount,
             LocalDateTime start,
             LocalDateTime end,
             LocalDateTime createdAt,
@@ -25,6 +27,7 @@ public class EventDTO {
             @NotBlank String content,
             @NotBlank String location,
             @NotBlank String requiredItem,
+            @NotNull Integer memberCount,
             @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end
     ) {}
@@ -34,6 +37,7 @@ public class EventDTO {
             @NotBlank String content,
             @NotBlank String location,
             @NotBlank String requiredItem,
+            @NotNull Integer memberCount,
             @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end
     ) {}

@@ -1,5 +1,7 @@
 package leets.weeth.domain.account.application.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 
 public class AccountDTO {
@@ -15,7 +17,7 @@ public class AccountDTO {
 
     public record Save(
             String description,
-            Integer totalAmount,
-            Integer cardinal
+            @NotNull Integer totalAmount,
+            @NotNull Integer cardinal
     ) {}
 }

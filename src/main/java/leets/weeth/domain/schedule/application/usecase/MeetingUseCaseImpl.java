@@ -11,6 +11,8 @@ import leets.weeth.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static leets.weeth.domain.schedule.application.dto.MeetingDTO.*;
 
 @Service
@@ -48,4 +50,10 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
         meetingDeleteService.delete(meeting);
     }
 
+    @Override
+    public List<Response> findAll(Integer cardinal) {
+        return meetingGetService.find(cardinal).stream()
+                .map(mapper::to)
+                .toList();
+    }
 }

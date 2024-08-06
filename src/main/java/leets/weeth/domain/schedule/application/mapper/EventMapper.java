@@ -9,6 +9,7 @@ import static leets.weeth.domain.schedule.application.dto.EventDTO.*;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface EventMapper {
 
+    @Mapping(target = "name", source = "event.user.name")
     Response to(Event event);
 
     @Mappings({

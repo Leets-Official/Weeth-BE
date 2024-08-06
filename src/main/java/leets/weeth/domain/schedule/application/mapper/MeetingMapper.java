@@ -11,6 +11,7 @@ import static leets.weeth.domain.schedule.application.dto.MeetingDTO.*;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MeetingMapper {
 
+    @Mapping(target = "memberCount", expression = "java( getMemberCount(meeting) )")
     Response to(Meeting meeting);
 
     @Mappings({
@@ -25,5 +26,9 @@ public interface MeetingMapper {
 
     default Integer generateCode() {
         return new Random().nextInt(9000) + 1000;
+    }
+
+    default Integer getMemberCount(Meeting meeting) {
+        return meeting.getAttendances().size();
     }
 }
