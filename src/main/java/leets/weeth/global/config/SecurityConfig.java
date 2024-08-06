@@ -66,12 +66,11 @@ public class SecurityConfig {
                                 authorize
                                         .requestMatchers("/api/v1/users/apply", "/api/v1/users/email").permitAll()
                                         .requestMatchers("/health-check").permitAll()
-                                        .requestMatchers("/adminpage/login","/adminpage/account", "/adminpage/attendance", "/adminpage/member","/adminpage/penalty",
+                                        .requestMatchers("/api/v1/adminpage/login","/api/v1/adminpage/account", "/api/v1/adminpage/attendance", "/api/v1/adminpage/member","/api/v1/adminpage/penalty",
                                                 "/css/**", "/js/**", "/img/**", "/scss/**", "/vendor/**").permitAll()
                                         // 스웨거 경로
                                         .requestMatchers("/v3/api-docs", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/swagger/**").permitAll()
-                                        .requestMatchers("/api/vi/admin/**").hasRole("ADMIN")
-                                        .anyRequest().permitAll()
+                                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 )
 
                 .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)
