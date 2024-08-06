@@ -36,11 +36,11 @@ public class Account extends BaseEntity {
 
     public void spend(Receipt receipt) {
         this.receipts.add(receipt);
-        this.currentAmount -= receipt.getPrice();
+        this.currentAmount -= receipt.getAmount();
     }
 
     public void cancel(Receipt receipt) {
         this.receipts.remove(receipt);
-        this.currentAmount += receipt.getPrice();
+        this.currentAmount += receipt.getAmount();
     }
 }
