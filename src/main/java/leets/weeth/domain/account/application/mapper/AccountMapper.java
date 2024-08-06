@@ -10,6 +10,7 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AccountMapper {
 
+    @Mapping(target = "accountId", source = "account.id")
     @Mapping(target = "receipts", source = "receipts")
     AccountDTO.Response to(Account account, List<ReceiptDTO.Response> receipts);
 
