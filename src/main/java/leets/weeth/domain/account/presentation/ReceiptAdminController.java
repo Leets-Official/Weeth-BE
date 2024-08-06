@@ -1,5 +1,6 @@
 package leets.weeth.domain.account.presentation;
 
+import jakarta.validation.Valid;
 import leets.weeth.domain.account.application.dto.ReceiptDTO;
 import leets.weeth.domain.account.application.usecase.ReceiptUseCase;
 import leets.weeth.global.common.response.CommonResponse;
@@ -17,7 +18,7 @@ public class ReceiptAdminController {
     private final ReceiptUseCase receiptUseCase;
 
     @PostMapping
-    public CommonResponse<Void> save(@RequestPart ReceiptDTO.Save dto, @RequestPart(required = false) List<MultipartFile> images) {
+    public CommonResponse<Void> save(@RequestPart @Valid ReceiptDTO.Save dto, @RequestPart(required = false) List<MultipartFile> images) {
         receiptUseCase.save(dto, images);
         return CommonResponse.createSuccess();
     }
