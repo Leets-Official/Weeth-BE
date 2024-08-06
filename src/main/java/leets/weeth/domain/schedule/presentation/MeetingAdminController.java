@@ -1,11 +1,14 @@
 package leets.weeth.domain.schedule.presentation;
 
 import jakarta.validation.Valid;
+import leets.weeth.domain.schedule.application.dto.MeetingDTO;
 import leets.weeth.domain.schedule.application.usecase.MeetingUseCase;
 import leets.weeth.global.auth.annotation.CurrentUser;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static leets.weeth.domain.schedule.application.dto.MeetingDTO.Save;
 import static leets.weeth.domain.schedule.application.dto.MeetingDTO.Update;
@@ -21,6 +24,12 @@ public class MeetingAdminController {
     public CommonResponse<Void> save(@RequestBody @Valid Save dto, @CurrentUser Long userId) {
         meetingUseCase.save(dto, userId);
         return CommonResponse.createSuccess();
+    }
+
+    @PostMapping("/{cardinal}")
+    public CommonResponse<List<MeetingDTO.Response>> findAll(@PathVariable Integer cardinal) {
+        return CommonResponse.createSuccess(meetingUseCase.findAll(cardinal));
+
     }
 
     @PatchMapping("/{meetingId}")

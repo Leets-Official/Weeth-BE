@@ -1,5 +1,7 @@
 package leets.weeth.domain.schedule.application.usecase;
 
+import java.util.List;
+
 import static leets.weeth.domain.schedule.application.dto.MeetingDTO.*;
 
 public interface MeetingUseCase {
@@ -11,4 +13,6 @@ public interface MeetingUseCase {
     void update(Update dto, Long userId, Long meetingId);
 
     void delete(Long meetingId);
+
+    List<Response> findAll(Integer cardinal);
 }
