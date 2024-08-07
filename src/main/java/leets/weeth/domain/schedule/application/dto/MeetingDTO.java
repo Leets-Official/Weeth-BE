@@ -2,11 +2,9 @@ package leets.weeth.domain.schedule.application.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import leets.weeth.domain.schedule.application.annotation.ScheduleTimeCheck;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-
-import static leets.weeth.domain.schedule.application.dto.ScheduleDTO.Time;
 
 public class MeetingDTO {
 
@@ -30,7 +28,8 @@ public class MeetingDTO {
             @NotBlank String title,
             @NotBlank String content,
             @NotBlank String location,
-            @ScheduleTimeCheck Time time,
+            @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
             @NotNull Integer weekNumber,
             @NotNull Integer cardinal
     ) {}
@@ -39,7 +38,8 @@ public class MeetingDTO {
             @NotBlank String title,
             @NotBlank String content,
             @NotBlank String location,
-            @ScheduleTimeCheck Time time,
+            @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
             @NotNull Integer weekNumber,
             @NotNull Integer cardinal
     ) {}

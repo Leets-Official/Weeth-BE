@@ -44,8 +44,8 @@ public class Schedule extends BaseEntity {
         this.title = dto.title();
         this.content = dto.content();
         this.location = dto.location();
-        this.start = dto.time().start();
-        this.end = dto.time().end();
+        this.start = dto.start();
+        this.end = dto.end();
         this.user = user;
     }
 
@@ -53,8 +53,8 @@ public class Schedule extends BaseEntity {
         this.title = dto.title();
         this.content = dto.content();
         this.location = dto.location();
-        this.start = dto.time().start();
-        this.end = dto.time().end();
+        this.start = dto.start();
+        this.end = dto.end();
         this.user = user;
     }
 }
