@@ -24,7 +24,7 @@ public class NoticeFindService {
         return noticeRepository.findAll();
     }
 
-    public Long findFinalPostId(){
+    public Long findFinalNoticeId(){
         return noticeRepository.findLastId();
     }
 

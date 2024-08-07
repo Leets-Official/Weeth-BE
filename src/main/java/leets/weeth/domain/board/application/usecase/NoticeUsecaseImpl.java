@@ -53,12 +53,12 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     @Override
     public List<NoticeDTO.Response> findNotices(Long noticeId, Integer count) {
 
-        Long finalPostId = noticeFindService.findFinalPostId();
+        Long finalNoticeId = noticeFindService.findFinalNoticeId();
 
         if(noticeId==null){   // 첫번째 요청인 경우
-            noticeId = finalPostId + 1;
+            noticeId = finalNoticeId + 1;
         }
-        if(noticeId < 1 || noticeId > finalPostId + 1){
+        if(noticeId < 1 || noticeId > finalNoticeId + 1){
             throw new PostNotFoundException(); // postId가 1 이하이거나 최대값보다 클경우
         }
 
