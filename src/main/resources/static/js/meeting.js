@@ -65,6 +65,7 @@ function displayMeetings(meetingArray) {
                         <p><strong>참여인원:</strong> ${meeting.memberCount}</p>
                         <p><strong>기수:</strong> ${meeting.cardinal}</p>
                         <p><strong>출석 코드:</strong> ${meeting.code}</p>
+                        <button id="closeAttendance" class="btn btn-danger text-sm-center" onclick="closeAttendance('${meeting.start}', ${meeting.cardinal})">출석마감</button>
                     </div>
                 </div>
             `;
@@ -123,6 +124,34 @@ function saveMeeting() {
         .catch(error => {
             alert(`저장 실패: ${error.message}`);
         });
+}
+
+function closeAttendance(date, cardinal){
+
+    if (!confirm('출석을 마감 하시겠습니까? 출석 마감 후에는 더 이상 출석체크를 할 수 없습니다.')) {
+        return;
+    }
+    const now = date.split('T')[0];
+
+    apiRequest(`${apiEndpoint}/admin/attendances?now=${now}&cardinal=${cardinal}`,{
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(response => response.json())
+        .then(data => {
+            if(data.code === 200) {
+                alert(`출석 마감 성공: ${data.message}`);
+                loadAttendanceEvents();
+            } else {
+                throw new Error(data.message);
+            }
+        })
+        .catch(error => {
+            alert(`출석 마감 실패: ${error.message}`);
+        });
+
 }
 
 function formatTime(timeString) {
