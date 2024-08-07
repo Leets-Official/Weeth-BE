@@ -26,7 +26,8 @@ public class PostFindService {
     }
 
     public Long findFinalPostId() {
-        return postRepository.findLastId();
+        return postRepository.findLastId()
+                .orElseThrow(PostNotFoundException::new);
     }
 
     public List<Post> findRecentPosts(Long postId, Pageable pageable) {

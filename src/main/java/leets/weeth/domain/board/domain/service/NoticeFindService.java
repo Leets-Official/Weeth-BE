@@ -25,7 +25,8 @@ public class NoticeFindService {
     }
 
     public Long findFinalNoticeId(){
-        return noticeRepository.findLastId();
+        return noticeRepository.findLastId()
+                .orElseThrow(NoticeNotFoundException::new);
     }
 
     public List<Notice> findRecentNotices(Long postId, Pageable pageable) {

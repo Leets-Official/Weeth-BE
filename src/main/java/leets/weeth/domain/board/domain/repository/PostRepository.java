@@ -8,11 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT MAX(p.id) FROM Post p")
-    Long findLastId();
+    Optional<Long> findLastId();
 
     @Query("SELECT p FROM Post p WHERE p.id < :maxPostId ORDER BY p.id DESC")
     List<Post> findRecentPosts(@Param("maxPostId") Long maxPostId, Pageable pageable);
