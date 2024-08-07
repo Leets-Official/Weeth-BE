@@ -21,8 +21,4 @@ public @interface ScheduleTimeCheck {
 
     Class<? extends Payload>[] payload() default {};
 
-    String matchStartTime() default "matchStartTime";
-
-    String matchEndTime() default "matchEndTime";
-
 }
