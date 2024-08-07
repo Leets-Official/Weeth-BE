@@ -90,9 +90,22 @@ function saveMeeting() {
     const title = document.getElementById('title').value;
     const content = document.getElementById('eventContent').value;
     const location = document.getElementById('location').value;
-    const start = document.getElementById('startDateTime').value;
-    const end = document.getElementById('endDateTime').value;
+    const start = document.getElementById('startDate').value;
+    const end = document.getElementById('endDate').value;
     const cardinal = document.getElementById('cardinal').value;
+
+    // 입력 값 유효성 검사
+    if (!weekNumber || !title || !content || !location || !start || !end || !cardinal) {
+        alert('모든 필드를 입력해주세요.');
+        return;
+    }
+
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    if (startDate > endDate) {
+        alert('시작 날짜는 종료 날짜보다 이전이어야 합니다.');
+        return;
+    }
 
     const meetingData = {
         title: title,
