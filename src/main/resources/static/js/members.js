@@ -1,20 +1,30 @@
 const apiEndpoint = (window.location.hostname === 'localhost')
-    ? 'http://localhost:8080'
-    : 'https://api.weeth.site';
+    ? 'http://localhost:8080/api/v1'
+    : 'https://api.weeth.site/api/v1';
 
 document.addEventListener('DOMContentLoaded', function () {
     if (getToken()) {
         loadMembers();
     } else {
         alert('JWT token is missing. Please log in.');
-        window.location.href = "/adminpage/login";
+        window.location.href = "/admin/login";
     }
 
     document.getElementById('topbarSearchInput').addEventListener('input', filterMembers);
+    document.getElementById('approveSelectedButton').addEventListener('click', function() {
+        confirmAction('승인', approveSelectedUsers);
+    });
 
 });
 
 let allMembers = [];
+
+let selectedUserIds = [];
+
+function updateSelectedUserIds() {
+    selectedUserIds = Array.from(document.querySelectorAll('.member-checkbox:checked'))
+        .map(checkbox => checkbox.value);
+}
 
 // 모든 사용자 조회
 function loadMembers() {
@@ -58,7 +68,20 @@ function displayMembers(membersArray) {
 
         membersArray.forEach(member => {
             const row = document.createElement('tr');
-            const rowClass = member.status === 'WAITING' ? 'border-left-secondary' : 'border-left-success';
+            let rowClass;
+            switch (member.status) {
+                case 'ACTIVE':
+                    rowClass = 'border-left-success';
+                    break;
+                case 'BANNED':
+                    rowClass = 'border-left-danger';
+                    break;
+                case 'LEFT':
+                    rowClass = 'border-left-warning';
+                    break;
+                default:
+                    rowClass = 'border-left-secondary';
+            }
             row.innerHTML = `
                 <td class="${rowClass}">${member.id}</td>
                 <td>${member.name}</td>
@@ -72,13 +95,17 @@ function displayMembers(membersArray) {
                 <td>${member.role}</td>
                 <td>${member.attendanceCount}</td>
                 <td>${member.absenceCount}</td>
-                <td>${member.attendanceRate ?? 'N/A'}</td>
+                <td>${member.attendanceRate}</td>
+                <td>${member.penaltyCount}</td>
                 <td>${formatDate(member.createdAt)}</td>
                 <td>${formatDate(member.modifiedAt)}</td>
                 <td>
                     <a class="button" href="#" data-toggle="modal" data-target="#managemember" onclick="setModalContent(${member.id})">
                         <i class="fas fa-fw fa-cog"></i>
                     </a>
+                    <div class="text-center ${rowClass}">
+                        <input type="checkbox" class="member-checkbox" value="${member.id}">
+                    </div>
                 </td>
             `;
             membersList.appendChild(row);
@@ -129,9 +156,35 @@ function approveUser(userId) {
     }).then(response => response.json());
 }
 
+// 선택된 사용자 모두 가입 승인
+function approveSelectedUsers() {
+    updateSelectedUserIds();
+
+    if (selectedUserIds.length === 0) {
+        alert('선택된 사용자가 없습니다.');
+        return;
+    }
+
+    let message = '';
+
+    selectedUserIds.forEach(userId => {
+        approveUser(userId).then(response => {
+            if (response.code === 200) {
+
+            } else {
+                alert(`사용자 ${userId} 승인 실패: ${response.message}`);
+            }
+        }).catch(error => {
+            alert(`사용자 ${userId} 승인 중 오류 발생: ${error.message}`);
+        });
+    });
+    alert("승인 완료");
+    loadMembers();
+}
+
 // 사용자 role 변경
 function changeUserRole(userId, role) {
-    return apiRequest(`${apiEndpoint}/admin/users/${role}?userId=${userId}`, {
+    return apiRequest(`${apiEndpoint}/admin/users/role?userId=${userId}&role=${role}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json'
@@ -160,6 +213,37 @@ function resetPassword(userId) {
     }).then(response => response.json());
 }
 
+// 다음기수 활동
+function submitNextCardinal(userId) {
+    const cardinalInput = document.getElementById(`nextCardinal-${userId}`);
+    const cardinal = cardinalInput.value;
+
+    return apiRequest(`${apiEndpoint}/admin/users/apply?userId=${userId}&cardinal=${cardinal}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => response.json());
+}
+
+// 패널티 부여
+function submitPenalty(userId) {
+    const penaltyDescription = document.getElementById(`penaltyDescription-${userId}`).value;
+
+    const data = {
+        userId: userId,
+        penaltyDescription: penaltyDescription
+    };
+
+    return apiRequest(`${apiEndpoint}/admin/penalties`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }).then(response => response.json());
+}
+
 // 매 요청시 확인 메시지를 표시하고, 완료하면 다시 멤버를 조회
 function confirmAction(actionName, actionFunction, ...args) {
     if (confirm(`${actionName} 하시겠습니까? ${actionName === '비밀번호 초기화' ? '초기화시 비밀번호가 학번으로 초기화됩니다.' : ''}`)) {
@@ -179,34 +263,7 @@ function confirmAction(actionName, actionFunction, ...args) {
     }
 }
 
-function submitNextCardinal(userId) {
-    const cardinalInput = document.getElementById(`nextCardinal-${userId}`);
-    const cardinal = cardinalInput.value;
 
-    return apiRequest(`${apiEndpoint}/admin/users/apply/${cardinal}?userId=${userId}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }).then(response => response.json());
-}
-
-function submitPenalty(userId) {
-    const penaltyDescription = document.getElementById(`penaltyDescription-${userId}`).value;
-
-    const data = {
-        userId: userId,
-        penaltyDescription: penaltyDescription
-    };
-
-    return apiRequest(`${apiEndpoint}/admin/penalty`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    }).then(response => response.json());
-}
 
 
 function showTokenErrorMessage(message) {
