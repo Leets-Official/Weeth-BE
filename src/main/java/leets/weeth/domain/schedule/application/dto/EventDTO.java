@@ -3,7 +3,6 @@ package leets.weeth.domain.schedule.application.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import leets.weeth.domain.schedule.application.annotation.ScheduleTimeCheck;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
