@@ -1,6 +1,6 @@
 const apiEndpoint = (window.location.hostname === 'localhost')
-    ? 'http://localhost:8080'
-    : 'https://api.weeth.site';
+    ? 'http://localhost:8080/api/v1'
+    : 'https://api.weeth.site/api/v1';
 
 document.getElementById('receiptForm').addEventListener('submit', function(event) {
     event.preventDefault(); // 기본 폼 제출 동작 방지
@@ -32,6 +32,7 @@ function submitTotalAccount() {
 function checkAccount() {
     const cardinal = document.getElementById('checkCardinal').value;
 
+    // User api
     apiRequest(`${apiEndpoint}/account/${cardinal}`, {
         method: 'GET',
         headers: {
@@ -92,14 +93,15 @@ function submitReceipt() {
     formData.append('dto', new Blob([JSON.stringify({
         amount: parseInt(amount),
         description: description,
-        date: date
+        date: date,
+        cardinal: cardinal
     })], { type: 'application/json' }));
 
     for (let i = 0; i < files.length; i++) {
         formData.append('files', files[i]);
     }
 
-    apiRequest(`${apiEndpoint}/admin/account/${cardinal}`, {
+    apiRequest(`${apiEndpoint}/admin/receipts`, {
         method: 'POST',
         body: formData
     })
@@ -122,7 +124,7 @@ function submitReceipt() {
 
 function deleteReceipt(receiptId) {
     if (confirm('삭제하시겠습니까?')) {
-        apiRequest(`${apiEndpoint}/admin/account/${receiptId}`, {
+        apiRequest(`${apiEndpoint}/admin/receipts/${receiptId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
