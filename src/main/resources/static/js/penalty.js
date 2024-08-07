@@ -1,13 +1,13 @@
 const apiEndpoint = (window.location.hostname === 'localhost')
-    ? 'http://localhost:8080'
-    : 'https://api.weeth.site';
+    ? 'http://localhost:8080/api/v1'
+    : 'https://api.weeth.site/api/v1';
 
 document.addEventListener('DOMContentLoaded', function() {
     if (getToken()) {
         loadPenalties();
     } else {
         alert('JWT token is missing. Please log in.');
-        window.location.href = "/adminpage/login";
+        window.location.href = "/admin/login";
     }
 
     const topbarSearchInput = document.getElementById('topbarSearchInput');
@@ -20,7 +20,7 @@ let allPenalties = [];
 
 function loadPenalties() {
     const penaltyList = document.getElementById('penaltyList');
-    apiRequest(`${apiEndpoint}/admin/penalty/all`)
+    apiRequest(`${apiEndpoint}/admin/penalties`)
         .then(response => response.json())
         .then(data => {
             penaltyList.innerHTML = '';
@@ -46,11 +46,13 @@ function filterPenalties() {
     const query = document.getElementById('topbarSearchInput').value.toLowerCase();
     const filteredPenalties = allPenalties.filter(penalty =>
         penalty.userId.toString().includes(query) ||
-        penalty.userName.toLowerCase().includes(query) ||
-        penalty.penaltyId.toString().includes(query) ||
-        penalty.penaltyDescription.toLowerCase().includes(query) ||
-        penalty.time.toLowerCase().includes(query) ||
-        penalty.penaltyCount.toString().includes(query)
+        penalty.name.toLowerCase().includes(query) ||
+        penalty.penaltyCount.toString().includes(query) ||
+        penalty.Penalties.some(subPenalty =>
+            subPenalty.penaltyId.toString().includes(query) ||
+            subPenalty.penaltyDescription.toLowerCase().includes(query) ||
+            subPenalty.time.toLowerCase().includes(query)
+        )
     );
     displayPenalties(filteredPenalties);
 }
@@ -60,23 +62,26 @@ function displayPenalties(penalties) {
     penaltyList.innerHTML = '';
 
     penalties.forEach(penalty => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td class="border-left-danger">${penalty.userId}</td>
-            <td>${penalty.userName}</td>
-            <td>${penalty.penaltyId}</td>
-            <td>${penalty.penaltyDescription}</td>
-            <td>${formatTime(penalty.time)}</td>
-            <td>${penalty.penaltyCount}</td>
-            <td>
-                <button class="btn btn-danger btn-circle btn-sm" onclick="confirmDeletePenalty(${penalty.penaltyId})">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        `;
-        penaltyList.appendChild(row);
+        penalty.Penalties.forEach(subPenalty => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="border-left-danger">${penalty.userId}</td>
+                <td>${penalty.name}</td>
+                <td>${subPenalty.penaltyId}</td>
+                <td>${subPenalty.penaltyDescription}</td>
+                <td>${formatTime(subPenalty.time)}</td>
+                <td>${penalty.penaltyCount}</td>
+                <td>
+                    <button class="btn btn-danger btn-circle btn-sm" onclick="confirmDeletePenalty(${subPenalty.penaltyId})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            penaltyList.appendChild(row);
+        });
     });
 }
+
 
 function confirmDeletePenalty(penaltyId) {
     if (confirm("삭제 하시겠습니까?")) {
@@ -96,7 +101,7 @@ function confirmDeletePenalty(penaltyId) {
 }
 
 function deletePenalty(penaltyId) {
-    return apiRequest(`${apiEndpoint}/admin/penalty?penaltyId=${penaltyId}`, {
+    return apiRequest(`${apiEndpoint}/admin/penalties?penaltyId=${penaltyId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
