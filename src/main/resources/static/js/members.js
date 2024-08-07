@@ -120,22 +120,23 @@ function setModalContent(userId) {
     if (modalBodyContent) {
         modalBodyContent.innerHTML = `
             <button class="btn btn-primary btn-sm" onclick="confirmAction('가입 승인', approveUser, ${member.id})" ${member.status === 'ACTIVE' ? 'disabled' : ''}>가입 승인</button>
+            <button class="btn btn-secondary btn-sm" onclick="confirmAction('비밀번호 초기화', resetPassword, ${member.id})">비밀번호 초기화</button>
             ${member.role === 'USER' ?
             `<button class="btn btn-primary btn-sm" onclick="confirmAction('관리자로 변경', changeUserRole, ${member.id}, 'ADMIN')">관리자로 변경</button>` :
             `<button class="btn btn-danger btn-sm" onclick="confirmAction('사용자로 변경', changeUserRole, ${member.id}, 'USER')">사용자로 변경</button>`
         }
             <button class="btn btn-danger btn-sm" onclick="confirmAction('유저 추방', deleteUser, ${member.id})">유저 추방</button>
-            <button class="btn btn-secondary btn-sm" onclick="confirmAction('비밀번호 초기화', resetPassword, ${member.id})">비밀번호 초기화</button>
             
+           
             <div class="form-group mt-3">
-                <label for="nextCardinal-${member.id}">다음 기수 입력</label>
+                <label for="nextCardinal-${member.id}">진행할 다음 기수 입력</label>
                 <input type="number" class="form-control" id="nextCardinal-${member.id}" placeholder="기수 입력">
                 <button class="btn btn-info btn-sm mt-2" onclick="confirmAction('다음 기수 진행', submitNextCardinal, ${member.id})">제출</button>
             </div>
             
             <div class="form-group mt-3">
-                <label for="penaltyDescription-${member.id}">패널티 설명</label>
-                <input type="text" class="form-control" id="penaltyDescription-${member.id}" placeholder="설명 입력">
+                <label for="penaltyDescription-${member.id}">패널티 입력</label>
+                <input type="text" class="form-control" id="penaltyDescription-${member.id}" placeholder="패널티 세부사항 입력">
                 <button class="btn btn-warning btn-sm mt-2" onclick="confirmAction('패널티 부여', submitPenalty, ${member.id})">제출</button>
             </div>
         `;

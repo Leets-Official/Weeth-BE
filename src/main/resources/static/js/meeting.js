@@ -62,8 +62,8 @@ function displayMeetings(meetingArray) {
                         <p><strong>출석 가능 시간:</strong> ${formatTime(meeting.start)} - ${formatTime(meeting.end)}</p>
                         <p><strong>장소:</strong> ${meeting.location}</p>
                         <p><strong>내용:</strong> ${meeting.content}</p>
-                        <p><strong>참여인원:</strong> ${meeting.memberCount}</p>
-                        <p><strong>기수:</strong> ${meeting.cardinal}</p>
+                        <p><strong>참여인원:</strong> ${meeting.memberCount}명</p>
+                        <p><strong>기수:</strong> ${meeting.cardinal}기</p>
                         <p><strong>출석 코드:</strong> ${meeting.code}</p>
                         <button id="closeAttendance" class="btn btn-danger text-sm-center" onclick="closeAttendance('${meeting.start}', ${meeting.cardinal})">출석마감</button>
                     </div>
