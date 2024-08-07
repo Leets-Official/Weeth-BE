@@ -56,4 +56,11 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
                 .map(mapper::to)
                 .toList();
     }
+
+    @Override
+    public List<Response> findAll() {
+        return meetingGetService.findAll().stream()
+                .map(mapper::to)
+                .toList();
+    }
 }

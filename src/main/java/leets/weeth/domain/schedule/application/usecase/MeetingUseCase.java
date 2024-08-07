@@ -15,4 +15,6 @@ public interface MeetingUseCase {
     void delete(Long meetingId);
 
     List<Response> findAll(Integer cardinal);
+
+    List<Response> findAll();
 }

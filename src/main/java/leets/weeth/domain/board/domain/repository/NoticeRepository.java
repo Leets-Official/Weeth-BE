@@ -8,11 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     @Query("SELECT MAX(n.id) FROM Notice n")
-    Long findLastId();
+    Optional<Long>  findLastId();
 
     @Query("SELECT n FROM Notice n WHERE n.id < :maxNoticeId ORDER BY n.id DESC")
     List<Notice> findRecentNotices(@Param("maxNoticeId") Long maxNoticeId, Pageable pageable);

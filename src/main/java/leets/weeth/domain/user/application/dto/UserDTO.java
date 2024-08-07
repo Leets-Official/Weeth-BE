@@ -58,6 +58,7 @@ public class UserDTO {
             Integer attendanceCount,
             Integer absenceCount,
             Integer attendanceRate,
+            Integer penaltyCount,
             LocalDateTime createdAt,
             LocalDateTime modifiedAt
     ) {}
