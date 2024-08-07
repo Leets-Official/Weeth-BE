@@ -87,7 +87,7 @@ function submitReceipt() {
     const description = document.getElementById('description').value;
     const date = document.getElementById('date').value;
     const fileInput = document.getElementById('file');
-    const files = fileInput.files;
+    const images = fileInput.files;
 
     const formData = new FormData();
     formData.append('dto', new Blob([JSON.stringify({
@@ -97,8 +97,8 @@ function submitReceipt() {
         cardinal: cardinal
     })], { type: 'application/json' }));
 
-    for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
+    for (let i = 0; i < images.length; i++) {
+        formData.append('images', images[i]);
     }
 
     apiRequest(`${apiEndpoint}/admin/receipts`, {
