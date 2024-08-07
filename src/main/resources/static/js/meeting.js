@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
         alert('JWT token is missing. Please log in.');
         window.location.href = "/admin/login";
     }
+    document.getElementById('topbarSearchInput').addEventListener('input', filterMeetings);
 
     document.getElementById('meetingForm').addEventListener('submit', function (event) {
         event.preventDefault();
@@ -25,10 +26,10 @@ function loadAttendanceEvents() {
     apiRequest(`${apiEndpoint}/admin/meetings`)
         .then(response => response.json())
         .then(data => {
-            if(data.code===200) {
+            if (data.code === 200) {
                 allMeetings = data.data;
                 displayMeetings(allMeetings);
-            }else {
+            } else {
                 throw new Error(data.message);
             }
         })
@@ -70,6 +71,17 @@ function displayMeetings(meetingArray) {
             meetingContainer.appendChild(card);
         });
     }
+}
+
+function filterMeetings() {
+    const query = document.getElementById('topbarSearchInput').value.toLowerCase();
+    const filteredMeetings = allMeetings.filter(meeting =>
+        meeting.cardinal.toString().includes(query) ||
+        meeting.title.toLowerCase().includes(query) ||
+        meeting.weekNumber.toString().includes(query)
+    );
+    console.log('Filtered meetings:', filteredMeetings);
+    displayMeetings(filteredMeetings);
 }
 
 function saveMeeting() {
