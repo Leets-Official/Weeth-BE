@@ -103,7 +103,7 @@
         console.log("Sending login request:", { email, password });
 
         // apiRequest는 token 검사를 하기 때문에 로그인 에만 fetch 사용
-        fetch(`${apiEndpoint}/login`, {
+        fetch(`${apiEndpoint}/api/v1/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -115,7 +115,7 @@
                     const token = response.headers.get('Authorization');
                     setToken(token);
                     console.log("Login successful, token:", token);
-                    window.location.href = `${apiEndpoint}/adminpage/member`;
+                    window.location.href = `${apiEndpoint}/admin/member`;
                 } else {
                     return response.text().then(message => { throw new Error(message); });
                 }
