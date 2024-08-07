@@ -32,4 +32,8 @@ public class MeetingGetService {
     public List<Meeting> find(Integer cardinal) {
         return meetingRepository.findAllByCardinalOrderByStartAsc(cardinal);
     }
+
+    public List<Meeting> findAll() {
+        return meetingRepository.findAll();
+    }
 }

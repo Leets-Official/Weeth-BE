@@ -32,6 +32,11 @@ public class MeetingAdminController {
 
     }
 
+    @GetMapping
+    public CommonResponse<List<MeetingDTO.Response>> findAll() {
+        return CommonResponse.createSuccess(meetingUseCase.findAll());
+    }
+
     @PatchMapping("/{meetingId}")
     public CommonResponse<Void> update(@RequestBody @Valid Update dto, @CurrentUser Long userId, @PathVariable Long meetingId) {
         meetingUseCase.update(dto, userId, meetingId);
