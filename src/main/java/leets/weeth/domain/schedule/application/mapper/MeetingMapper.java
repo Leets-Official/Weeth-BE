@@ -12,8 +12,13 @@ import static leets.weeth.domain.schedule.application.dto.MeetingDTO.*;
 public interface MeetingMapper {
 
     @Mapping(target = "memberCount", expression = "java( getMemberCount(meeting) )")
+    @Mapping(target = "requiredItem", expression = "java(\"노트북\")")
     @Mapping(target = "name", source = "user.name")
     Response to(Meeting meeting);
+
+    @Mapping(target = "memberCount", expression = "java( getMemberCount(meeting) )")
+    @Mapping(target = "name", source = "user.name")
+    ResponseAll toAll(Meeting meeting);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),

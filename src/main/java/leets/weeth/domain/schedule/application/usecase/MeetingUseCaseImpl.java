@@ -51,16 +51,16 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
     }
 
     @Override
-    public List<Response> findAll(Integer cardinal) {
+    public List<ResponseAll> findAll(Integer cardinal) {
         return meetingGetService.find(cardinal).stream()
-                .map(mapper::to)
+                .map(mapper::toAll)
                 .toList();
     }
 
     @Override
-    public List<Response> findAll() {
+    public List<ResponseAll> findAll() {
         return meetingGetService.findAll().stream()
-                .map(mapper::to)
+                .map(mapper::toAll)
                 .toList();
     }
 }

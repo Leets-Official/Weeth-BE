@@ -27,13 +27,13 @@ public class MeetingAdminController {
     }
 
     @PostMapping("/{cardinal}")
-    public CommonResponse<List<MeetingDTO.Response>> findAll(@PathVariable Integer cardinal) {
+    public CommonResponse<List<MeetingDTO.ResponseAll>> findAll(@PathVariable Integer cardinal) {
         return CommonResponse.createSuccess(meetingUseCase.findAll(cardinal));
 
     }
 
     @GetMapping
-    public CommonResponse<List<MeetingDTO.Response>> findAll() {
+    public CommonResponse<List<MeetingDTO.ResponseAll>> findAll() {
         return CommonResponse.createSuccess(meetingUseCase.findAll());
     }
 

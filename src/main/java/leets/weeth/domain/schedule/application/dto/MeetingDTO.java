@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 public class MeetingDTO {
 
-    public record Response(
+    public record ResponseAll(
             Long id,
             String title,
             String content,
@@ -20,6 +20,20 @@ public class MeetingDTO {
             Integer code,
             String name,
             Integer memberCount,
+            LocalDateTime createdAt,
+            LocalDateTime modifiedAt
+    ) {}
+
+    public record Response(
+            Long id,
+            String title,
+            String content,
+            String location,
+            LocalDateTime start,
+            LocalDateTime end,
+            String name,
+            Integer memberCount,
+            String requiredItem,
             LocalDateTime createdAt,
             LocalDateTime modifiedAt
     ) {}
