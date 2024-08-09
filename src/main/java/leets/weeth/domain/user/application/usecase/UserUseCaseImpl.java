@@ -109,13 +109,13 @@ public class UserUseCaseImpl implements UserUseCase {
         User user = userGetService.find(userId);
 
         if (user.notContains(cardinal)) {
-            userUpdateService.applyOB(user, cardinal);
-
             if(user.isCurrent(cardinal)) {
                 user.initAttendance();
                 List<Meeting> meetings = meetingGetService.find(cardinal);
                 attendanceSaveService.save(user, meetings);
             }
+
+            userUpdateService.applyOB(user, cardinal);
         }
     }
 
