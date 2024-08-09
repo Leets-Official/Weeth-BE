@@ -38,7 +38,7 @@ function apiRequest(url, options = {}) {
     headers['Authorization'] = `Bearer ${token}`;
     options.headers = headers;
     return fetch(url, options).then(response => {
-        if (response.status === 401) {
+        if (response.status === 403) {
             return response.text().then(message => { throw new Error('Unauthorized: ' + message); });
         }
         return response;

@@ -110,14 +110,14 @@
             },
             body: JSON.stringify({ email, password })
         })
-            .then(response => {
-                if (response.ok) {
-                    const token = response.headers.get('Authorization');
+            .then(responseAll => {
+                if (responseAll.ok) {
+                    const token = responseAll.headers.get('Authorization');
                     setToken(token);
                     console.log("Login successful, token:", token);
                     window.location.href = `${apiEndpoint}/admin/member`;
                 } else {
-                    return response.text().then(message => { throw new Error(message); });
+                    return responseAll.text().then(message => { throw new Error(message); });
                 }
             })
             .catch(error => {

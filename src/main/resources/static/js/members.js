@@ -14,7 +14,13 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('approveSelectedButton').addEventListener('click', function() {
         confirmAction('승인', approveSelectedUsers);
     });
-
+    const checkAllBox = document.getElementById('checkAll');
+    checkAllBox.addEventListener('change', function() {
+        const memberCheckboxes = document.querySelectorAll('.member-checkbox');
+        memberCheckboxes.forEach(checkbox => {
+            checkbox.checked = checkAllBox.checked;
+        });
+    });
 });
 
 let allMembers = [];
@@ -63,6 +69,17 @@ function filterMembers() {
 // 조회된 사용자들을 반복하며 화면에 표시
 function displayMembers(membersArray) {
     const membersList = document.getElementById('membersList');
+    const statusMapping = {
+        'ACTIVE': '활동 중',
+        'WAITING': '대기 중',
+        'LEFT': '탈퇴',
+        'BANNED': '차단'
+    };
+
+    const roleMapping = {
+        'ADMIN': '관리자',
+        'USER': '사용자'
+    };
     if (membersList) {
         membersList.innerHTML = '';
 
@@ -82,30 +99,29 @@ function displayMembers(membersArray) {
                 default:
                     rowClass = 'border-left-secondary';
             }
+            const statusText = statusMapping[member.status] || member.status;
+            const roleText = roleMapping[member.role] || member.role;
+
             row.innerHTML = `
-                <td class="${rowClass}">${member.id}</td>
+                <td class="${rowClass}">
+                    <input type="checkbox" class="member-checkbox" value="${member.id}">
+                </td>
                 <td>${member.name}</td>
                 <td>${member.email}</td>
                 <td>${member.studentId}</td>
                 <td>${member.tel}</td>
                 <td>${member.department}</td>
                 <td>${member.cardinals.join(', ')}</td>
-                <td>${member.position}</td>
-                <td>${member.status}</td>
-                <td>${member.role}</td>
+                <td>${statusText}</td>
+                <td>${roleText}</td>
                 <td>${member.attendanceCount}</td>
                 <td>${member.absenceCount}</td>
-                <td>${member.attendanceRate}</td>
                 <td>${member.penaltyCount}</td>
                 <td>${formatDate(member.createdAt)}</td>
-                <td>${formatDate(member.modifiedAt)}</td>
                 <td>
                     <a class="button" href="#" data-toggle="modal" data-target="#managemember" onclick="setModalContent(${member.id})">
                         <i class="fas fa-fw fa-cog"></i>
                     </a>
-                    <div class="text-center ${rowClass}">
-                        <input type="checkbox" class="member-checkbox" value="${member.id}">
-                    </div>
                 </td>
             `;
             membersList.appendChild(row);
@@ -126,7 +142,7 @@ function setModalContent(userId) {
             `<button class="btn btn-danger btn-sm" onclick="confirmAction('사용자로 변경', changeUserRole, ${member.id}, 'USER')">사용자로 변경</button>`
         }
             <button class="btn btn-danger btn-sm" onclick="confirmAction('유저 추방', deleteUser, ${member.id})">유저 추방</button>
-            
+           
            
             <div class="form-group mt-3">
                 <label for="nextCardinal-${member.id}">진행할 다음 기수 입력</label>
@@ -263,9 +279,6 @@ function confirmAction(actionName, actionFunction, ...args) {
             });
     }
 }
-
-
-
 
 function showTokenErrorMessage(message) {
     const tokenErrorMessageDiv = document.getElementById('tokenErrorMessage');

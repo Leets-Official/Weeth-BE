@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 let allMeetings = [];
+let currentMeetingId = 7;
 
 function loadAttendanceEvents() {
     apiRequest(`${apiEndpoint}/admin/meetings`)
@@ -66,6 +67,8 @@ function displayMeetings(meetingArray) {
                         <p><strong>기수:</strong> ${meeting.cardinal}기</p>
                         <p><strong>출석 코드:</strong> ${meeting.code}</p>
                         <button id="closeAttendance" class="btn btn-danger text-sm-center" onclick="closeAttendance('${meeting.start}', ${meeting.cardinal})">출석마감</button>
+                        <button id="deleteMeeting" class="btn btn-danger text-sm-center" onclick="deleteMeeting('${meeting.id}')">삭제</button>
+                        <button id="updateAttendance" href="#" data-toggle="modal" data-target="#updateMeeting" class="btn btn-primary text-sm-center" onclick="setModalContent('${meeting.id}')">수정</button>
                     </div>
                 </div>
             `;
@@ -139,8 +142,61 @@ function saveMeeting() {
         });
 }
 
-function closeAttendance(date, cardinal){
+function updateMeeting(){
+    const weekNumber = document.getElementById('updateWeekNumber').value;
+    const title = document.getElementById('updateTitle').value;
+    const content = document.getElementById('updateContent').value;
+    const location = document.getElementById('updateLocation').value;
+    const start = document.getElementById('start').value;
+    const end = document.getElementById('end').value;
+    const cardinal = document.getElementById('updateCardinal').value;
 
+    // 입력 값 유효성 검사
+    if (!weekNumber || !title || !content || !location || !start || !end || !cardinal) {
+        alert('모든 필드를 입력해주세요.');
+        return;
+    }
+
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    if (startDate > endDate) {
+        alert('시작 날짜는 종료 날짜보다 이전이어야 합니다.');
+        return;
+    }
+
+    const meetingData = {
+        title: title,
+        content: content,
+        location: location,
+        start: start,
+        end: end,
+        weekNumber: parseInt(weekNumber),
+        cardinal: parseInt(cardinal)
+    };
+
+    // 먼저 주차 정보를 저장하고 그 다음 출석 일정을 저장합니다.
+    apiRequest(`${apiEndpoint}/admin/meetings/${currentMeetingId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(meetingData)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.code === 200) {
+                alert(`정기모임 수정 성공: ${data.message}`);
+                loadAttendanceEvents();
+            } else {
+                throw new Error(data.message);
+            }
+        })
+        .catch(error => {
+            alert(`정기모임 수정 실패: ${error.message}`);
+        });
+}
+
+function closeAttendance(date, cardinal){
     if (!confirm('출석을 마감 하시겠습니까? 출석 마감 후에는 더 이상 출석체크를 할 수 없습니다.')) {
         return;
     }
@@ -164,7 +220,81 @@ function closeAttendance(date, cardinal){
         .catch(error => {
             alert(`출석 마감 실패: ${error.message}`);
         });
+}
 
+function deleteMeeting(){
+    if (!confirm('정기모임을 삭제하시겠습니까? 삭제된 정기모임에 해당하는 출석을 체크하지 못하게 됩니다.')) {
+        return;
+    }
+
+    apiRequest(`${apiEndpoint}/admin/meetings/${currentMeetingId}`,{
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(response => response.json())
+        .then(data => {
+            if(data.code === 200) {
+                alert(`정기모임 삭제 성공: ${data.message}`);
+                loadAttendanceEvents();
+            } else {
+                throw new Error(data.message);
+            }
+        })
+        .catch(error => {
+            alert(`정기모임 삭제 실패: ${error.message}`);
+        });
+}
+
+
+
+function setModalContent(meetingId) {
+    const meeting = allMeetings.find(m => m.id === parseInt(meetingId));
+    currentMeetingId = meetingId;
+    const modalBodyContent = document.getElementById('meeting-modal-content');
+    if (modalBodyContent) {
+        modalBodyContent.innerHTML = `
+            <form id="meetingUpdateForm">
+                <div class="form-group">
+                    <label for="updateTitle">제목</label>
+                    <input type="text" class="form-control" id="updateTitle" placeholder="제목 입력" value="${meeting.title}">
+                </div>
+                <div class="form-group">
+                    <label for="updateWeekNumber">주차</label>
+                    <input type="number" class="form-control" id="updateWeekNumber" placeholder="주차 입력" value="${meeting.weekNumber}">
+                </div>
+                <div class="form-group">
+                    <label for="start">시작 시간</label>
+                    <input type="datetime-local" class="form-control" id="start" value="${meeting.start}">
+                </div>
+                <div class="form-group">
+                    <label for="end">종료 시간</label>
+                    <input type="datetime-local" class="form-control" id="end" value="${meeting.end}">
+                </div>
+                <div class="form-group">
+                    <label for="updateLocation">장소</label>
+                    <input type="text" class="form-control" id="updateLocation" placeholder="장소 입력" value="${meeting.location}">
+                </div>
+                <div class="form-group">
+                    <label for="content">내용</label>
+                    <textarea class="form-control" id="updateContent" rows="3" placeholder="내용 입력">${meeting.content}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="updateCardinal">기수</label>
+                    <input type="number" class="form-control" id="updateCardinal" placeholder="기수 입력" value="${meeting.cardinal}">
+                </div>
+                <button type="submit" class="btn btn-primary" id="submitMeetingButton">제출</button>
+            </form>
+        `;
+        document.getElementById('meetingUpdateForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            if (!confirm('출석 일정을 수정하시겠습니까?')) {
+                return;
+            }
+            updateMeeting();
+        });
+    }
 }
 
 function formatTime(timeString) {
