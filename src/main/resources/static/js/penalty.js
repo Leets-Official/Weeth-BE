@@ -49,7 +49,6 @@ function filterPenalties() {
         penalty.name.toLowerCase().includes(query) ||
         penalty.penaltyCount.toString().includes(query) ||
         penalty.Penalties.some(subPenalty =>
-            subPenalty.penaltyId.toString().includes(query) ||
             subPenalty.penaltyDescription.toLowerCase().includes(query) ||
             subPenalty.time.toLowerCase().includes(query)
         )
@@ -67,7 +66,6 @@ function displayPenalties(penalties) {
             row.innerHTML = `
                 <td class="border-left-danger">${penalty.userId}</td>
                 <td>${penalty.name}</td>
-                <td>${subPenalty.penaltyId}</td>
                 <td>${subPenalty.penaltyDescription}</td>
                 <td>${formatTime(subPenalty.time)}</td>
                 <td>${penalty.penaltyCount}</td>
