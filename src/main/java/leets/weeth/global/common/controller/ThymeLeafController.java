@@ -9,6 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin")
 public class ThymeLeafController {
 
+    @GetMapping
+    public String home(Model model) {
+        model.addAttribute("pageTitle", "Login");
+        return "login";
+    }
+
     @GetMapping("/login")
     public String loginPage(Model model) {
         model.addAttribute("pageTitle", "Login");
