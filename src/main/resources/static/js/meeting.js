@@ -66,7 +66,7 @@ function displayMeetings(meetingArray) {
 
             const header = document.createElement('div');
             header.className = 'card-header py-3';
-            header.innerHTML = `<h4 class="m-0 font-weight-bold text-primary">${cardinal}기 정기모임</h4>`;
+            header.innerHTML = `<h4 class="m-0 font-weight-bold text-success">${cardinal}기 정기모임</h4>`;
             section.appendChild(header);
 
             groupedMeetings[cardinal].forEach((meeting, index) => {
@@ -107,7 +107,8 @@ function filterMeetings() {
     const filteredMeetings = allMeetings.filter(meeting =>
         meeting.cardinal.toString().includes(query) ||
         meeting.title.toLowerCase().includes(query) ||
-        meeting.weekNumber.toString().includes(query)
+        meeting.weekNumber.toString().includes(query) ||
+        meeting.content.toLowerCase().includes(query)
     );
     console.log('Filtered meetings:', filteredMeetings);
     displayMeetings(filteredMeetings);
