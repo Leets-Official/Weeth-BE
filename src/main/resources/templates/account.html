@@ -20,7 +20,7 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <h1 class="h3 mb-2 text-gray-800">회비</h1>
+                <h1 class="h3 mb-2 text-gray-800 font-weight-bold">회비</h1>
                 <p class="mb-4">기수 시작시 이월된 회비와 해당 기수 회비를 종합해 회비를 등록해주시기 바랍니다.
                     <br>회비 등록은 기수당 한 번만 가능합니다. 신중하게 해주시길 바랍니다.
                     <br>회비 사용 내역을 저장하시면 해당 기수의 회비에서 금액이 차감됩니다.
@@ -29,7 +29,7 @@
                     <div class="col-lg-6">
                         <div class="card shadow h-100 py-2">
                             <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-lg text-success">회비 조회</h6>
+                                <h5 class="m-0 font-weight-bold text-success">회비 조회</h5>
                                 <div class="float-right">
                                     <a class="btn btn-success" href="#" data-toggle="modal" data-target="#manageAccount" onclick="setModalContent('total')">총 회비 등록</a>
                                 </div>
@@ -48,7 +48,7 @@
                     <div class="col-lg-6">
                         <div class="card position-relative">
                             <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-success">회비 사용 내역 입력</h6>
+                                <h5 class="m-0 font-weight-bold text-success">회비 사용 내역 입력</h5>
                             </div>
                             <div class="card-body">
                                 <form id="receiptForm">
@@ -110,6 +110,20 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                 <a type="submit" class="btn btn-primary" id="modalSubmitButton">완료</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Expanded Image" class="img-fluid">
             </div>
         </div>
     </div>
