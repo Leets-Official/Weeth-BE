@@ -40,39 +40,64 @@ function loadAttendanceEvents() {
         });
 }
 
+function groupMeetingsByCardinal(meetings) {
+    return meetings.reduce((groups, meeting) => {
+        const cardinal = meeting.cardinal;
+        if (!groups[cardinal]) {
+            groups[cardinal] = [];
+        }
+        groups[cardinal].push(meeting);
+        return groups;
+    }, {});
+}
+
 function displayMeetings(meetingArray) {
     const meetingContainer = document.getElementById('meetingContainer');
     if (meetingContainer) {
         meetingContainer.innerHTML = '';
 
-        meetingArray.forEach((meeting, index) => {
+        // 미팅을 카디널별로 그룹화
+        const groupedMeetings = groupMeetingsByCardinal(meetingArray);
 
-            const collapseId = `collapseCardExample${index}`;
+        // 그룹화된 카디널별로 섹션을 생성
+        Object.keys(groupedMeetings).forEach(cardinal => {
+            const section = document.createElement('div');
+            section.className = 'card shadow mb-4';
 
-            const card = document.createElement('div');
-            card.className = 'card shadow mb-4';
+            const header = document.createElement('div');
+            header.className = 'card-header py-3';
+            header.innerHTML = `<h6 class="m-0 font-weight-bold text-success">${cardinal}기 정기모임</h6>`;
+            section.appendChild(header);
 
-            card.innerHTML = `
-                <a href="#${collapseId}" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="${collapseId}">
-                    <h6 class="m-0 font-weight-bold text-gray-600">${meeting.title}</h6>
-                </a>
-                <div class="collapse" id="${collapseId}">
-                    <div class="card-body">
-                        <p><strong>제목:</strong> ${meeting.title}</p>
-                        <p><strong>주차:</strong> ${meeting.weekNumber}</p>
-                        <p><strong>출석 가능 시간:</strong> ${formatTime(meeting.start)} - ${formatTime(meeting.end)}</p>
-                        <p><strong>장소:</strong> ${meeting.location}</p>
-                        <p><strong>내용:</strong> ${meeting.content}</p>
-                        <p><strong>참여인원:</strong> ${meeting.memberCount}명</p>
-                        <p><strong>기수:</strong> ${meeting.cardinal}기</p>
-                        <p><strong>출석 코드:</strong> ${meeting.code}</p>
-                        <button id="closeAttendance" class="btn btn-danger text-sm-center" onclick="closeAttendance('${meeting.start}', ${meeting.cardinal})">출석마감</button>
-                        <button id="deleteMeeting" class="btn btn-danger text-sm-center" onclick="deleteMeeting('${meeting.id}')">삭제</button>
-                        <button id="updateAttendance" href="#" data-toggle="modal" data-target="#updateMeeting" class="btn btn-primary text-sm-center" onclick="setModalContent('${meeting.id}')">수정</button>
+            groupedMeetings[cardinal].forEach((meeting, index) => {
+                const collapseId = `collapseCardExample${cardinal}_${index}`;
+
+                const card = document.createElement('div');
+                card.className = 'card-body';
+
+                card.innerHTML = `
+                    <a href="#${collapseId}" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="${collapseId}">
+                        <h6 class="m-0 font-weight-bold text-gray-600">${meeting.title}</h6>
+                    </a>
+                    <div class="collapse" id="${collapseId}">
+                        <div class="card-body">
+                            <p><strong>제목:</strong> ${meeting.title}</p>
+                            <p><strong>주차:</strong> ${meeting.weekNumber}</p>
+                            <p><strong>출석 가능 시간:</strong> ${formatTime(meeting.start)} - ${formatTime(meeting.end)}</p>
+                            <p><strong>장소:</strong> ${meeting.location}</p>
+                            <p><strong>내용:</strong> ${meeting.content}</p>
+                            <p><strong>참여인원:</strong> ${meeting.memberCount}명</p>
+                            <p><strong>출석 코드:</strong> ${meeting.code}</p>
+                            <button id="closeAttendance" class="btn btn-danger text-sm-center" onclick="closeAttendance('${meeting.start}', ${meeting.cardinal})">출석마감</button>
+                            <button id="deleteMeeting" class="btn btn-danger text-sm-center" onclick="deleteMeeting('${meeting.id}')">삭제</button>
+                            <button id="updateAttendance" href="#" data-toggle="modal" data-target="#updateMeeting" class="btn btn-primary text-sm-center" onclick="setModalContent('${meeting.id}')">수정</button>
+                        </div>
                     </div>
-                </div>
-            `;
-            meetingContainer.appendChild(card);
+                `;
+                section.appendChild(card);
+            });
+
+            meetingContainer.appendChild(section);
         });
     }
 }
@@ -82,7 +107,8 @@ function filterMeetings() {
     const filteredMeetings = allMeetings.filter(meeting =>
         meeting.cardinal.toString().includes(query) ||
         meeting.title.toLowerCase().includes(query) ||
-        meeting.weekNumber.toString().includes(query)
+        meeting.weekNumber.toString().includes(query) ||
+        meeting.content.toLowerCase().includes(query)
     );
     console.log('Filtered meetings:', filteredMeetings);
     displayMeetings(filteredMeetings);

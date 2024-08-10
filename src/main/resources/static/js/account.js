@@ -73,11 +73,21 @@ function displayAccountInfo(account) {
                     <p class="card-text"><strong>총 금액:</strong> ${receipt.amount}</p>
                     <p class="card-text"><strong>내역:</strong> ${receipt.description}</p>
                     <p class="card-text"><strong>Date:</strong> ${receipt.date}</p>
-                    ${receipt.images.length > 0 ? `<p class="card-text"><strong>Images:</strong> ${receipt.images.map(image => `<a href="${image}" target="_blank">View Image</a>`).join(', ')}</p>` : ''}
+                    ${receipt.images.length > 0 ?
+        `<p class="card-text"><strong>Images:</strong></p> 
+                        <div class="image-previews">${receipt.images.map(image => `
+                            <img src="${image}" alt="Receipt Image" style="max-width: 100px; margin: 5px; cursor: pointer;" onclick="openImageModal('${image}')">`).join('')}</div>`
+        : ''}
                 </div>
             </div>
         `).join('')}
     `;
+}
+
+function openImageModal(imageUrl) {
+    const modalImage = document.getElementById('modalImage');
+    modalImage.src = imageUrl;
+    $('#imageModal').modal('show');
 }
 
 function submitReceipt() {

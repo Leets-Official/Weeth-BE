@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/weeth
+    url: jdbc:mysql://localhost:3306/weeth_v2
     username: admin
     password: Weeth1234!
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -10,7 +10,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
   servlet:
     multipart:
       max-file-size: 30MB
