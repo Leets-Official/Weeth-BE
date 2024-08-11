@@ -1,5 +1,6 @@
 package leets.weeth.domain.attendance.presentation;
 
+import leets.weeth.domain.attendance.application.dto.AttendanceDTO;
 import leets.weeth.domain.attendance.application.usecase.AttendanceUseCase;
 import leets.weeth.global.auth.annotation.CurrentUser;
 import leets.weeth.global.common.error.exception.custom.AttendanceCodeMismatchException;
@@ -17,8 +18,8 @@ public class AttendanceController {
     private final AttendanceUseCase attendanceUseCase;
 
     @PatchMapping
-    public CommonResponse<Void> checkIn(@CurrentUser Long userId, @RequestParam Integer code) throws AttendanceCodeMismatchException {
-        attendanceUseCase.checkIn(userId, code);
+    public CommonResponse<Void> checkIn(@CurrentUser Long userId, @RequestBody AttendanceDTO.CheckIn checkIn) throws AttendanceCodeMismatchException {
+        attendanceUseCase.checkIn(userId, checkIn.code());
         return CommonResponse.createSuccess();
     }
 

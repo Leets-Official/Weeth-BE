@@ -32,4 +32,8 @@ public class AttendanceDTO {
             LocalDateTime end,
             String location
     ) {}
+
+    public record CheckIn(
+            Integer code
+    ) {}
 }
