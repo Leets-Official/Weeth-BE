@@ -7,6 +7,9 @@ import leets.weeth.domain.comment.domain.entity.Comment;
 import leets.weeth.domain.user.domain.entity.User;
 import org.mapstruct.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CommentMapper {
 
