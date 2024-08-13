@@ -21,9 +21,11 @@ public interface NoticeMapper {
     })
     Notice fromNoticeDto(NoticeDTO.Save dto, List<String> fileUrls, User user);
 
-//    @Mapping(target = "id", source = "noticeId")
-//    @Mapping(target = "user", source = "user")
-//    Notice update(Long noticeId, NoticeDTO.Update dto, List<String> fileUrls, User user);
+    @Mappings({
+            @Mapping(target = "name", source = "user.name"),
+            @Mapping(target = "time", source = "modifiedAt")
+    })
+    NoticeDTO.ResponseAll toAll(Notice notice);
 
     @Mappings({
             @Mapping(target = "name", source = "user.name"),
@@ -66,7 +68,4 @@ public interface NoticeMapper {
         return response.build();
     }
 
-    @Mapping(target = "name", source = "user.name")
-    @Mapping(target = "time", source = "modifiedAt")
-    CommentDTO.Response mapComment(Comment comment);
 }
