@@ -12,6 +12,7 @@ public interface AccountMapper {
 
     @Mapping(target = "accountId", source = "account.id")
     @Mapping(target = "receipts", source = "receipts")
+    @Mapping(target = "time", source = "account.modifiedAt")
     AccountDTO.Response to(Account account, List<ReceiptDTO.Response> receipts);
 
     @Mapping(target = "currentAmount", source = "totalAmount")

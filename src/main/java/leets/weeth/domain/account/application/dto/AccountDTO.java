@@ -2,6 +2,7 @@ package leets.weeth.domain.account.application.dto;
 
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class AccountDTO {
@@ -11,6 +12,7 @@ public class AccountDTO {
             String description,
             Integer totalAmount,
             Integer currentAmount,
+            LocalDateTime time,
             Integer cardinal,
             List<ReceiptDTO.Response> receipts
     ) {}
