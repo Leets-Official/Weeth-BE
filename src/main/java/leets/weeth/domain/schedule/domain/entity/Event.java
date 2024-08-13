@@ -23,6 +23,7 @@ public class Event extends Schedule {
 
     public void update(Update dto, User user) {
         this.updateUpperClass(dto, user);
+        this.memberCount = dto.memberCount();
         this.requiredItem = dto.requiredItem();
     }
 }
