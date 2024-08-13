@@ -10,8 +10,7 @@ import leets.weeth.domain.board.domain.service.NoticeUpdateService;
 import leets.weeth.domain.file.service.FileSaveService;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
-import leets.weeth.global.common.error.exception.custom.InvalidAccessException;
-import leets.weeth.global.common.error.exception.custom.PostNotFoundException;
+import leets.weeth.global.common.error.exception.custom.NoticeNotFoundException;
 import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -59,7 +58,7 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
             noticeId = finalNoticeId + 1;
         }
         if(noticeId < 1 || noticeId > finalNoticeId + 1){
-            throw new PostNotFoundException(); // postId가 1 이하이거나 최대값보다 클경우
+            throw new NoticeNotFoundException(); // postId가 1 이하이거나 최대값보다 클경우
         }
 
         Pageable pageable = PageRequest.of(0, count); // 첫 페이지, 페이지당 15개 게시글

@@ -107,7 +107,6 @@ public class NoticeCommentUsecaseImpl implements NoticeCommentUsecase {
         return null; // 부모 댓글을 찾지 못한 경우
     }
 
-    // 업데이트 메소드를 엔티티 안에서 변경감지로 사용하기로 했기 때문에, 반환 값이 필요 없짐 -> 나머지도 다 수정
     private Comment validateOwner(Long commentId, Long userId) throws UserNotMatchException {
         Comment comment = commentFindService.find(commentId);
 
