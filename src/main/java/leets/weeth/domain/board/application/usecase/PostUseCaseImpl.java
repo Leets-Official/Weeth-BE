@@ -52,7 +52,7 @@ public class PostUseCaseImpl implements PostUsecase {
     }
 
     @Override
-    public List<PostDTO.Response> findPosts(Long postId, Integer count) {
+    public List<PostDTO.ResponseAll> findPosts(Long postId, Integer count) {
 
         Long finalPostId = postFindService.findFinalPostId();
 
@@ -68,7 +68,7 @@ public class PostUseCaseImpl implements PostUsecase {
         List<Post> posts = postFindService.findRecentPosts(postId, pageable);
 
         return posts.stream()
-                .map(mapper::toPostDto)
+                .map(mapper::toAll)
                 .toList();
     }
 

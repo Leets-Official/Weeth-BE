@@ -30,7 +30,7 @@ public class PostController {
     }
 
     @GetMapping
-    public CommonResponse<List<PostDTO.Response>> findPosts(@RequestParam(required = false) Long postId, @RequestParam Integer count) {
+    public CommonResponse<List<PostDTO.ResponseAll>> findPosts(@RequestParam(required = false) Long postId, @RequestParam Integer count) {
         return CommonResponse.createSuccess(postUsecase.findPosts(postId, count));
     }
 
