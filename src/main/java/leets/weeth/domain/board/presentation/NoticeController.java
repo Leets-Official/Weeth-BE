@@ -17,7 +17,7 @@ public class NoticeController {
     private final NoticeUsecase noticeUsecase;
 
     @GetMapping
-    public CommonResponse<List<NoticeDTO.Response>> findNotices(@RequestParam(required = false) Long noticeId, @RequestParam Integer count) {
+    public CommonResponse<List<NoticeDTO.ResponseAll>> findNotices(@RequestParam(required = false) Long noticeId, @RequestParam Integer count) {
         return CommonResponse.createSuccess(noticeUsecase.findNotices(noticeId, count));
     }
 

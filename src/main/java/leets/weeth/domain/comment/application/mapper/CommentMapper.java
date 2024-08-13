@@ -19,7 +19,7 @@ public interface CommentMapper {
             @Mapping(target = "user", source = "user"),
             @Mapping(target = "parent", source = "parent"),
             @Mapping(target = "content", source = "dto.content"),
-            @Mapping(target = "post", source = "post"),
+            @Mapping(target = "post", source = "post")
     })
     Comment fromCommentDto(CommentDTO.Save dto, Post post, User user, Comment parent);
 
@@ -32,13 +32,11 @@ public interface CommentMapper {
             @Mapping(target = "user", source = "user"),
             @Mapping(target = "parent", source = "parent"),
             @Mapping(target = "content", source = "dto.content"),
-            @Mapping(target = "notice", source = "notice"),
-
+            @Mapping(target = "notice", source = "notice")
     })
     Comment fromCommentDto(CommentDTO.Save dto, Notice notice, User user, Comment parent);
 
     @Mapping(target = "name", source = "user.name")
     @Mapping(target = "time", source = "modifiedAt")
     CommentDTO.Response toCommentDto(Comment comment);
-
 }

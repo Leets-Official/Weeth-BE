@@ -50,7 +50,7 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     }
 
     @Override
-    public List<NoticeDTO.Response> findNotices(Long noticeId, Integer count) {
+    public List<NoticeDTO.ResponseAll> findNotices(Long noticeId, Integer count) {
 
         Long finalNoticeId = noticeFindService.findFinalNoticeId();
 
@@ -66,7 +66,7 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
         List<Notice> notices = noticeFindService.findRecentNotices(noticeId, pageable);
 
         return notices.stream()
-                .map(mapper::toNoticeDto)
+                .map(mapper::toAll)
                 .toList();
     }
 

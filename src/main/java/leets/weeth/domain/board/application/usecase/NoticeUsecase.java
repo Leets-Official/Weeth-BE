@@ -13,7 +13,7 @@ public interface NoticeUsecase {
 
     NoticeDTO.Response findNotice(Long noticeId);
 
-    List<NoticeDTO.Response> findNotices(Long noticeId, Integer count);
+    List<NoticeDTO.ResponseAll> findNotices(Long noticeId, Integer count);
 
     void update(Long noticeId, NoticeDTO.Update dto, List<MultipartFile> files, Long userId) throws UserNotMatchException;
 

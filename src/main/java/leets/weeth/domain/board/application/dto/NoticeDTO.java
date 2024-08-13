@@ -32,4 +32,15 @@ public class NoticeDTO {
             List<String> fileUrls,
             List<CommentDTO.Response> comments
     ){}
+
+    @Builder
+    public record ResponseAll(
+            Long id,
+            String name,
+            String title,
+            String content,
+            LocalDateTime time,//modifiedAt
+            Integer commentCount
+    ){}
+
 }

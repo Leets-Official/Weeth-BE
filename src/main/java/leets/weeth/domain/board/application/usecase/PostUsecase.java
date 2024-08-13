@@ -13,7 +13,7 @@ public interface PostUsecase {
 
     PostDTO.Response findPost(Long postId);
 
-    List<PostDTO.Response> findPosts(Long postId, Integer count);
+    List<PostDTO.ResponseAll> findPosts(Long postId, Integer count);
 
     void update(Long postId, PostDTO.Update dto, List<MultipartFile> files, Long userId) throws UserNotMatchException;
 
