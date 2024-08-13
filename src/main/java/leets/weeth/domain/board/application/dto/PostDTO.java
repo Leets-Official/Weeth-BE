@@ -33,4 +33,14 @@ public class PostDTO {
             List<CommentDTO.Response> comments
     ){}
 
+    @Builder
+    public record ResponseAll(
+            Long id,
+            String name,
+            String title,
+            String content,
+            LocalDateTime time,//modifiedAt
+            Integer commentCount
+    ){}
+
 }

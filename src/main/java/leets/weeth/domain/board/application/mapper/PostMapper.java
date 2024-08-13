@@ -21,9 +21,11 @@ public interface PostMapper {
     })
     Post fromPostDto(PostDTO.Save dto, List<String> fileUrls, User user);
 
-//    @Mapping(target = "id", source = "postId")
-//    @Mapping(target = "user", source = "user")
-//    Post update(Long postId, PostDTO.Update dto, User user);
+    @Mappings({
+            @Mapping(target = "name", source = "user.name"),
+            @Mapping(target = "time", source = "modifiedAt")
+    })
+    PostDTO.ResponseAll toAll(Post post);
 
     @Mappings({
             @Mapping(target = "name", source = "user.name"),
