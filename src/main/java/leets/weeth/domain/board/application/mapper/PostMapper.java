@@ -43,7 +43,7 @@ public interface PostMapper {
         return comments.stream()
                 .filter(comment -> comment.getParent() == null) // 부모 댓글만 필터링
                 .map(this::mapCommentWithChildren) // 자식 댓글 포함하여 매핑
-                .collect(Collectors.toList());
+                .toList();
     }
 
     default CommentDTO.Response mapCommentWithChildren(Comment comment) {
@@ -67,9 +67,5 @@ public interface PostMapper {
 
         return response.build();
     }
-
-    @Mapping(target = "name", source = "user.name")
-    @Mapping(target = "time", source = "modifiedAt")
-    CommentDTO.Response mapComment(Comment comment);
 
 }

@@ -43,7 +43,7 @@ public interface NoticeMapper {
         return comments.stream()
                 .filter(comment -> comment.getParent() == null) // 부모 댓글만 필터링
                 .map(this::mapCommentWithChildren) // 자식 댓글 포함하여 매핑
-                .collect(Collectors.toList());
+                .toList();
     }
 
     default CommentDTO.Response mapCommentWithChildren(Comment comment) {
