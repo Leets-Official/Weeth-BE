@@ -176,15 +176,15 @@ function setModalContent(type) {
                 <form id="totalAccountForm">
                     <div class="form-group">
                         <label for="totalCardinal">기수</label>
-                        <input type="number" class="form-control" id="totalCardinal" placeholder="기수 입력" required>
+                        <input type="number" class="form-control" id="totalCardinal" placeholder="기수 입력"  min="1" required>
                     </div>
                     <div class="form-group">
                         <label for="totalDescription">설명</label>
-                        <input type="text" class="form-control" id="totalDescription" placeholder="설명 입력" required>
+                        <input type="text" class="form-control" id="totalDescription" placeholder="설명 입력: ex(3기 회비 등록)" required>
                     </div>
                     <div class="form-group">
                         <label for="totalAmount">총 금액</label>
-                        <input type="text" class="form-control" id="totalAmount" placeholder="총 금액 입력" required>
+                        <input type="number" class="form-control" id="totalAmount" placeholder="총 금액 입력"  min="0" required>
                     </div>
                 </form>
             `;

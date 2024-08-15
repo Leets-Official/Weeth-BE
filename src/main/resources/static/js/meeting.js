@@ -11,6 +11,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     document.getElementById('topbarSearchInput').addEventListener('input', filterMeetings);
 
+    document.getElementById('updateCardinal').addEventListener('input', function (e) {
+        if (e.target.value < 1) {
+            e.target.value = 1;
+        }
+    });
+
+    document.getElementById('cardinal').addEventListener('input', function (e) {
+        if (e.target.value < 1) {
+            e.target.value = 1;
+        }
+    });
+
     document.getElementById('meetingForm').addEventListener('submit', function (event) {
         event.preventDefault();
         if (!confirm('출석 일정을 저장하시겠습니까?')) {
@@ -81,6 +93,7 @@ function displayMeetings(meetingArray) {
                     </a>
                     <div class="collapse" id="${collapseId}">
                         <div class="card-body">
+                            <p><strong>ID:</strong> ${meeting.id}</p>
                             <p><strong>제목:</strong> ${meeting.title}</p>
                             <p><strong>주차:</strong> ${meeting.weekNumber}</p>
                             <p><strong>출석 가능 시간:</strong> ${formatTime(meeting.start)} - ${formatTime(meeting.end)}</p>
@@ -248,12 +261,12 @@ function closeAttendance(date, cardinal){
         });
 }
 
-function deleteMeeting(){
+function deleteMeeting(meetingId){
     if (!confirm('정기모임을 삭제하시겠습니까? 삭제된 정기모임에 해당하는 출석을 체크하지 못하게 됩니다.')) {
         return;
     }
 
-    apiRequest(`${apiEndpoint}/admin/meetings/${currentMeetingId}`,{
+    apiRequest(`${apiEndpoint}/admin/meetings/${meetingId}`,{
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -308,7 +321,7 @@ function setModalContent(meetingId) {
                 </div>
                 <div class="form-group">
                     <label for="updateCardinal">기수</label>
-                    <input type="number" class="form-control" id="updateCardinal" placeholder="기수 입력" value="${meeting.cardinal}">
+                    <input type="number" class="form-control" id="updateCardinal" placeholder="기수 입력" value="${meeting.cardinal}" min="1" step="1">
                 </div>
                 <button type="submit" class="btn btn-primary" id="submitMeetingButton">제출</button>
             </form>
