@@ -301,7 +301,7 @@ function setModalContent(meetingId) {
                 </div>
                 <div class="form-group">
                     <label for="updateWeekNumber">주차</label>
-                    <input type="number" class="form-control" id="updateWeekNumber" placeholder="주차 입력" value="${meeting.weekNumber}">
+                    <input type="number" class="form-control" id="updateWeekNumber" placeholder="주차 입력" min="0" value="${meeting.weekNumber}">
                 </div>
                 <div class="form-group">
                     <label for="start">시작 시간</label>

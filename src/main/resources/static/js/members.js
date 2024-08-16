@@ -105,6 +105,7 @@ function displayMembers(membersArray) {
             row.innerHTML = `
                 <td class="${rowClass}">
                     <input type="checkbox" class="member-checkbox" value="${member.id}">
+                    <div>${member.id}</div>
                 </td>
                 <td>${member.name}</td>
                 <td>${member.email}</td>
@@ -145,7 +146,7 @@ function setModalContent(userId) {
            
             <div class="form-group mt-3">
                 <label for="nextCardinal-${member.id}">진행할 다음 기수 입력</label>
-                <input type="number" class="form-control" id="nextCardinal-${member.id}" placeholder="기수 입력">
+                <input type="number" class="form-control" id="nextCardinal-${member.id}" min="1" placeholder="기수 입력">
                 <button class="btn btn-info btn-sm mt-2" onclick="confirmAction('다음 기수 진행', submitNextCardinal, ${member.id})">제출</button>
             </div>
             
