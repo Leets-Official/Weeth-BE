@@ -192,6 +192,19 @@ Weeth는 가천대학교 IT 학술동아리 Leets를 위한 동아리 관리 서
 </p>
 
 <br>
+<hr>
+
+<details>
+
+<summary>관리자 페이지</summary>
+<img width="1512" alt="스크린샷 2024-08-16 오후 3 03 12" src="https://github.com/user-attachments/assets/f97839d7-06f9-4d98-af40-ac97b6b205da">
+<img width="1512" alt="스크린샷 2024-08-16 오후 3 03 29" src="https://github.com/user-attachments/assets/f17be493-97c7-4bff-8d6a-e72396a19321">
+<img width="1512" alt="스크린샷 2024-08-16 오후 2 59 41" src="https://github.com/user-attachments/assets/c9a46ef8-8b09-4a3e-9774-4d6a1093b358">
+<img width="1512" alt="스크린샷 2024-08-16 오후 3 04 12" src="https://github.com/user-attachments/assets/75ef4001-e7e0-40f0-b948-a2c5e7c4bb44">
+<img width="1512" alt="스크린샷 2024-08-16 오후 3 13 11" src="https://github.com/user-attachments/assets/08d1166a-f2d4-4df7-8213-67292595fc5f">
+<img width="1512" alt="스크린샷 2024-08-16 오후 3 06 00" src="https://github.com/user-attachments/assets/f5da3164-ed65-43a5-97b0-ae332edae9bd">
+
+</details>
 
 
 ## 시스템 아키텍처
