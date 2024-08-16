@@ -50,7 +50,7 @@ Weeth는 가천대학교 IT 학술동아리 Leets를 위한 동아리 관리 서
 </a>
 </td>
 <td align="center">
-<a href="https://github.com/hyxkle" target="_blank">
+<a href="https://github.com/hyxklee" target="_blank">
 이강혁
 </a>
 </td>
