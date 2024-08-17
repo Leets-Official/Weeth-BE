@@ -11,17 +11,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     document.getElementById('topbarSearchInput').addEventListener('input', filterMeetings);
 
-    document.getElementById('updateCardinal').addEventListener('input', function (e) {
-        if (e.target.value < 1) {
-            e.target.value = 1;
-        }
-    });
-
-    document.getElementById('cardinal').addEventListener('input', function (e) {
-        if (e.target.value < 1) {
-            e.target.value = 1;
-        }
-    });
 
     document.getElementById('meetingForm').addEventListener('submit', function (event) {
         event.preventDefault();
