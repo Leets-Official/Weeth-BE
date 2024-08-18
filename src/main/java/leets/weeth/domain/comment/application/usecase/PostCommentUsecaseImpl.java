@@ -3,6 +3,7 @@ package leets.weeth.domain.comment.application.usecase;
 import leets.weeth.domain.board.domain.entity.Post;
 import leets.weeth.domain.board.domain.service.PostFindService;
 import leets.weeth.domain.comment.application.dto.CommentDTO;
+import leets.weeth.domain.comment.application.event.PostCommentCountUpdate;
 import leets.weeth.domain.comment.application.mapper.CommentMapper;
 import leets.weeth.domain.comment.domain.entity.Comment;
 import leets.weeth.domain.comment.domain.service.CommentDeleteService;
@@ -12,6 +13,7 @@ import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +33,8 @@ public class PostCommentUsecaseImpl implements PostCommentUsecase {
 
     private final CommentMapper commentMapper;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     @Override
     @Transactional
     public void savePostComment(CommentDTO.Save dto, Long postId, Long userId) {
@@ -45,13 +49,12 @@ public class PostCommentUsecaseImpl implements PostCommentUsecase {
         commentSaveService.save(comment);
 
         // 부모 댓글이 없다면 새 댓글로 추가
-        if(parentComment == null)
+        if(parentComment == null) {
             post.addComment(comment);
-        else
+        } else {
             // 부모 댓글이 있다면 자녀 댓글로 추가
             parentComment.addChild(comment);
-
-        post.incrementCommentCount();
+        }
     }
 
     @Override
@@ -94,9 +97,7 @@ public class PostCommentUsecaseImpl implements PostCommentUsecase {
             comment.markAsDeleted();
             commentSaveService.save(comment);
         }
-
-        post.decrementCommentCount();
-
+        eventPublisher.publishEvent(new PostCommentCountUpdate(post));
     }
 
     private Comment findParentComment(Long commentId) {
