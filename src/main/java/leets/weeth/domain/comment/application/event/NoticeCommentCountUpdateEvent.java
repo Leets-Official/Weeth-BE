@@ -1,15 +1,13 @@
 package leets.weeth.domain.comment.application.event;
 
 import leets.weeth.domain.board.domain.entity.Notice;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class NoticeCommentCountUpdate {
+@Getter
+public class NoticeCommentCountUpdateEvent {
 
     private final Notice notice;
-
-    public Notice getNotice() {
-        return notice;
-    }
 
 }

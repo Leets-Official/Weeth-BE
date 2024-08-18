@@ -3,7 +3,7 @@ package leets.weeth.domain.comment.application.usecase;
 import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.board.domain.service.NoticeFindService;
 import leets.weeth.domain.comment.application.dto.CommentDTO;
-import leets.weeth.domain.comment.application.event.NoticeCommentCountUpdate;
+import leets.weeth.domain.comment.application.event.NoticeCommentCountUpdateEvent;
 import leets.weeth.domain.comment.application.mapper.CommentMapper;
 import leets.weeth.domain.comment.domain.entity.Comment;
 import leets.weeth.domain.comment.domain.service.CommentDeleteService;
@@ -87,7 +87,7 @@ public class NoticeCommentUsecaseImpl implements NoticeCommentUsecase {
             comment.markAsDeleted();
             commentSaveService.save(comment);
         }
-        eventPublisher.publishEvent(new NoticeCommentCountUpdate(notice));
+        eventPublisher.publishEvent(new NoticeCommentCountUpdateEvent(notice));
     }
 
     private Comment findParentComment(Long commentId) {

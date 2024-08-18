@@ -12,14 +12,14 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
-@Slf4j
 @RequiredArgsConstructor
 public class CommentCountUpdateListener {
+
     private final EntityManager entityManager;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void handleNoticeCommentDeleted(NoticeCommentCountUpdate event) {
+    public void handleNoticeCommentDeleted(NoticeCommentCountUpdateEvent event) {
         Notice notice = entityManager.merge(event.getNotice());
         notice.updateCommentCount();
 
@@ -27,7 +27,7 @@ public class CommentCountUpdateListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void handlePostCommentDeleted(PostCommentCountUpdate event) {
+    public void handlePostCommentDeleted(PostCommentCountUpdateEvent event) {
         Post post = entityManager.merge(event.getPost());
         post.updateCommentCount();
     }

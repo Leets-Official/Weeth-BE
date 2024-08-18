@@ -3,7 +3,7 @@ package leets.weeth.domain.comment.application.usecase;
 import leets.weeth.domain.board.domain.entity.Post;
 import leets.weeth.domain.board.domain.service.PostFindService;
 import leets.weeth.domain.comment.application.dto.CommentDTO;
-import leets.weeth.domain.comment.application.event.PostCommentCountUpdate;
+import leets.weeth.domain.comment.application.event.PostCommentCountUpdateEvent;
 import leets.weeth.domain.comment.application.mapper.CommentMapper;
 import leets.weeth.domain.comment.domain.entity.Comment;
 import leets.weeth.domain.comment.domain.service.CommentDeleteService;
@@ -97,7 +97,7 @@ public class PostCommentUsecaseImpl implements PostCommentUsecase {
             comment.markAsDeleted();
             commentSaveService.save(comment);
         }
-        eventPublisher.publishEvent(new PostCommentCountUpdate(post));
+        eventPublisher.publishEvent(new PostCommentCountUpdateEvent(post));
     }
 
     private Comment findParentComment(Long commentId) {
