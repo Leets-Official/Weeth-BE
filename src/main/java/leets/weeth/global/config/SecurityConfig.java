@@ -85,7 +85,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://weeth.site", "https://www.weeth.site", "https://api.weeth.site", "http://172.20.10.8:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://weeth.site", "https://www.weeth.site", "https://api.weeth.site", "http://192.168.45.100:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setExposedHeaders(Arrays.asList("Authorization, Authorization-refresh"));
