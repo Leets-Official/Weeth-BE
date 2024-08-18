@@ -6,7 +6,6 @@ import jakarta.persistence.OneToMany;
 import leets.weeth.domain.board.application.dto.PostDTO;
 import leets.weeth.domain.comment.domain.entity.Comment;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -23,9 +22,13 @@ public class Post extends Board {
     @JsonManagedReference
     private List<Comment> comments;
 
+    public void updateCommentCount() {
+        this.updateCommentCount(this.comments);
+    }
 
-    public void addComment(Comment newComment) {
-        this.comments.add(newComment);
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        this.increaseCommentCount();
     }
 
     public void update(PostDTO.Update dto, List<String> fileUrls) {

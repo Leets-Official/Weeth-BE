@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -16,14 +17,21 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
+@Slf4j
 public class Notice extends Board {
 
     @OneToMany(mappedBy = "notice", orphanRemoval = true)
     @JsonManagedReference
     private List<Comment> comments;
 
-    public void addComment(Comment newComment) {
-        this.comments.add(newComment);
+    public void updateCommentCount() {
+        log.info("notice.updateCommentCount");
+        this.updateCommentCount(this.comments);
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        this.increaseCommentCount();
     }
 
     public void update(NoticeDTO.Update dto, List<String> fileUrls){
