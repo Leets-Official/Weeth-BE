@@ -3,6 +3,7 @@ package leets.weeth.domain.board.domain.entity;
 import jakarta.persistence.*;
 import leets.weeth.domain.board.application.dto.NoticeDTO;
 import leets.weeth.domain.board.application.dto.PostDTO;
+import leets.weeth.domain.comment.domain.entity.Comment;
 import leets.weeth.domain.file.converter.FileListConverter;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.global.common.entity.BaseEntity;
@@ -10,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Slf4j
 public class Board extends BaseEntity {
 
     @Id
@@ -31,14 +34,14 @@ public class Board extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private Integer commentCount;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @Convert(converter = FileListConverter.class)
     private List<String> fileUrls = new ArrayList<>();
+
+    private Integer commentCount = 0;
 
     @PrePersist
     public void prePersist() {
@@ -47,14 +50,15 @@ public class Board extends BaseEntity {
         }
     }
 
-    public void incrementCommentCount(){
+    public void increaseCommentCount() {
         commentCount++;
     }
 
-    public void decrementCommentCount(){
-        if(this.commentCount > 0){
-            commentCount--;
-        }
+    public void updateCommentCount(List<Comment> comments) {
+        log.info("Board.updateCommentCount");
+        this.commentCount = (int) comments.stream()
+                .filter(comment -> !comment.getIsDeleted())
+                .count();
     }
 
     public void updateUpperClass(NoticeDTO.Update dto, List<String> fileUrls){
