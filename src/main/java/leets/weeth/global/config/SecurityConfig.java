@@ -9,6 +9,7 @@ import leets.weeth.global.auth.login.handler.LoginFailureHandler;
 import leets.weeth.global.auth.login.handler.LoginSuccessHandler;
 import leets.weeth.global.auth.login.service.LoginService;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -84,7 +85,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://weeth.site", "https://www.weeth.site", "https://api.weeth.site"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://weeth.site", "https://www.weeth.site", "https://api.weeth.site", "http://172.20.10.8:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setExposedHeaders(Arrays.asList("Authorization, Authorization-refresh"));
