@@ -41,13 +41,11 @@ public class Board extends BaseEntity {
     @Convert(converter = FileListConverter.class)
     private List<String> fileUrls = new ArrayList<>();
 
-    private Integer commentCount = 0;
+    private Integer commentCount;
 
     @PrePersist
     public void prePersist() {
-        if (commentCount == null) {
-            commentCount = 0;
-        }
+        commentCount = 0;
     }
 
     public void increaseCommentCount() {
@@ -61,13 +59,13 @@ public class Board extends BaseEntity {
                 .count();
     }
 
-    public void updateUpperClass(NoticeDTO.Update dto, List<String> fileUrls){
+    public void updateUpperClass(NoticeDTO.Update dto, List<String> fileUrls) {
         this.title = dto.title();
         this.content = dto.content();
         this.fileUrls = fileUrls;
     }
 
-    public void updateUpperClass(PostDTO.Update dto, List<String> fileUrls){
+    public void updateUpperClass(PostDTO.Update dto, List<String> fileUrls) {
         this.title = dto.title();
         this.content = dto.content();
         this.fileUrls = fileUrls;
