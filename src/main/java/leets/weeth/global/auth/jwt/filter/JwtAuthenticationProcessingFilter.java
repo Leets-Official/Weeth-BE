@@ -57,7 +57,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 .filter(jwtService::isTokenValid)
                 .orElse(null);
 
-        if (accessToken != null) {
+        if (accessToken == null) {
+            checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
+        } else {
             jwtService.extractEmail(accessToken)
                     .ifPresent(email -> userRepository.findByEmail(email)
                             .ifPresent(this::saveAuthentication));
@@ -65,7 +67,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         }
 
-        checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
 
     }
 
