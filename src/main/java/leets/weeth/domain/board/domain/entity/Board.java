@@ -52,8 +52,13 @@ public class Board extends BaseEntity {
         commentCount++;
     }
 
+    public void decreaseCommentCount() {
+        if(commentCount > 0) {
+            commentCount--;
+        }
+    }
+
     public void updateCommentCount(List<Comment> comments) {
-        log.info("Board.updateCommentCount");
         this.commentCount = (int) comments.stream()
                 .filter(comment -> !comment.getIsDeleted())
                 .count();
