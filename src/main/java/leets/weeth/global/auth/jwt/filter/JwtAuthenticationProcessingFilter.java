@@ -57,7 +57,14 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 .ifPresentOrElse(
                         accessToken -> jwtService.extractEmail(accessToken)
                                 .ifPresent(email -> userRepository.findByEmail(email)
-                                        .ifPresent(this::saveAuthentication)),
+                                        .ifPresent(user -> {
+                                            saveAuthentication(user);
+                                            try {
+                                                filterChain.doFilter(request, response);
+                                            } catch (IOException | ServletException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        })),
                         () -> checkRefreshTokenAndReIssueAccessToken(response, refreshToken)
                 );
 
