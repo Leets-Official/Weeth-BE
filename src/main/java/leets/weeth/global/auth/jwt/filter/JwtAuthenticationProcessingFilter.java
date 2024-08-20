@@ -52,23 +52,20 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     public void checkAccessTokenAndRefreshToken(HttpServletRequest request, HttpServletResponse response,
                                                 FilterChain filterChain, String refreshToken) throws ServletException, IOException {
         log.info("checkAccessTokenAndRefreshToken() 호출");
-        jwtService.extractAccessToken(request)
-                .filter(jwtService::isTokenValid)
-                .ifPresentOrElse(
-                        accessToken -> jwtService.extractEmail(accessToken)
-                                .ifPresent(email -> userRepository.findByEmail(email)
-                                        .ifPresent(user -> {
-                                            saveAuthentication(user);
-                                            try {
-                                                filterChain.doFilter(request, response);
-                                            } catch (IOException | ServletException e) {
-                                                throw new RuntimeException(e);
-                                            }
-                                        })),
-                        () -> checkRefreshTokenAndReIssueAccessToken(response, refreshToken)
-                );
 
-        filterChain.doFilter(request, response);
+        String accessToken = jwtService.extractAccessToken(request)
+                .filter(jwtService::isTokenValid)
+                .orElse(null);
+
+        if (accessToken == null) {
+            checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
+        } else {
+            jwtService.extractEmail(accessToken)
+                    .ifPresent(email -> userRepository.findByEmail(email)
+                            .ifPresent(this::saveAuthentication));
+
+            filterChain.doFilter(request, response);
+        }
     }
 
     public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
