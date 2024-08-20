@@ -54,11 +54,14 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
 
         Long finalNoticeId = noticeFindService.findFinalNoticeId();
 
-        if(noticeId==null){   // 첫번째 요청인 경우
+        // 첫번째 요청인 경우
+        if(noticeId==null){
             noticeId = finalNoticeId + 1;
         }
+
+        // postId가 1 이하이거나 최대값보다 클경우
         if(noticeId < 1 || noticeId > finalNoticeId + 1){
-            throw new NoticeNotFoundException(); // postId가 1 이하이거나 최대값보다 클경우
+            throw new NoticeNotFoundException();
         }
 
         Pageable pageable = PageRequest.of(0, count); // 첫 페이지, 페이지당 15개 게시글
