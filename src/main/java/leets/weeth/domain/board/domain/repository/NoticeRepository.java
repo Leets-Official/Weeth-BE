@@ -15,9 +15,6 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
     @Query("SELECT MAX(n.id) FROM Notice n")
     Optional<Long>  findLastId();
 
-    @Query("SELECT MIN(n.id) FROM Notice n")
-    Optional<Long> findFirstId();
-
     @Query("SELECT n FROM Notice n WHERE n.id < :maxNoticeId ORDER BY n.id DESC")
     List<Notice> findRecentNotices(@Param("maxNoticeId") Long maxNoticeId, Pageable pageable);
 

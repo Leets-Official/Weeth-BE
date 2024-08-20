@@ -34,9 +34,4 @@ public class PostFindService {
         return postRepository.findRecentPosts(postId, pageable);
     }
 
-    public Long findFirstPostId() {
-        return postRepository.findFirstId()
-                .orElseThrow(PostNotFoundException::new);
-    }
-
 }

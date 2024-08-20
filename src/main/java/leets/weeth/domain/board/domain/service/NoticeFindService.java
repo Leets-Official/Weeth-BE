@@ -29,11 +29,6 @@ public class NoticeFindService {
                 .orElseThrow(NoticeNotFoundException::new);
     }
 
-    public Long findFirstNoticeId(){
-        return noticeRepository.findFirstId()
-                .orElseThrow(NoticeNotFoundException::new);
-    }
-
     public List<Notice> findRecentNotices(Long postId, Pageable pageable) {
         return noticeRepository.findRecentNotices(postId, pageable);
     }
