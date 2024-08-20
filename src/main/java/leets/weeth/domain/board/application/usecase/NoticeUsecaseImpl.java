@@ -10,6 +10,7 @@ import leets.weeth.domain.board.domain.service.NoticeUpdateService;
 import leets.weeth.domain.file.service.FileSaveService;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
+import leets.weeth.global.common.error.exception.custom.LastNoticeFoundException;
 import leets.weeth.global.common.error.exception.custom.NoticeNotFoundException;
 import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
 import lombok.RequiredArgsConstructor;
@@ -50,15 +51,24 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     }
 
     @Override
-    public List<NoticeDTO.ResponseAll> findNotices(Long noticeId, Integer count) {
+    public List<NoticeDTO.ResponseAll> findNotices(Long noticeId, Integer count) throws LastNoticeFoundException {
 
         Long finalNoticeId = noticeFindService.findFinalNoticeId();
+        Long firstNoticeId = noticeFindService.findFirstNoticeId();
 
-        if(noticeId==null){   // 첫번째 요청인 경우
+        // 첫 번째 요청인 경우
+        if(noticeId==null){
             noticeId = finalNoticeId + 1;
         }
+
+        // noticeId가 잘못된 경우
         if(noticeId < 1 || noticeId > finalNoticeId + 1){
-            throw new NoticeNotFoundException(); // postId가 1 이하이거나 최대값보다 클경우
+            throw new NoticeNotFoundException();
+        }
+
+        // 마지막 공지사항인 경우 예외 처리
+        if(noticeId.equals(firstNoticeId)){
+            throw new LastNoticeFoundException();
         }
 
         Pageable pageable = PageRequest.of(0, count); // 첫 페이지, 페이지당 15개 게시글

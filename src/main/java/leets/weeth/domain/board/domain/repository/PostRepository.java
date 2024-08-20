@@ -15,6 +15,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT MAX(p.id) FROM Post p")
     Optional<Long> findLastId();
 
+    @Query("SELECT MIN(p.id) FROM Post p")
+    Optional<Long> findFirstId();
+
     @Query("SELECT p FROM Post p WHERE p.id < :maxPostId ORDER BY p.id DESC")
     List<Post> findRecentPosts(@Param("maxPostId") Long maxPostId, Pageable pageable);
 }

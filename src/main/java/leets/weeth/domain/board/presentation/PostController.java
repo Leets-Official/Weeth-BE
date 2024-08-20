@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import leets.weeth.domain.board.application.dto.PostDTO;
 import leets.weeth.domain.board.application.usecase.PostUsecase;
 import leets.weeth.global.auth.annotation.CurrentUser;
+import leets.weeth.global.common.error.exception.custom.LastPostFoundException;
 import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class PostController {
     }
 
     @GetMapping
-    public CommonResponse<List<PostDTO.ResponseAll>> findPosts(@RequestParam(required = false) Long postId, @RequestParam Integer count) {
+    public CommonResponse<List<PostDTO.ResponseAll>> findPosts(@RequestParam(required = false) Long postId, @RequestParam Integer count) throws LastPostFoundException {
         return CommonResponse.createSuccess(postUsecase.findPosts(postId, count));
     }
 
