@@ -45,13 +45,13 @@ public class PostCommentUsecaseImpl implements PostCommentUsecase {
         commentSaveService.save(comment);
 
         // 부모 댓글이 없다면 새 댓글로 추가
-        if(parentComment == null)
+        if(parentComment == null) {
             post.addComment(comment);
-        else
+        } else {
             // 부모 댓글이 있다면 자녀 댓글로 추가
             parentComment.addChild(comment);
-
-        post.incrementCommentCount();
+        }
+        post.increaseCommentCount();
     }
 
     @Override
@@ -94,9 +94,7 @@ public class PostCommentUsecaseImpl implements PostCommentUsecase {
             comment.markAsDeleted();
             commentSaveService.save(comment);
         }
-
-        post.decrementCommentCount();
-
+        post.decreaseCommentCount();
     }
 
     private Comment findParentComment(Long commentId) {

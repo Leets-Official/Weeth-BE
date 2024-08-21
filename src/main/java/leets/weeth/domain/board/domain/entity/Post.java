@@ -3,10 +3,10 @@ package leets.weeth.domain.board.domain.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PreUpdate;
 import leets.weeth.domain.board.application.dto.PostDTO;
 import leets.weeth.domain.comment.domain.entity.Comment;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -23,9 +23,13 @@ public class Post extends Board {
     @JsonManagedReference
     private List<Comment> comments;
 
+    @PreUpdate
+    public void updateCommentCount() {
+        this.updateCommentCount(this.comments);
+    }
 
-    public void addComment(Comment newComment) {
-        this.comments.add(newComment);
+    public void addComment(Comment comment) {
+        comments.add(comment);
     }
 
     public void update(PostDTO.Update dto, List<String> fileUrls) {

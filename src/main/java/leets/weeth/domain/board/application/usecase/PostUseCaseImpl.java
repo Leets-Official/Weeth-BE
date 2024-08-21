@@ -1,9 +1,7 @@
 package leets.weeth.domain.board.application.usecase;
 
-import leets.weeth.domain.board.application.dto.NoticeDTO;
 import leets.weeth.domain.board.application.dto.PostDTO;
 import leets.weeth.domain.board.application.mapper.PostMapper;
-import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.board.domain.entity.Post;
 import leets.weeth.domain.board.domain.service.PostDeleteService;
 import leets.weeth.domain.board.domain.service.PostFindService;
@@ -56,11 +54,14 @@ public class PostUseCaseImpl implements PostUsecase {
 
         Long finalPostId = postFindService.findFinalPostId();
 
-        if(postId==null){   // 첫번째 요청인 경우
+        // 첫번째 요청인 경우
+        if(postId==null){
             postId = finalPostId + 1;
         }
+
+        // postId가 1 이하이거나 최대값보다 클경우
         if(postId < 1 || postId > finalPostId + 1){
-            throw new PostNotFoundException(); // postId가 1 이하이거나 최대값보다 클경우
+            throw new PostNotFoundException();
         }
 
         Pageable pageable = PageRequest.of(0, count); // 첫 페이지, 페이지당 15개 게시글
@@ -72,11 +73,6 @@ public class PostUseCaseImpl implements PostUsecase {
                 .toList();
     }
 
-    /*
-    게시글 수정 시 파일이 넘어오지 않으면, 파일이 제거됨.
-    수정할 때도 파일을 같이 넘기면, 또 업로드가 발생함 -> 근데 동일한 파일은 재 업로드가 아닌거 같기도 함.
-    -> 테스트 해보기
-     */
     @Override
     public void update(Long postId, PostDTO.Update dto, List<MultipartFile> files, Long userId) throws UserNotMatchException {
         Post post = validateOwner(postId, userId);
