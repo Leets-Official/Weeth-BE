@@ -51,7 +51,7 @@ public class NoticeCommentUsecaseImpl implements NoticeCommentUsecase {
             // 부모 댓글이 있다면 자녀 댓글로 추가
             parentComment.addChild(comment);
         }
-        notice.increaseCommentCount();
+        notice.updateCommentCount();
     }
 
     @Override

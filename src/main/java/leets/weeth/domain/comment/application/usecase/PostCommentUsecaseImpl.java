@@ -51,7 +51,7 @@ public class PostCommentUsecaseImpl implements PostCommentUsecase {
             // 부모 댓글이 있다면 자녀 댓글로 추가
             parentComment.addChild(comment);
         }
-        post.increaseCommentCount();
+        post.updateCommentCount();
     }
 
     @Override

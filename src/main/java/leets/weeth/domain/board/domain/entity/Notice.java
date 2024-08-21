@@ -3,7 +3,6 @@ package leets.weeth.domain.board.domain.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PreUpdate;
 import leets.weeth.domain.board.application.dto.NoticeDTO;
 import leets.weeth.domain.comment.domain.entity.Comment;
 import lombok.AccessLevel;
@@ -23,7 +22,6 @@ public class Notice extends Board {
     @JsonManagedReference
     private List<Comment> comments;
 
-    @PreUpdate
     public void updateCommentCount() {
         this.updateCommentCount(this.comments);
     }
