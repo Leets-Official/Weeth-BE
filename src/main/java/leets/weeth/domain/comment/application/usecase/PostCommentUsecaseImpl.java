@@ -10,6 +10,7 @@ import leets.weeth.domain.comment.domain.service.CommentFindService;
 import leets.weeth.domain.comment.domain.service.CommentSaveService;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
+import leets.weeth.global.common.error.exception.custom.CommentNotFoundException;
 import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,14 +39,14 @@ public class PostCommentUsecaseImpl implements PostCommentUsecase {
         Post post = postFindService.find(postId);
         Comment parentComment = null;
 
-        if(!(dto.parentCommentId() == null)) {
+        if (!(dto.parentCommentId() == null)) {
             parentComment = commentFindService.find(dto.parentCommentId());
         }
         Comment comment = commentMapper.fromCommentDto(dto, post, user, parentComment);
         commentSaveService.save(comment);
 
         // 부모 댓글이 없다면 새 댓글로 추가
-        if(parentComment == null) {
+        if (parentComment == null) {
             post.addComment(comment);
         } else {
             // 부모 댓글이 있다면 자녀 댓글로 추가
@@ -80,17 +81,19 @@ public class PostCommentUsecaseImpl implements PostCommentUsecase {
             - child가 없는 댓글인 경우 -> 자식이 없기 떄문에 나만 삭제함
          */
         // 현재 삭제하고자 하는 댓글이 자식이 없는 경우
-        if(comment.getChildren().isEmpty()){
+        if (comment.getChildren().isEmpty()) {
             Comment parentComment = findParentComment(commentId);
             commentDeleteService.delete(commentId);
-            if(parentComment != null){
+            if (parentComment != null) {
                 parentComment.getChildren().remove(comment);
-                if(parentComment.getIsDeleted() && parentComment.getChildren().isEmpty()){
+                if (parentComment.getIsDeleted() && parentComment.getChildren().isEmpty()) {
                     post.getComments().remove(parentComment);
                     commentDeleteService.delete(parentComment.getId());
                 }
             }
-        } else{
+        } else if (comment.getIsDeleted()) { // 삭제된 대댓글인 경우 예외
+            throw new CommentNotFoundException();
+        } else {
             comment.markAsDeleted();
             commentSaveService.save(comment);
         }

@@ -10,6 +10,7 @@ import leets.weeth.domain.comment.domain.service.CommentFindService;
 import leets.weeth.domain.comment.domain.service.CommentSaveService;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
+import leets.weeth.global.common.error.exception.custom.CommentNotFoundException;
 import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -81,6 +82,8 @@ public class NoticeCommentUsecaseImpl implements NoticeCommentUsecase {
                     commentDeleteService.delete(parentComment.getId());
                 }
             }
+        } else if (comment.getIsDeleted()) { // 삭제된 대댓글인 경우 예외
+            throw new CommentNotFoundException();
         } else {
             comment.markAsDeleted();
             commentSaveService.save(comment);
