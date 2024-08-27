@@ -77,8 +77,10 @@ public class PostUseCaseImpl implements PostUsecase {
     public void update(Long postId, PostDTO.Update dto, List<MultipartFile> files, Long userId) throws UserNotMatchException {
         Post post = validateOwner(postId, userId);
 
-        List<String> fileUrls;
-        fileUrls = fileSaveService.uploadFiles(files);
+        List<String> fileUrls = post.getFileUrls();
+        List<String> uploadedFileUrls = fileSaveService.uploadFiles(files);
+
+        fileUrls.addAll(uploadedFileUrls);
 
         postUpdateService.update(post, dto, fileUrls);
     }

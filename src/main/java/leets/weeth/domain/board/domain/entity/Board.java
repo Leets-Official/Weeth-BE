@@ -53,7 +53,7 @@ public class Board extends BaseEntity {
     }
 
     public void decreaseCommentCount() {
-        if(commentCount > 0) {
+        if (commentCount > 0) {
             commentCount--;
         }
     }
@@ -67,17 +67,13 @@ public class Board extends BaseEntity {
     public void updateUpperClass(NoticeDTO.Update dto, List<String> fileUrls) {
         this.title = dto.title();
         this.content = dto.content();
-        if (!fileUrls.isEmpty()) {
-            this.fileUrls = fileUrls;
-        }
+        this.fileUrls = fileUrls;
     }
 
     public void updateUpperClass(PostDTO.Update dto, List<String> fileUrls) {
         this.title = dto.title();
         this.content = dto.content();
-        if (!fileUrls.isEmpty()) {
-            this.fileUrls = fileUrls;
-        }
+        this.fileUrls = fileUrls;
     }
 
 }

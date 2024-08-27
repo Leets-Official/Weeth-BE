@@ -77,8 +77,11 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     public void update(Long noticeId, NoticeDTO.Update dto, List<MultipartFile> files, Long userId) throws UserNotMatchException {
         Notice notice = validateOwner(noticeId, userId);
 
-        List<String> fileUrls;
-        fileUrls = fileSaveService.uploadFiles(files);
+        List<String> fileUrls = notice.getFileUrls();
+        List<String> uploadedFileUrls = fileSaveService.uploadFiles(files);
+
+        fileUrls.addAll(uploadedFileUrls);
+
         noticeUpdateService.update(notice, dto, fileUrls);
     }
 
