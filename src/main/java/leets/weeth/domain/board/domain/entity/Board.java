@@ -67,13 +67,17 @@ public class Board extends BaseEntity {
     public void updateUpperClass(NoticeDTO.Update dto, List<String> fileUrls) {
         this.title = dto.title();
         this.content = dto.content();
-        this.fileUrls = fileUrls;
+        if (!fileUrls.isEmpty()) {
+            this.fileUrls = fileUrls;
+        }
     }
 
     public void updateUpperClass(PostDTO.Update dto, List<String> fileUrls) {
         this.title = dto.title();
         this.content = dto.content();
-        this.fileUrls = fileUrls;
+        if (!fileUrls.isEmpty()) {
+            this.fileUrls = fileUrls;
+        }
     }
 
 }
