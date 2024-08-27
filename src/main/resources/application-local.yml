@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/weeth_v2
+    url: jdbc:mysql://localhost:3306/weeth
     username: admin
     password: Weeth1234!
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -13,21 +13,15 @@ spring:
       ddl-auto: validate
   servlet:
     multipart:
-      max-file-size: 30MB
-      max-request-size: 30MB
+      max-file-size: 20MB
+      max-request-size: 40MB
       resolve-lazily: true
-
-# MySQL 유저 생성 및 스키마 생성 터미널 명령어
-#   터미널 혹은 프로그램으로 루트 사용자 접속 후,
-#     1. CREATE DATABASE weeth
-#     2. CREATE USER 'admin'@'%' identified by 'Weeth1234!'
-#     3. GRANT ALL PRIVILEGES ON *.* 'admin'@'%';
 
 weeth:
   jwt:
     key: f825f47437e5088c37e9e1fcd93fbc61dbb06d54b34471e47e9475e6f607d35f
     access:
-      expiration: 999999999999
+      expiration: ${ACCESS_EXP}
       header: ${ACCESS_HEAD}
     refresh:
       expiration: ${REFRESH_EXP}
