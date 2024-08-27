@@ -136,6 +136,8 @@ Weeth는 가천대학교 IT 학술동아리 Leets를 위한 동아리 관리 서
 
 ### 로그인, 홈
 
+더 나은 사용자 경험을 위해 엔터로 로그인, 유효한 토큰을 지니고 있는 경우 자동 로그인 기능을 추가했습니다. <br>
+
 <p align="center">  
  <img src="https://github.com/user-attachments/assets/f1d8ee1c-d26b-4079-92f3-2535f8255d20" height="500px">
      <img src="https://github.com/user-attachments/assets/d8277577-c894-4d47-bc14-36f47e4c3832" height="500px">
@@ -144,7 +146,8 @@ Weeth는 가천대학교 IT 학술동아리 Leets를 위한 동아리 관리 서
 
 ### 캘린더
 
-
+동아리의 일정을 한 눈에 볼 수 있는 캘린더입니다. <br>
+동아리 운영진만 관리할 수 있게 구현하였습니다. <br>
 
 <p align="center">  
  <img src="https://github.com/user-attachments/assets/102b2fad-cfc5-4782-a850-f5bd98584b55" height="500px">
@@ -155,7 +158,9 @@ Weeth는 가천대학교 IT 학술동아리 Leets를 위한 동아리 관리 서
 
 ### 출석
 
-출석은 정기모임 당일에 제공되는 출석 코드를 사용해 출석을 저장합니다.
+출석은 정기모임 당일에 제공되는 출석 코드를 사용해 출석을 저장합니다. <br>
+출석 코드는 랜덤으로 생성되고, 정기모임이 진행될 때만 출석 체크가 가능합니다. <br>
+출석 코드는 관리자 페이지에서 확인할 수 있으며, 정기모임이 종료한 후 출석 마감을 통해 출석을 관리할 수 있습니다. <br>
 
 <p align="center">  
  <img src="https://github.com/user-attachments/assets/f99eee33-8493-423c-b032-aca33b2d5a14" height="500px">
@@ -166,6 +171,8 @@ Weeth는 가천대학교 IT 학술동아리 Leets를 위한 동아리 관리 서
 
 ### 게시판
 
+공지사항은 운영진만 관리할 수 있게 구현하였으며, 스터디 게시판은 동아리원 모두가 자유롭게 사용할 수 있도록 하였습니다. <br>
+매주 스터디 발표를 진행하기 때문에 발표자료의 공유 효율성을 위해 파일 첨부가 가능하도록 게시판을 구현했습니다. <br>
 
 <p align="center">  
  <img src="https://github.com/user-attachments/assets/c35dd751-c8a7-40ef-bc3f-bb35711c65d5" height="500px">
@@ -176,7 +183,6 @@ Weeth는 가천대학교 IT 학술동아리 Leets를 위한 동아리 관리 서
 
 ### 멤버
 
-
 <p align="center">  
  <img src="https://github.com/user-attachments/assets/f0d40a3d-086f-47fe-9659-2705e2681523" height="500px">
    <img src="https://github.com/user-attachments/assets/d2c1a7c0-dd05-4c32-ac36-9b4d7509b082" height="500px">
@@ -185,6 +191,9 @@ Weeth는 가천대학교 IT 학술동아리 Leets를 위한 동아리 관리 서
 <br>
 
 ### 회비
+
+동아리 회비의 더욱 투명한 관리를 위해 동아리 원들이 회비 사용 내역을 조회할 수 있는 기능을 포함했습니다. <br>
+현재 기수에 등록된 회비와 사용 금액, 증빙자료를 조회할 수 있고, 다음 기수로 넘어갈 때 날짜 정보를 자동으로 업데이트해 다음 학기로 정보가 수정되도록 구현하였습니다. <br>
 
 <p align="center">  
  <img src="https://github.com/user-attachments/assets/b0cdee95-558c-4dc6-b0e6-86167aed23be" height="500px">
@@ -209,7 +218,8 @@ Weeth는 가천대학교 IT 학술동아리 Leets를 위한 동아리 관리 서
 
 ## 시스템 아키텍처
 
-깃허브 액션과 도커를 사용하여 안정적인 CICD 파이프라인을 구축
+깃허브 액션과 도커를 사용하여 안정적인 CICD 파이프라인을 구축 <br>
+AWS의 클라우드 서비스를 적극적으로 활용해 운영 환경을 구성하였고, 서브 도메인 설정과 https 설정을 통해 사용자 - 클라이언트 - 서버 간 모든 요청을 암호화 했습니다.
 <p align="center">  
 <img alt="system Architecture" src="https://github.com/user-attachments/assets/828a52db-7125-4f33-b5e7-2ec514a9e3f2" width="800px">
 </p>
