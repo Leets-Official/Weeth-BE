@@ -35,7 +35,11 @@ public interface MeetingMapper {
         return new Random().nextInt(9000) + 1000;
     }
 
-    // 차후 필히 리팩토링 할 것. 정기모임의 멤버수 로직 변경
+    /*
+    차후 필히 리팩토링 할 것
+    -> 정기 모임의 참여하는 인원의 멤버수를 어떻게 관리할지.
+    해당 코드는 일시적인 대안책임
+     */
     default Integer getMemberCount(Meeting meeting) {
         return (int)meeting.getAttendances().stream()
                 .filter(attendance -> !attendance.getUser().getStatus().equals(Status.BANNED))
