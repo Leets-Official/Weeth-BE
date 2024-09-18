@@ -2,6 +2,7 @@ package leets.weeth.domain.schedule.application.mapper;
 
 import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.user.domain.entity.User;
+import leets.weeth.domain.user.domain.entity.enums.Status;
 import org.mapstruct.*;
 
 import java.util.Random;
@@ -34,7 +35,11 @@ public interface MeetingMapper {
         return new Random().nextInt(9000) + 1000;
     }
 
+    // 차후 필히 리팩토링 할 것. 정기모임의 멤버수 로직 변경
     default Integer getMemberCount(Meeting meeting) {
-        return meeting.getAttendances().size();
+        return (int)meeting.getAttendances().stream()
+                .filter(attendance -> !attendance.getUser().getStatus().equals(Status.BANNED))
+                .filter(attendance -> !attendance.getUser().getStatus().equals(Status.LEFT))
+                .count();
     }
 }
