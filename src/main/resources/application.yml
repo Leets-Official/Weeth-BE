@@ -11,6 +11,7 @@ spring:
     suffix: .html
 
 springdoc:
+  use-fqn: true
   swagger-ui:
     operations-sorter: method
     tags-sorter: alpha
