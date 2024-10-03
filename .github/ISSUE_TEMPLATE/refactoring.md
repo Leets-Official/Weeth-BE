@@ -1,7 +1,7 @@
 ---
 name: Refactor report
 about: Create a report to help us improve
-title: "#number Refactor: name (#10 Refactor: blahblah)"
+title: "Refactor #number name (Refactor #10 blahblah)"
 labels: ''
 assignees: ''
 
