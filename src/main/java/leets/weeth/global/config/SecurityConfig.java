@@ -2,6 +2,8 @@ package leets.weeth.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import leets.weeth.domain.user.domain.repository.UserRepository;
+import leets.weeth.global.auth.authentication.CustomAccessDeniedHandler;
+import leets.weeth.global.auth.authentication.CustomAuthenticationEntryPoint;
 import leets.weeth.global.auth.jwt.filter.JwtAuthenticationProcessingFilter;
 import leets.weeth.global.auth.jwt.service.JwtService;
 import leets.weeth.global.auth.login.filter.CustomJsonUsernamePasswordAuthenticationFilter;
@@ -44,6 +46,9 @@ public class SecurityConfig {
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
 
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
@@ -77,6 +82,10 @@ public class SecurityConfig {
 
                 .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)
                 .addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
+                                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                                .accessDeniedHandler(customAccessDeniedHandler))
                 .build();
     }
 
@@ -85,7 +94,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://weeth.site", "https://www.weeth.site", "https://api.weeth.site", "http://192.168.45.100:3000", "https://release.d20ak9a5jaa0tr.amplifyapp.com"));
+        configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setExposedHeaders(Arrays.asList("Authorization, Authorization_refresh"));
