@@ -2,8 +2,10 @@ name: Weeth-BE CICD
 
 on:
   push:
-    branches: [ "main" ]
-
+    branches:
+      - "main"
+      - "develop"   # develop 브랜치에도 빌드 실행
+      - "Refactor/*"  # Refactor로 시작하는 브랜치에도 빌드 실행
 
 jobs:
   build:
@@ -43,26 +45,21 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USER_NAME }}/weeth .
           docker push ${{ secrets.DOCKER_USER_NAME }}/weeth
 
-      # EC2 ssh 연결 후 이미지 pull
-      - name: Deploy to server
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build  # CI 파이프라인의 build 작업이 끝나야 deploy가 실행됨
+
+    steps:
+      # EC2 서버로 배포
+      - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_SECRET_HOST }}
-          username: ubuntu
+          username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SECRET_PEM }}
-          envs: GITHUB_SHA
+          port: 22
           script: |
-            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=running")
-            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
-              sudo docker stop $EXISTING_CONTAINER_ID
-              sudo docker rm $EXISTING_CONTAINER_ID
-            fi
-
-            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "status=exited")
-            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
-              sudo docker rm $EXISTING_CONTAINER_ID
-            fi
-            
-            sudo docker pull ${{ secrets.DOCKER_USER_NAME }}/weeth
-            sudo docker run --name spring -d -p 8080:8080 --env-file ./weeth.env -e TZ=Asia/Seoul ${{ secrets.DOCKER_USER_NAME }}/weeth
-            sudo docker image prune -a -f
+            # 이동 경로
+            cd /home/ubuntu
+            # deploy.sh 실행
+            sudo ./deploy.sh
