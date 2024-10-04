@@ -1,4 +1,5 @@
 HELP.md
+weeth-dev.env
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar

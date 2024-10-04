@@ -1,0 +1,75 @@
+name: Weeth-BE CI/CD
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # gradle caching
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*gradle*','**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # gradle 빌드
+      - name: Build with Gradle Wrapper
+        run: ./gradlew build
+
+      # 빌드된 JAR 파일 확인
+      - name: List JAR files
+        run: ls build/libs
+
+      # Docker build & push
+      - name: Docker build & push
+        run: |
+          docker login -u ${{ secrets.DEV_DOCKER_USER_EMAIL }} -p ${{ secrets.DEV_DOCKER_USER_TOKEN }}
+          docker build -t ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth .
+          docker push ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/develop'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_EC2_SECRET_HOST }}
+          username: ubuntu
+          key: ${{ secrets.DEV_EC2_SECRET_PEM }}
+          envs: GITHUB_SHA
+          script: |
+            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=running")
+            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
+              sudo docker stop $EXISTING_CONTAINER_ID
+              sudo docker rm $EXISTING_CONTAINER_ID
+            fi
+
+            sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+            sudo docker run --name spring -d -p 8080:8080 --env-file ./weeth-dev.env -e TZ=Asia/Seoul ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+            sudo docker image prune -a -f
