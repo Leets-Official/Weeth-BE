@@ -2,7 +2,7 @@ package leets.weeth.domain.penalty.domain.service;
 
 import leets.weeth.domain.penalty.domain.entity.Penalty;
 import leets.weeth.domain.penalty.domain.repository.PenaltyRepository;
-import leets.weeth.global.common.error.exception.custom.PenaltyNotFoundException;
+import leets.weeth.domain.penalty.application.exception.PenaltyNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

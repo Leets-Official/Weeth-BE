@@ -9,9 +9,9 @@ import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.schedule.domain.service.MeetingGetService;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
-import leets.weeth.global.common.error.exception.custom.AttendanceCodeMismatchException;
-import leets.weeth.global.common.error.exception.custom.AttendanceNotFoundException;
-import leets.weeth.global.common.error.exception.custom.MeetingNotFoundException;
+import leets.weeth.domain.attendance.application.exception.AttendanceCodeMismatchException;
+import leets.weeth.domain.attendance.application.exception.AttendanceNotFoundException;
+import leets.weeth.domain.schedule.application.exception.MeetingNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -2,7 +2,7 @@ package leets.weeth.domain.account.domain.service;
 
 import leets.weeth.domain.account.domain.entity.Account;
 import leets.weeth.domain.account.domain.repository.AccountRepository;
-import leets.weeth.global.common.error.exception.custom.AccountNotFoundException;
+import leets.weeth.domain.account.application.exception.AccountNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

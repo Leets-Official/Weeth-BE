@@ -10,7 +10,7 @@ import leets.weeth.domain.user.domain.entity.enums.Position;
 import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.domain.user.domain.entity.enums.Status;
 import leets.weeth.global.common.entity.BaseEntity;
-import leets.weeth.global.common.error.exception.custom.CardinalNotFoundException;
+import leets.weeth.domain.user.application.exception.CardinalNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

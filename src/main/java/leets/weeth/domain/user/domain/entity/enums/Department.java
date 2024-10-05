@@ -1,6 +1,6 @@
 package leets.weeth.domain.user.domain.entity.enums;
 
-import leets.weeth.global.common.error.exception.custom.DepartmentNotFoundException;
+import leets.weeth.domain.user.application.exception.DepartmentNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

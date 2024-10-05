@@ -4,7 +4,7 @@ import leets.weeth.domain.schedule.application.dto.ScheduleDTO;
 import leets.weeth.domain.schedule.application.mapper.ScheduleMapper;
 import leets.weeth.domain.schedule.domain.entity.Event;
 import leets.weeth.domain.schedule.domain.repository.EventRepository;
-import leets.weeth.global.common.error.exception.custom.EventNotFoundException;
+import leets.weeth.domain.schedule.application.exception.EventNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
