@@ -1,4 +1,4 @@
-package leets.weeth.global.config;
+package leets.weeth.global.config.swagger;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;

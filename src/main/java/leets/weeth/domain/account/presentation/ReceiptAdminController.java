@@ -5,6 +5,7 @@ import leets.weeth.domain.account.application.dto.ReceiptDTO;
 import leets.weeth.domain.account.application.usecase.ReceiptUseCase;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,7 +18,7 @@ public class ReceiptAdminController {
 
     private final ReceiptUseCase receiptUseCase;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonResponse<Void> save(@RequestPart @Valid ReceiptDTO.Save dto, @RequestPart(required = false) List<MultipartFile> images) {
         receiptUseCase.save(dto, images);
         return CommonResponse.createSuccess();
