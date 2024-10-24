@@ -7,7 +7,7 @@ import leets.weeth.domain.account.application.mapper.ReceiptMapper;
 import leets.weeth.domain.account.domain.entity.Account;
 import leets.weeth.domain.account.domain.service.AccountGetService;
 import leets.weeth.domain.account.domain.service.AccountSaveService;
-import leets.weeth.global.common.error.exception.custom.AccountExistsException;
+import leets.weeth.domain.account.application.exception.AccountExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

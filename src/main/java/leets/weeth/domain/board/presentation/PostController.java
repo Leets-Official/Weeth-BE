@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import leets.weeth.domain.board.application.dto.PostDTO;
 import leets.weeth.domain.board.application.usecase.PostUsecase;
 import leets.weeth.global.auth.annotation.CurrentUser;
-import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
+import leets.weeth.domain.user.application.exception.UserNotMatchException;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

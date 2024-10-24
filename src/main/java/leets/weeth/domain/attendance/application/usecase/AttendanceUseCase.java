@@ -1,6 +1,6 @@
 package leets.weeth.domain.attendance.application.usecase;
 
-import leets.weeth.global.common.error.exception.custom.AttendanceCodeMismatchException;
+import leets.weeth.domain.attendance.application.exception.AttendanceCodeMismatchException;
 
 import java.time.LocalDate;
 

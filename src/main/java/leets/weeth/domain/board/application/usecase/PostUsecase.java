@@ -1,8 +1,7 @@
 package leets.weeth.domain.board.application.usecase;
 
 import leets.weeth.domain.board.application.dto.PostDTO;
-import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
-import org.springframework.web.bind.annotation.RequestParam;
+import leets.weeth.domain.user.application.exception.UserNotMatchException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

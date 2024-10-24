@@ -2,7 +2,7 @@ package leets.weeth.domain.account.domain.service;
 
 import leets.weeth.domain.account.domain.entity.Receipt;
 import leets.weeth.domain.account.domain.repository.ReceiptRepository;
-import leets.weeth.global.common.error.exception.custom.ReceiptNotFoundException;
+import leets.weeth.domain.account.application.exception.ReceiptNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

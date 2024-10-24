@@ -3,7 +3,7 @@ package leets.weeth.domain.attendance.presentation;
 import leets.weeth.domain.attendance.application.dto.AttendanceDTO;
 import leets.weeth.domain.attendance.application.usecase.AttendanceUseCase;
 import leets.weeth.global.auth.annotation.CurrentUser;
-import leets.weeth.global.common.error.exception.custom.AttendanceCodeMismatchException;
+import leets.weeth.domain.attendance.application.exception.AttendanceCodeMismatchException;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
