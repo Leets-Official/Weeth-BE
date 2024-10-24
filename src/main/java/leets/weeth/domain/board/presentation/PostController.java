@@ -7,6 +7,7 @@ import leets.weeth.global.auth.annotation.CurrentUser;
 import leets.weeth.domain.user.application.exception.UserNotMatchException;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,7 +22,7 @@ public class PostController {
 
     private final PostUsecase postUsecase;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonResponse<String> save(@RequestPart @Valid PostDTO.Save dto,
                                        @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                        @CurrentUser Long userId) {
@@ -39,7 +40,7 @@ public class PostController {
         return CommonResponse.createSuccess(postUsecase.findPost(postId));
     }
 
-    @PatchMapping("/{postId}")
+    @PatchMapping(value = "/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonResponse<String> update(@PathVariable Long postId,
                                          @RequestPart @Valid PostDTO.Update dto,
                                          @RequestPart(value = "files", required = false) List<MultipartFile> files,

@@ -8,6 +8,7 @@ import leets.weeth.global.auth.annotation.CurrentUser;
 import leets.weeth.domain.user.application.exception.UserNotMatchException;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +23,7 @@ public class NoticeAdminController {
 
     private final NoticeUsecase noticeUsecase;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonResponse<String> save(@RequestPart @Valid NoticeDTO.Save dto,
                                        @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                        @Parameter(hidden = true) @CurrentUser Long userId) {
@@ -30,7 +31,7 @@ public class NoticeAdminController {
         return CommonResponse.createSuccess(NOTICE_CREATED_SUCCESS.getMessage());
     }
 
-    @PatchMapping("/{noticeId}")
+    @PatchMapping(value = "/{noticeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonResponse<String> update(@PathVariable Long noticeId,
                                          @RequestPart @Valid NoticeDTO.Update dto,
                                          @RequestPart(value = "files", required = false) List<MultipartFile> files,
