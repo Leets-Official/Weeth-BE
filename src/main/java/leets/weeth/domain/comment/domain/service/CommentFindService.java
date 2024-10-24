@@ -2,7 +2,7 @@ package leets.weeth.domain.comment.domain.service;
 
 import leets.weeth.domain.comment.domain.entity.Comment;
 import leets.weeth.domain.comment.domain.repository.CommentRepository;
-import leets.weeth.global.common.error.exception.custom.CommentNotFoundException;
+import leets.weeth.domain.comment.application.exception.CommentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

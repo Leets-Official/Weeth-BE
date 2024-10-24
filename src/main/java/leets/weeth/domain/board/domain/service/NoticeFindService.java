@@ -2,7 +2,7 @@ package leets.weeth.domain.board.domain.service;
 
 import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.board.domain.repository.NoticeRepository;
-import leets.weeth.global.common.error.exception.custom.NoticeNotFoundException;
+import leets.weeth.domain.board.application.exception.NoticeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

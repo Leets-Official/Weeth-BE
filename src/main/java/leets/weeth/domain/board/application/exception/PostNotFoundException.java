@@ -1,4 +1,4 @@
-package leets.weeth.global.common.error.exception.custom;
+package leets.weeth.domain.board.application.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 
