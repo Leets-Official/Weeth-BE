@@ -70,7 +70,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
-                                        .requestMatchers("/api/v1/users/apply", "/api/v1/users/email").permitAll()
+                                        .requestMatchers("/api/v1/users/apply", "/api/v1/users/email", "/api/v1/users/refresh").permitAll()
                                         .requestMatchers("/health-check").permitAll()
                                         .requestMatchers("/admin","/admin/login","/admin/account", "/admin/meeting", "/admin/member","/admin/penalty",
                                                 "/js/**", "/img/**", "/scss/**", "/vendor/**").permitAll()
