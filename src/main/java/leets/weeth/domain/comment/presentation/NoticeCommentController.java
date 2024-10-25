@@ -1,5 +1,9 @@
 package leets.weeth.domain.comment.presentation;
 
+import static leets.weeth.domain.comment.presentation.ResponseMessage.COMMENT_CREATED_SUCCESS;
+import static leets.weeth.domain.comment.presentation.ResponseMessage.COMMENT_DELETED_SUCCESS;
+import static leets.weeth.domain.comment.presentation.ResponseMessage.COMMENT_UPDATED_SUCCESS;
+
 import jakarta.validation.Valid;
 import leets.weeth.domain.comment.application.dto.CommentDTO;
 import leets.weeth.domain.comment.application.usecase.NoticeCommentUsecase;
@@ -9,7 +13,6 @@ import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import static leets.weeth.domain.comment.domain.entity.enums.ResponseMessage.*;
 
 @RestController
 @RequiredArgsConstructor
