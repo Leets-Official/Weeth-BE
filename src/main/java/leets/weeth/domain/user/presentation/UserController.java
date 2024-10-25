@@ -1,7 +1,10 @@
 package leets.weeth.domain.user.presentation;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import leets.weeth.domain.user.application.dto.UserDTO;
+import leets.weeth.domain.user.application.usecase.UserManageUseCase;
 import leets.weeth.domain.user.application.usecase.UserUseCase;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.global.auth.annotation.CurrentUser;
@@ -21,6 +24,7 @@ import static leets.weeth.domain.user.application.dto.UserDTO.*;
 public class UserController {
 
     private final UserUseCase userUseCase;
+    private final UserManageUseCase userManageUseCase;
     private final UserGetService userGetService;
 
     @PostMapping("/apply")
@@ -54,5 +58,10 @@ public class UserController {
     public CommonResponse<Void> leave(@CurrentUser Long userId) {
         userUseCase.leave(userId);
         return CommonResponse.createSuccess();
+    }
+
+    @PostMapping("/refresh")
+    public CommonResponse<UserDTO.refreshResponse> refresh(@Valid @RequestBody UserDTO.refreshRequest dto, HttpServletRequest request) {
+        return CommonResponse.createSuccess(userManageUseCase.refresh(dto, request));
     }
 }
