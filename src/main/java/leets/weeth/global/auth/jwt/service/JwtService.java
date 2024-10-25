@@ -4,7 +4,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import leets.weeth.domain.user.domain.repository.UserRepository;
+import leets.weeth.global.auth.jwt.exception.InvalidTokenException;
+import leets.weeth.global.auth.jwt.exception.TokenNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,28 +21,22 @@ import java.util.Optional;
 @Slf4j
 public class JwtService {
 
-    @Value("${weeth.jwt.key}")
-    private String key;
-
-    @Value("${weeth.jwt.access.expiration}")
-    private Long accessTokenExpirationPeriod;
-
-    @Value("${weeth.jwt.refresh.expiration}")
-    private Long refreshTokenExpirationPeriod;
-
-    @Value("${weeth.jwt.access.header}")
-    private String accessHeader;
-
-    @Value("${weeth.jwt.refresh.header}")
-    private String refreshHeader;
-
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String EMAIL_CLAIM = "email";
     private static final String ID_CLAIM = "id";
     private static final String BEARER = "Bearer ";
 
-    private final UserRepository userRepository;
+    @Value("${weeth.jwt.key}")
+    private String key;
+    @Value("${weeth.jwt.access.expiration}")
+    private Long accessTokenExpirationPeriod;
+    @Value("${weeth.jwt.refresh.expiration}")
+    private Long refreshTokenExpirationPeriod;
+    @Value("${weeth.jwt.access.header}")
+    private String accessHeader;
+    @Value("${weeth.jwt.refresh.header}")
+    private String refreshHeader;
 
     public String createAccessToken(Long id, String email) {
         Date now = new Date();
@@ -53,33 +48,20 @@ public class JwtService {
                 .sign(Algorithm.HMAC512(key));
     }
 
-    public String createRefreshToken() {
+    public String createRefreshToken(Long id) {
         Date now = new Date();
         return JWT.create()
                 .withSubject(REFRESH_TOKEN_SUBJECT)
                 .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
+                .withClaim(ID_CLAIM, id)
                 .sign(Algorithm.HMAC512(key));
     }
 
-    public void sendAccessToken(HttpServletResponse response, String accessToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setHeader(accessHeader, accessToken);
-
-        log.info("재발급된 Access Token : {}", accessToken);
-    }
-
-    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
-        setAccessTokenHeader(response, accessToken);
-        setRefreshTokenHeader(response, refreshToken);
-
-        log.info("Access Token, Refresh Token 헤더 설정 완료");
-    }
-
-    public Optional<String> extractRefreshToken(HttpServletRequest request) {
+    public String extractRefreshToken(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(refreshHeader))
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
-                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+                .map(refreshToken -> refreshToken.replace(BEARER, ""))
+                .orElseThrow(TokenNotFoundException::new);
     }
 
     public Optional<String> extractAccessToken(HttpServletRequest request) {
@@ -101,17 +83,35 @@ public class JwtService {
         }
     }
 
-    public Optional<Long> extractId(String accessToken) {
+    public Optional<Long> extractId(String token) {
         try {
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(key))
                     .build()
-                    .verify(accessToken)
+                    .verify(token)
                     .getClaim(ID_CLAIM)
                     .asLong());
         } catch (Exception e) {
             log.error("액세스 토큰이 유효하지 않습니다.");
             return Optional.empty();
         }
+    }
+
+    public boolean validate(String token) {
+        try {
+            JWT.require(Algorithm.HMAC512(key)).build().verify(token);
+            return true;
+        } catch (Exception e) {
+            log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
+            throw new InvalidTokenException();
+        }
+    }
+
+    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
+        response.setStatus(HttpServletResponse.SC_OK);
+        setAccessTokenHeader(response, accessToken);
+        setRefreshTokenHeader(response, refreshToken);
+
+        log.info("Access Token, Refresh Token 헤더 설정 완료");
     }
 
     public void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
@@ -122,13 +122,5 @@ public class JwtService {
         response.setHeader(refreshHeader, refreshToken);
     }
 
-    public boolean isTokenValid(String token) {
-        try {
-            JWT.require(Algorithm.HMAC512(key)).build().verify(token);
-            return true;
-        } catch (Exception e) {
-            log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
-            return false;
-        }
-    }
+
 }
