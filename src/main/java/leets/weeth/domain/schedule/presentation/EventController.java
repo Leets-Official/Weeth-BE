@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static leets.weeth.domain.schedule.application.dto.EventDTO.Response;
+import static leets.weeth.domain.schedule.presentation.ResponseMessage.EVENT_FIND_SUCCESS;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,8 +20,8 @@ public class EventController {
 
     @GetMapping("/{eventId}")
     public CommonResponse<Response> find(@PathVariable Long eventId) {
-        return CommonResponse.createSuccess(ResponseMessage.EVENT_FIND_SUCCESS.getStatusCode(),
-                ResponseMessage.EVENT_FIND_SUCCESS.getMessage(),
+        return CommonResponse.createSuccess(EVENT_FIND_SUCCESS.getStatusCode(),
+                EVENT_FIND_SUCCESS.getMessage(),
                 eventUseCase.find(eventId));
     }
 
