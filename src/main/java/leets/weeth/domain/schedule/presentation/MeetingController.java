@@ -20,7 +20,6 @@ public class MeetingController {
 
     @GetMapping("/{meetingId}")
     public CommonResponse<MeetingDTO.Response> find(@PathVariable Long meetingId) {
-        return CommonResponse.createSuccess(MEETING_FIND_SUCCESS.getStatusCode(),
-                MEETING_FIND_SUCCESS.getMessage(),meetingUseCase.find(meetingId));
+        return CommonResponse.createSuccess(MEETING_FIND_SUCCESS.getMessage(),meetingUseCase.find(meetingId));
     }
 }

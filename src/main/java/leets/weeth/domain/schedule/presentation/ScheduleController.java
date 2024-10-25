@@ -27,14 +27,12 @@ public class ScheduleController {
     @GetMapping("/monthly")
     public CommonResponse<List<Response>> findByMonthly(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
                                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
-        return CommonResponse.createSuccess(SCHEDULE_MONTHLY_FIND_SUCCESS.getStatusCode(),
-                SCHEDULE_MONTHLY_FIND_SUCCESS.getMessage(),scheduleUseCase.findByMonthly(start, end));
+        return CommonResponse.createSuccess(SCHEDULE_MONTHLY_FIND_SUCCESS.getMessage(),scheduleUseCase.findByMonthly(start, end));
     }
 
     @GetMapping("/yearly")
     public CommonResponse<Map<Integer, List<Response>>> findByYearly(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
                                                                      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
-        return CommonResponse.createSuccess(SCHEDULE_YEARLY_FIND_SUCCESS.getStatusCode(),
-                SCHEDULE_YEARLY_FIND_SUCCESS.getMessage(),scheduleUseCase.findByYearly(start, end));
+        return CommonResponse.createSuccess(SCHEDULE_YEARLY_FIND_SUCCESS.getMessage(),scheduleUseCase.findByYearly(start, end));
     }
 }

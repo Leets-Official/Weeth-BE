@@ -23,21 +23,18 @@ public class penaltyAdminController {
     @PostMapping
     public CommonResponse<String> assignPenalty(@RequestBody PenaltyDTO.Save dto){
         penaltyUsecase.save(dto);
-        return CommonResponse.createSuccess(PENALTY_ASSIGN_SUCCESS.getStatusCode(),
-                PENALTY_ASSIGN_SUCCESS.getMessage());
+        return CommonResponse.createSuccess(PENALTY_ASSIGN_SUCCESS.getMessage());
     }
 
     @GetMapping
     public CommonResponse<List<PenaltyDTO.Response>> findAll(){
-        return CommonResponse.createSuccess(PENALTY_FIND_ALL_SUCCESS.getStatusCode(),
-                PENALTY_FIND_ALL_SUCCESS.getMessage(),penaltyUsecase.find());
+        return CommonResponse.createSuccess(PENALTY_FIND_ALL_SUCCESS.getMessage(),penaltyUsecase.find());
     }
 
     @DeleteMapping
     public CommonResponse<String> delete(@RequestParam Long penaltyId){
         penaltyUsecase.delete(penaltyId);
-        return CommonResponse.createSuccess(PENALTY_DELETE_SUCCESS.getStatusCode(),
-                PENALTY_DELETE_SUCCESS.getMessage());
+        return CommonResponse.createSuccess(PENALTY_DELETE_SUCCESS.getMessage());
     }
 
 }

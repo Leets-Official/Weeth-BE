@@ -23,21 +23,18 @@ public class EventAdminController {
     @PostMapping
     public CommonResponse<Void> save(@Valid @RequestBody Save dto, @CurrentUser Long userId) {
         eventUseCase.save(dto, userId);
-        return CommonResponse.createSuccess(EVENT_SAVE_SUCCESS.getStatusCode(),
-                EVENT_SAVE_SUCCESS.getMessage());
+        return CommonResponse.createSuccess(EVENT_SAVE_SUCCESS.getMessage());
     }
 
     @PatchMapping("/{eventId}")
     public CommonResponse<Void> update(@PathVariable Long eventId, @Valid @RequestBody EventDTO.Update dto, @CurrentUser Long userId) {
         eventUseCase.update(eventId, dto, userId);
-        return CommonResponse.createSuccess(EVENT_UPDATE_SUCCESS.getStatusCode(),
-                EVENT_UPDATE_SUCCESS.getMessage());
+        return CommonResponse.createSuccess(EVENT_UPDATE_SUCCESS.getMessage());
     }
 
     @DeleteMapping("/{eventId}")
     public CommonResponse<Void> delete(@PathVariable Long eventId) {
         eventUseCase.delete(eventId);
-        return CommonResponse.createSuccess(EVENT_DELETE_SUCCESS.getStatusCode(),
-                EVENT_DELETE_SUCCESS.getMessage());
+        return CommonResponse.createSuccess(EVENT_DELETE_SUCCESS.getMessage());
     }
 }

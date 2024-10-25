@@ -28,34 +28,29 @@ public class MeetingAdminController {
     @PostMapping
     public CommonResponse<Void> save(@RequestBody @Valid Save dto, @CurrentUser Long userId) {
         meetingUseCase.save(dto, userId);
-        return CommonResponse.createSuccess(MEETING_SAVE_SUCCESS.getStatusCode(),
-                MEETING_SAVE_SUCCESS.getMessage());
+        return CommonResponse.createSuccess(MEETING_SAVE_SUCCESS.getMessage());
     }
 
     @PostMapping("/{cardinal}")
     public CommonResponse<List<MeetingDTO.ResponseAll>> findAll(@PathVariable Integer cardinal) {
-        return CommonResponse.createSuccess(MEETING_CARDINAL_FIND_SUCCESS.getStatusCode(),
-                MEETING_CARDINAL_FIND_SUCCESS.getMessage(),meetingUseCase.findAll(cardinal));
+        return CommonResponse.createSuccess(MEETING_CARDINAL_FIND_SUCCESS.getMessage(),meetingUseCase.findAll(cardinal));
 
     }
 
     @GetMapping
     public CommonResponse<List<MeetingDTO.ResponseAll>> findAll() {
-        return CommonResponse.createSuccess(MEETING_ALL_FIND_SUCCESS.getStatusCode(),
-                MEETING_ALL_FIND_SUCCESS.getMessage(),meetingUseCase.findAll());
+        return CommonResponse.createSuccess(MEETING_ALL_FIND_SUCCESS.getMessage(),meetingUseCase.findAll());
     }
 
     @PatchMapping("/{meetingId}")
     public CommonResponse<Void> update(@RequestBody @Valid Update dto, @CurrentUser Long userId, @PathVariable Long meetingId) {
         meetingUseCase.update(dto, userId, meetingId);
-        return CommonResponse.createSuccess(MEETING_UPDATE_SUCCESS.getStatusCode(),
-                MEETING_UPDATE_SUCCESS.getMessage());
+        return CommonResponse.createSuccess(MEETING_UPDATE_SUCCESS.getMessage());
     }
 
     @DeleteMapping("/{meetingId}")
     public CommonResponse<Void> delete(@PathVariable Long meetingId) {
         meetingUseCase.delete(meetingId);
-        return CommonResponse.createSuccess(MEETING_DELETE_SUCCESS.getStatusCode(),
-                MEETING_DELETE_SUCCESS.getMessage());
+        return CommonResponse.createSuccess(MEETING_DELETE_SUCCESS.getMessage());
     }
 }
