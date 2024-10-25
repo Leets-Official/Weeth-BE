@@ -1,5 +1,6 @@
 package leets.weeth.domain.user.presentation;
 
+import leets.weeth.domain.user.application.dto.response.UserResponseDto;
 import leets.weeth.domain.user.application.usecase.UserUseCase;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static leets.weeth.domain.user.application.dto.UserDTO.AdminResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,7 +17,7 @@ public class UserAdminController {
     private final UserUseCase userUseCase;
 
     @GetMapping("/all")
-    public CommonResponse<List<AdminResponse>> findAll() {
+    public CommonResponse<List<UserResponseDto.AdminResponse>> findAll() {
         return CommonResponse.createSuccess(userUseCase.findAllByAdmin());
     }
 

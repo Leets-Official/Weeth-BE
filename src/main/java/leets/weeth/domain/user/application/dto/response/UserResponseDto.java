@@ -1,8 +1,5 @@
-package leets.weeth.domain.user.application.dto;
+package leets.weeth.domain.user.application.dto.response;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import leets.weeth.domain.user.domain.entity.enums.Position;
 import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.domain.user.domain.entity.enums.Status;
@@ -10,27 +7,7 @@ import leets.weeth.domain.user.domain.entity.enums.Status;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class UserDTO {
-
-    public record SignUp (
-        @NotBlank        String name,
-        @Email @NotBlank String email,
-        @NotBlank        String password,
-        @NotBlank        String studentId,
-        @NotBlank        String tel,
-        @NotNull         String position,
-        @NotNull         String department,
-        @NotNull         Integer cardinal
-    ) {}
-
-    public record Update (
-            @NotBlank        String name,
-            @Email @NotBlank String email,
-            @NotBlank        String password,
-            @NotBlank        String studentId,
-            @NotBlank        String tel,
-            @NotNull         String department
-    ) {}
+public class UserResponseDto {
 
     public record Response(
             Integer id,
@@ -62,4 +39,10 @@ public class UserDTO {
             LocalDateTime createdAt,
             LocalDateTime modifiedAt
     ) {}
+
+    public record refreshResponse(
+            String accessToken,
+            String refreshToken
+    ){}
+
 }
