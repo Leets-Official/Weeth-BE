@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static leets.weeth.domain.board.domain.entity.enums.ResponseMessage.*;
+import static leets.weeth.domain.board.presentation.ResponseMessage.*;
 
 @RestController
 @RequiredArgsConstructor
