@@ -26,33 +26,39 @@ public class UserController {
     @PostMapping("/apply")
     public CommonResponse<Void> apply(@RequestBody @Valid SignUp dto) {
         userUseCase.apply(dto);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess(ResponseMessage.USER_APPLY_SUCCESS.getStatusCode(),
+                ResponseMessage.USER_APPLY_SUCCESS.getMessage());
     }
 
     @GetMapping("/email")
     public CommonResponse<Boolean> checkEmail(@RequestParam String email) {
-        return CommonResponse.createSuccess(userGetService.check(email));
+        return CommonResponse.createSuccess(ResponseMessage.USER_EMAIL_CHECK_SUCCESS.getStatusCode(),
+                ResponseMessage.USER_EMAIL_CHECK_SUCCESS.getMessage(),userGetService.check(email));
     }
 
     @GetMapping("/all")
     public CommonResponse<Map<Integer, List<Response>>> findAll() {
-        return CommonResponse.createSuccess(userUseCase.findAll());
+        return CommonResponse.createSuccess(ResponseMessage.USER_FIND_ALL_SUCCESS.getStatusCode(),
+                ResponseMessage.USER_FIND_ALL_SUCCESS.getMessage(),userUseCase.findAll());
     }
 
     @GetMapping
     public CommonResponse<Response> find(@CurrentUser Long userId) {
-        return CommonResponse.createSuccess(userUseCase.find(userId));
+        return CommonResponse.createSuccess(ResponseMessage.USER_FIND_BY_ID_SUCCESS.getStatusCode(),
+                ResponseMessage.USER_FIND_BY_ID_SUCCESS.getMessage(),userUseCase.find(userId));
     }
 
     @PatchMapping
     public CommonResponse<Void> update(@RequestBody @Valid Update dto, @CurrentUser Long userId) {
         userUseCase.update(dto, userId);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess( ResponseMessage.USER_UPDATE_SUCCESS.getStatusCode(),
+                ResponseMessage.USER_UPDATE_SUCCESS.getMessage());
     }
 
     @DeleteMapping
     public CommonResponse<Void> leave(@CurrentUser Long userId) {
         userUseCase.leave(userId);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess(ResponseMessage.USER_LEAVE_SUCCESS.getStatusCode(),
+                ResponseMessage.USER_LEAVE_SUCCESS.getMessage());
     }
 }
