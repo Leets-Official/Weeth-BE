@@ -1,5 +1,7 @@
 package leets.weeth.domain.attendance.presentation;
 
+import static leets.weeth.domain.attendance.presentation.ResponseMessage.ATTENDANCE_CLOSE_SUCCESS;
+
 import leets.weeth.domain.attendance.application.usecase.AttendanceUseCase;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,6 @@ public class AttendanceAdminController {
     @PatchMapping
     public CommonResponse<Void> close(@RequestParam LocalDate now, @RequestParam Integer cardinal) {
         attendanceUseCase.close(now, cardinal);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess(ATTENDANCE_CLOSE_SUCCESS.getMessage());
     }
 }
