@@ -23,29 +23,34 @@ public class MeetingAdminController {
     @PostMapping
     public CommonResponse<Void> save(@RequestBody @Valid Save dto, @CurrentUser Long userId) {
         meetingUseCase.save(dto, userId);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess(ResponseMessage.MEETING_SAVE_SUCCESS.getStatusCode(),
+                ResponseMessage.MEETING_SAVE_SUCCESS.getMessage());
     }
 
     @PostMapping("/{cardinal}")
     public CommonResponse<List<MeetingDTO.ResponseAll>> findAll(@PathVariable Integer cardinal) {
-        return CommonResponse.createSuccess(meetingUseCase.findAll(cardinal));
+        return CommonResponse.createSuccess( ResponseMessage.MEETING_CARDINAL_FIND_SUCCESS.getStatusCode(),
+                ResponseMessage.MEETING_CARDINAL_FIND_SUCCESS.getMessage(),meetingUseCase.findAll(cardinal));
 
     }
 
     @GetMapping
     public CommonResponse<List<MeetingDTO.ResponseAll>> findAll() {
-        return CommonResponse.createSuccess(meetingUseCase.findAll());
+        return CommonResponse.createSuccess( ResponseMessage.MEETING_ALL_FIND_SUCCESS.getStatusCode(),
+                ResponseMessage.MEETING_ALL_FIND_SUCCESS.getMessage(),meetingUseCase.findAll());
     }
 
     @PatchMapping("/{meetingId}")
     public CommonResponse<Void> update(@RequestBody @Valid Update dto, @CurrentUser Long userId, @PathVariable Long meetingId) {
         meetingUseCase.update(dto, userId, meetingId);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess(ResponseMessage.MEETING_UPDATE_SUCCESS.getStatusCode(),
+                ResponseMessage.MEETING_UPDATE_SUCCESS.getMessage());
     }
 
     @DeleteMapping("/{meetingId}")
     public CommonResponse<Void> delete(@PathVariable Long meetingId) {
         meetingUseCase.delete(meetingId);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess(ResponseMessage.MEETING_DELETE_SUCCESS.getStatusCode(),
+                ResponseMessage.MEETING_DELETE_SUCCESS.getMessage());
     }
 }
