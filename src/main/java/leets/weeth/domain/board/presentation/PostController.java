@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static leets.weeth.domain.board.domain.entity.enums.ResponseMessage.*;
+import static leets.weeth.domain.board.presentation.ResponseMessage.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,12 +32,12 @@ public class PostController {
 
     @GetMapping
     public CommonResponse<List<PostDTO.ResponseAll>> findPosts(@RequestParam(required = false) Long postId, @RequestParam Integer count) {
-        return CommonResponse.createSuccess(postUsecase.findPosts(postId, count));
+        return CommonResponse.createSuccess(POST_FIND_ALL_SUCCESS.getMessage(), postUsecase.findPosts(postId, count));
     }
 
     @GetMapping("/{postId}")
     public CommonResponse<PostDTO.Response> findPost(@PathVariable Long postId) {
-        return CommonResponse.createSuccess(postUsecase.findPost(postId));
+        return CommonResponse.createSuccess(POST_FIND_BY_ID_SUCCESS.getMessage(),postUsecase.findPost(postId));
     }
 
     @PatchMapping(value = "/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
