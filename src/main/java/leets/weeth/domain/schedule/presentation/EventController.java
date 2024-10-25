@@ -19,7 +19,9 @@ public class EventController {
 
     @GetMapping("/{eventId}")
     public CommonResponse<Response> find(@PathVariable Long eventId) {
-        return CommonResponse.createSuccess(eventUseCase.find(eventId));
+        return CommonResponse.createSuccess(ResponseMessage.EVENT_FIND_SUCCESS.getStatusCode(),
+                ResponseMessage.EVENT_FIND_SUCCESS.getMessage(),
+                eventUseCase.find(eventId));
     }
 
 }
