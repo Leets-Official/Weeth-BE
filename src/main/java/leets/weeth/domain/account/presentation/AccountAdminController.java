@@ -1,5 +1,7 @@
 package leets.weeth.domain.account.presentation;
 
+import static leets.weeth.domain.account.presentation.ResponseMessage.ACCOUNT_SAVE_SUCCESS;
+
 import jakarta.validation.Valid;
 import leets.weeth.domain.account.application.dto.AccountDTO;
 import leets.weeth.domain.account.application.usecase.AccountUseCase;
@@ -20,6 +22,6 @@ public class AccountAdminController {
     @PostMapping
     public CommonResponse<Void> save(@RequestBody @Valid AccountDTO.Save dto) {
         accountUseCase.save(dto);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess(ACCOUNT_SAVE_SUCCESS.getMessage());
     }
 }
