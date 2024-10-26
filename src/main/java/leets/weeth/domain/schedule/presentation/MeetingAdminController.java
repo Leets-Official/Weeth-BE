@@ -1,5 +1,6 @@
 package leets.weeth.domain.schedule.presentation;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import leets.weeth.domain.schedule.application.dto.MeetingDTO;
 import leets.weeth.domain.schedule.application.usecase.MeetingUseCase;
@@ -26,7 +27,7 @@ public class MeetingAdminController {
     private final MeetingUseCase meetingUseCase;
 
     @PostMapping
-    public CommonResponse<Void> save(@RequestBody @Valid Save dto, @CurrentUser Long userId) {
+    public CommonResponse<Void> save(@RequestBody @Valid Save dto, @Parameter(hidden = true) @CurrentUser Long userId) {
         meetingUseCase.save(dto, userId);
         return CommonResponse.createSuccess(MEETING_SAVE_SUCCESS.getMessage());
     }
@@ -43,7 +44,7 @@ public class MeetingAdminController {
     }
 
     @PatchMapping("/{meetingId}")
-    public CommonResponse<Void> update(@RequestBody @Valid Update dto, @CurrentUser Long userId, @PathVariable Long meetingId) {
+    public CommonResponse<Void> update(@RequestBody @Valid Update dto, @Parameter(hidden = true) @CurrentUser Long userId, @PathVariable Long meetingId) {
         meetingUseCase.update(dto, userId, meetingId);
         return CommonResponse.createSuccess(MEETING_UPDATE_SUCCESS.getMessage());
     }
