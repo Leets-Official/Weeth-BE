@@ -4,6 +4,6 @@ import leets.weeth.global.common.exception.BusinessLogicException;
 
 public class UserNotFoundException extends BusinessLogicException {
     public UserNotFoundException() {
-        super(400, "존재하지 않는 유저입니다.");
+        super(404, "존재하지 않는 유저입니다.");
     }
 }
