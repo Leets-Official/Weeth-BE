@@ -1,7 +1,7 @@
 package leets.weeth.domain.schedule.application.exception;
 
-import jakarta.persistence.EntityNotFoundException;
+import leets.weeth.global.common.exception.BusinessLogicException;
 
-public class MeetingNotFoundException extends EntityNotFoundException {
-    public MeetingNotFoundException() {super("존재하지 않는 정기 모임입니다.");}
+public class MeetingNotFoundException extends BusinessLogicException {
+    public MeetingNotFoundException() {super(404, "존재하지 않는 정기 모임입니다.");}
 }

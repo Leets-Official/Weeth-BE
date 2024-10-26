@@ -3,7 +3,7 @@ package leets.weeth.global.common.exception;
 import lombok.Getter;
 
 @Getter
-public class BusinessLogicException extends RuntimeException {
+public abstract class BusinessLogicException extends RuntimeException {
 
     private final int statusCode;
 
