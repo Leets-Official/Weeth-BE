@@ -1,5 +1,6 @@
 package leets.weeth.domain.user.presentation;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import leets.weeth.domain.user.application.usecase.UserUseCase;
@@ -46,18 +47,18 @@ public class UserController {
     }
 
     @GetMapping
-    public CommonResponse<Response> find(@CurrentUser Long userId) {
+    public CommonResponse<Response> find(@Parameter(hidden = true) @CurrentUser Long userId) {
         return CommonResponse.createSuccess(USER_FIND_BY_ID_SUCCESS.getMessage(),userUseCase.find(userId));
     }
 
     @PatchMapping
-    public CommonResponse<Void> update(@RequestBody @Valid Update dto, @CurrentUser Long userId) {
+    public CommonResponse<Void> update(@RequestBody @Valid Update dto, @Parameter(hidden = true) @CurrentUser Long userId) {
         userUseCase.update(dto, userId);
         return CommonResponse.createSuccess(USER_UPDATE_SUCCESS.getMessage());
     }
 
     @DeleteMapping
-    public CommonResponse<Void> leave(@CurrentUser Long userId) {
+    public CommonResponse<Void> leave(@Parameter(hidden = true) @CurrentUser Long userId) {
         userUseCase.leave(userId);
         return CommonResponse.createSuccess(USER_LEAVE_SUCCESS.getMessage());
     }
