@@ -1,9 +1,9 @@
 package leets.weeth.domain.schedule.application.exception;
 
-import jakarta.persistence.EntityNotFoundException;
+import leets.weeth.global.common.exception.BusinessLogicException;
 
-public class EventNotFoundException extends EntityNotFoundException {
+public class EventNotFoundException extends BusinessLogicException {
     public EventNotFoundException() {
-        super("존재하지 않는 일정입니다.");
+        super(400, "존재하지 않는 일정입니다.");
     }
 }

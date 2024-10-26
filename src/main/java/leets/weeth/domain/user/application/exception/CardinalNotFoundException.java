@@ -1,7 +1,7 @@
 package leets.weeth.domain.user.application.exception;
 
-import jakarta.persistence.EntityNotFoundException;
+import leets.weeth.global.common.exception.BusinessLogicException;
 
-public class CardinalNotFoundException extends EntityNotFoundException {
-    public CardinalNotFoundException() {super("존재하지 않는 기수입니다.");}
+public class CardinalNotFoundException extends BusinessLogicException {
+    public CardinalNotFoundException() {super(400, "존재하지 않는 기수입니다.");}
 }

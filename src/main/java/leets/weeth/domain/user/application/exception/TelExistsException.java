@@ -1,7 +1,7 @@
 package leets.weeth.domain.user.application.exception;
 
-import jakarta.persistence.EntityNotFoundException;
+import leets.weeth.global.common.exception.BusinessLogicException;
 
-public class TelExistsException extends EntityNotFoundException {
-    public TelExistsException() {super("이미 가입된 전화번호 입니다.");}
+public class TelExistsException extends BusinessLogicException {
+    public TelExistsException() {super(400, "이미 가입된 전화번호 입니다.");}
 }
