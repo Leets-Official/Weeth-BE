@@ -9,12 +9,12 @@ public class CommonResponse<T> {    // 응답 객체
     private String message;
     private T data;
 
-    public static <T> CommonResponse<T> createSuccess() {
-        return createSuccess(null);
+    public static <T> CommonResponse<T> createSuccess(String message) {
+        return new CommonResponse<>(200, message, null);
     }
 
-    public static <T> CommonResponse<T> createSuccess(T data) {     // 성공
-        return new CommonResponse<T>(200, "Success", data);
+    public static <T> CommonResponse<T> createSuccess(String message, T data) {     // 성공
+        return new CommonResponse<>(200, message, data);
     }
 
     public static <T> CommonResponse<T> createFailure(int code, String message) {   // 실패

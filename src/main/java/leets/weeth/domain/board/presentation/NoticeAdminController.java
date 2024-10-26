@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static leets.weeth.domain.board.domain.entity.enums.ResponseMessage.*;
+import static leets.weeth.domain.board.presentation.ResponseMessage.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,13 +35,13 @@ public class NoticeAdminController {
     public CommonResponse<String> update(@PathVariable Long noticeId,
                                          @RequestPart @Valid NoticeDTO.Update dto,
                                          @RequestPart(value = "files", required = false) List<MultipartFile> files,
-                                         @CurrentUser Long userId) throws UserNotMatchException {
+                                         @Parameter(hidden = true) @CurrentUser Long userId) throws UserNotMatchException {
         noticeUsecase.update(noticeId, dto, files, userId);
         return CommonResponse.createSuccess(NOTICE_UPDATED_SUCCESS.getMessage());
     }
 
     @DeleteMapping("/{noticeId}")
-    public CommonResponse<String> delete(@PathVariable Long noticeId, @CurrentUser Long userId) throws UserNotMatchException {
+    public CommonResponse<String> delete(@PathVariable Long noticeId, @Parameter(hidden = true) @CurrentUser Long userId) throws UserNotMatchException {
         noticeUsecase.delete(noticeId, userId);
         return CommonResponse.createSuccess(NOTICE_DELETED_SUCCESS.getMessage());
     }

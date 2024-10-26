@@ -1,5 +1,7 @@
 package leets.weeth.domain.account.presentation;
 
+import static leets.weeth.domain.account.presentation.ResponseMessage.ACCOUNT_FIND_SUCCESS;
+
 import leets.weeth.domain.account.application.dto.AccountDTO;
 import leets.weeth.domain.account.application.usecase.AccountUseCase;
 import leets.weeth.global.common.response.CommonResponse;
@@ -18,6 +20,6 @@ public class AccountController {
 
     @GetMapping("/{cardinal}")
     public CommonResponse<AccountDTO.Response> find(@PathVariable Integer cardinal) {
-        return CommonResponse.createSuccess(accountUseCase.find(cardinal));
+        return CommonResponse.createSuccess(ACCOUNT_FIND_SUCCESS.getMessage(),accountUseCase.find(cardinal));
     }
 }

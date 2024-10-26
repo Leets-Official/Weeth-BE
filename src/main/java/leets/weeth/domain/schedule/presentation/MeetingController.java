@@ -1,5 +1,7 @@
 package leets.weeth.domain.schedule.presentation;
 
+import static leets.weeth.domain.schedule.presentation.ResponseMessage.MEETING_FIND_SUCCESS;
+
 import leets.weeth.domain.schedule.application.dto.MeetingDTO;
 import leets.weeth.domain.schedule.application.usecase.MeetingUseCase;
 import leets.weeth.global.common.response.CommonResponse;
@@ -18,6 +20,6 @@ public class MeetingController {
 
     @GetMapping("/{meetingId}")
     public CommonResponse<MeetingDTO.Response> find(@PathVariable Long meetingId) {
-        return CommonResponse.createSuccess(meetingUseCase.find(meetingId));
+        return CommonResponse.createSuccess(MEETING_FIND_SUCCESS.getMessage(),meetingUseCase.find(meetingId));
     }
 }

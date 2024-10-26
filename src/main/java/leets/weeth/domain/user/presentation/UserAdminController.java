@@ -8,6 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static leets.weeth.domain.user.application.dto.UserDTO.AdminResponse;
+import static leets.weeth.domain.user.presentation.ResponseMessage.USER_ACCEPT_SUCCESS;
+import static leets.weeth.domain.user.presentation.ResponseMessage.USER_APPLY_OB_SUCCESS;
+import static leets.weeth.domain.user.presentation.ResponseMessage.USER_BAN_SUCCESS;
+import static leets.weeth.domain.user.presentation.ResponseMessage.USER_FIND_ALL_SUCCESS;
+import static leets.weeth.domain.user.presentation.ResponseMessage.USER_PASSWORD_RESET_SUCCESS;
+import static leets.weeth.domain.user.presentation.ResponseMessage.USER_ROLE_UPDATE_SUCCESS;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,36 +24,36 @@ public class UserAdminController {
 
     @GetMapping("/all")
     public CommonResponse<List<AdminResponse>> findAll() {
-        return CommonResponse.createSuccess(userUseCase.findAllByAdmin());
+        return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(),userUseCase.findAllByAdmin());
     }
 
     @PatchMapping
     public CommonResponse<Void> accept(@RequestParam Long userId) {
         userUseCase.accept(userId);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess(USER_ACCEPT_SUCCESS.getMessage());
     }
 
     @DeleteMapping
     public CommonResponse<Void> ban(@RequestParam Long userId) {
         userUseCase.ban(userId);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess(USER_BAN_SUCCESS.getMessage());
     }
 
     @PatchMapping("/role")
     public CommonResponse<Void> update(@RequestParam Long userId, @RequestParam String role) {
         userUseCase.update(userId, role);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess(USER_ROLE_UPDATE_SUCCESS.getMessage());
     }
 
     @PatchMapping("/apply")
     public CommonResponse<Void> applyOB(@RequestParam Long userId, @RequestParam Integer cardinal) {
         userUseCase.applyOB(userId, cardinal);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess(USER_APPLY_OB_SUCCESS.getMessage());
     }
 
     @PatchMapping("/reset")
     public CommonResponse<Void> resetPassword(@RequestParam Long userId) {
         userUseCase.reset(userId);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess(USER_PASSWORD_RESET_SUCCESS.getMessage());
     }
 }
