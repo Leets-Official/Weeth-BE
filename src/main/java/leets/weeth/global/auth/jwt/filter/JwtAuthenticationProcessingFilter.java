@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
+import leets.weeth.global.auth.jwt.exception.TokenNotFoundException;
 import leets.weeth.global.auth.jwt.service.JwtProvider;
 import leets.weeth.global.auth.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.TooManyListenersException;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -38,9 +40,14 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             return;
         }
         // 유저 캐싱 도입
-        String accessToken = jwtService.extractAccessToken(request).get();
-        if (jwtProvider.validate(accessToken)) {
-            saveAuthentication(find(accessToken));
+        try {
+            String accessToken = jwtService.extractAccessToken(request)
+                    .orElseThrow(TokenNotFoundException::new);
+            if (jwtProvider.validate(accessToken)) {
+                saveAuthentication(find(accessToken));
+            }
+        } catch (RuntimeException e) {
+            log.info("error token: {}", e.getMessage());
         }
 
         filterChain.doFilter(request, response);
