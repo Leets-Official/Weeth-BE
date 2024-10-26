@@ -6,6 +6,10 @@ import jakarta.validation.constraints.NotNull;
 
 public class UserRequestDto {
 
+    public record login (
+            @NotBlank String authCode
+    ){}
+
     public record SignUp (
             @NotBlank String name,
             @Email @NotBlank String email,
