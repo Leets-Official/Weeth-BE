@@ -13,6 +13,10 @@ import leets.weeth.domain.user.domain.service.UserUpdateService;
 import leets.weeth.domain.user.application.exception.StudentIdExistsException;
 import leets.weeth.domain.user.application.exception.TelExistsException;
 import leets.weeth.global.auth.jwt.service.JwtRedisService;
+import leets.weeth.global.auth.jwt.service.JwtProvider;
+import leets.weeth.global.auth.kakao.KakaoAuthService;
+import leets.weeth.global.auth.kakao.dto.KakaoTokenResponse;
+import leets.weeth.global.auth.kakao.dto.KakaoUserInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,7 +44,48 @@ public class UserUseCaseImpl implements UserUseCase {
     private final AttendanceSaveService attendanceSaveService;
     private final MeetingGetService meetingGetService;
 
+    private final JwtProvider jwtProvider;
     private final JwtRedisService jwtRedisService;
+
+    private final KakaoAuthService kakaoAuthService;
+
+    @Override
+    public SocialLoginResponse login(login dto) {
+        KakaoTokenResponse tokenResponse = kakaoAuthService.getKakaoToken(dto.authCode());
+        KakaoUserInfoResponse userInfo = kakaoAuthService.getUserInfo(tokenResponse.access_token());
+
+        String email = userInfo.kakao_account().email();
+
+        if(existUser(email)){
+            return login(email);
+        }
+        return registerUser(email);
+
+    }
+    public boolean existUser(String email){
+        return !userGetService.check(email);
+    }
+
+    private SocialLoginResponse registerUser(String email) {
+        User user = User.builder()
+                .email(email)
+                .build();
+        userSaveService.save(user);
+
+        // redis에 리프레시 저장
+        String accessToken = jwtProvider.createAccessToken(user.getId(), email);
+        String refreshToken = jwtProvider.createRefreshToken(user.getId());
+        return new SocialLoginResponse(user.getId(), accessToken, refreshToken);
+    }
+
+    private SocialLoginResponse login(String email){
+        User user = userGetService.find(email);
+
+        // redis에 리프레시 저장
+        String accessToken = jwtProvider.createAccessToken(user.getId(), email);
+        String refreshToken = jwtProvider.createRefreshToken(user.getId());
+        return new SocialLoginResponse(user.getId(), accessToken, refreshToken);
+    }
 
     @Override
     public void apply(SignUp dto) {
