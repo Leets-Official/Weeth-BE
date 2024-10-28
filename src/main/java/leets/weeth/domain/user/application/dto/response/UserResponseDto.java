@@ -1,5 +1,6 @@
 package leets.weeth.domain.user.application.dto.response;
 
+import leets.weeth.domain.user.domain.entity.enums.LoginStatus;
 import leets.weeth.domain.user.domain.entity.enums.Position;
 import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.domain.user.domain.entity.enums.Status;
@@ -11,6 +12,7 @@ public class UserResponseDto {
 
     public record SocialLoginResponse(
             Long id,
+            LoginStatus status,
             String accessToken,
             String refreshToken
     ) {

@@ -19,6 +19,7 @@ import java.util.Map;
 import static leets.weeth.domain.user.application.dto.request.UserRequestDto.*;
 import static leets.weeth.domain.user.application.dto.response.UserResponseDto.Response;
 import static leets.weeth.domain.user.application.dto.response.UserResponseDto.SocialLoginResponse;
+import static leets.weeth.domain.user.domain.entity.enums.LoginStatus.LOGIN;
 import static leets.weeth.domain.user.presentation.ResponseMessage.*;
 
 @Tag(name = "UserController", description = "사용자 관련 컨트롤러")
@@ -33,7 +34,11 @@ public class UserController {
 
     @PostMapping("/social-login")
     public CommonResponse<SocialLoginResponse> login(@RequestBody @Valid login dto) {
-        return CommonResponse.createSuccess(USER_LOGIN_SUCCESS.getMessage(), userUseCase.login(dto));
+        SocialLoginResponse response = userUseCase.login(dto);
+        if (response.status() == LOGIN) {
+            return CommonResponse.createSuccess(SOCIAL_LOGIN_SUCCESS.getMessage(), response);
+        }
+        return CommonResponse.createSuccess(SOCIAL_REGISTER_SUCCESS.getMessage(), response);
     }
 
     @PostMapping("/apply")
