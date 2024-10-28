@@ -21,7 +21,12 @@ public class JwtManageUseCase {
 
     // 토큰 발급
     public JwtDto create(Long id, String email){
-        return new JwtDto(jwtProvider.createAccessToken(id, email), jwtProvider.createRefreshToken(id));
+        String accessToken = jwtProvider.createAccessToken(id, email);
+        String refreshToken = jwtProvider.createRefreshToken(id);
+
+        updateToken(email, refreshToken);
+
+        return new JwtDto(accessToken, refreshToken);
     }
 
     // 토큰 헤더로 전송
@@ -29,10 +34,6 @@ public class JwtManageUseCase {
         jwtService.sendAccessAndRefreshToken(response, dto.accessToken(), dto.refreshToken());
     }
 
-    // 리프레시 토큰 업데이트
-    public void updateToken(String email, String refreshToken){
-        jwtRedisService.set(email, refreshToken);
-    }
     // 토큰 재발급
     public JwtDto reIssueToken(String email, HttpServletRequest request){
         String requestToken = jwtService.extractRefreshToken(request);
@@ -47,4 +48,10 @@ public class JwtManageUseCase {
 
         return token;
     }
+
+    // 리프레시 토큰 업데이트
+    private void updateToken(String email, String refreshToken){
+        jwtRedisService.set(email, refreshToken);
+    }
+
 }

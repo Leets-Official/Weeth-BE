@@ -29,13 +29,11 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         User user = userGetService.find(email);
         Long userId = user.getId();
 
+        // 토큰 발급 및 레디스에 저장
         JwtDto token = jwtManageUseCase.create(userId, email);
 
         // 바디에 담아서 보내기
         jwtManageUseCase.sendToken(token, response); // 응답 헤더에 AccessToken, RefreshToken 실어서 응답
-
-        // Redis에서 업데이트
-        jwtManageUseCase.updateToken(email, token.refreshToken());
     }
 
     private String extractEmail(Authentication authentication) {
