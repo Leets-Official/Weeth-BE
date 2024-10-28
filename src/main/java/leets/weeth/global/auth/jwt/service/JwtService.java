@@ -22,6 +22,7 @@ public class JwtService {
     private static final String EMAIL_CLAIM = "email";
     private static final String ID_CLAIM = "id";
     private static final String BEARER = "Bearer ";
+    private static final String LOGIN_SUCCESS = "자체 로그인 성공.";
 
     @Value("${weeth.jwt.key}")
     private String key;
@@ -76,7 +77,7 @@ public class JwtService {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        String message = new ObjectMapper().writeValueAsString(CommonResponse.createSuccess(new JwtDto(accessToken, refreshToken)));
+        String message = new ObjectMapper().writeValueAsString(CommonResponse.createSuccess(LOGIN_SUCCESS, new JwtDto(accessToken, refreshToken)));
         response.getWriter().write(message);
     }
 

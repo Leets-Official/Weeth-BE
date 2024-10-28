@@ -18,7 +18,9 @@ public enum ResponseMessage {
     USER_EMAIL_CHECK_SUCCESS("이메일 중복 검사가 성공적으로 처리되었습니다."),
     USER_FIND_BY_ID_SUCCESS("회원 정보가 성공적으로 조회되었습니다."),
     USER_UPDATE_SUCCESS("회원 정보가 성공적으로 수정되었습니다."),
-    USER_LEAVE_SUCCESS("회원 탈퇴가 성공적으로 처리되었습니다.");
+    USER_LEAVE_SUCCESS("회원 탈퇴가 성공적으로 처리되었습니다."),
+    USER_LOGIN_SUCCESS("로그인에 성공했습니다."),
+    JWT_REFRESH_SUCCESS("토큰 재발급에 성공했습니다.");
 
     private final String message;
 }
