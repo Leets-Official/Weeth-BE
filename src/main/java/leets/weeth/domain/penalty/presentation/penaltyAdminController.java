@@ -1,15 +1,17 @@
 package leets.weeth.domain.penalty.presentation;
 
+import static leets.weeth.domain.penalty.presentation.ResponseMessage.PENALTY_ASSIGN_SUCCESS;
+import static leets.weeth.domain.penalty.presentation.ResponseMessage.PENALTY_DELETE_SUCCESS;
+import static leets.weeth.domain.penalty.presentation.ResponseMessage.PENALTY_FIND_ALL_SUCCESS;
+
 import leets.weeth.domain.penalty.application.dto.PenaltyDTO;
 import leets.weeth.domain.penalty.application.usecase.PenaltyUsecase;
-import leets.weeth.domain.penalty.domain.entity.enums.ResponseMessage;
+
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static leets.weeth.domain.penalty.domain.entity.enums.ResponseMessage.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class penaltyAdminController {
 
     @GetMapping
     public CommonResponse<List<PenaltyDTO.Response>> findAll(){
-        return CommonResponse.createSuccess(penaltyUsecase.find());
+        return CommonResponse.createSuccess(PENALTY_FIND_ALL_SUCCESS.getMessage(),penaltyUsecase.find());
     }
 
     @DeleteMapping

@@ -1,5 +1,6 @@
 package leets.weeth.domain.board.presentation;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import leets.weeth.domain.board.application.dto.PostDTO;
 import leets.weeth.domain.board.application.usecase.PostUsecase;
@@ -13,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static leets.weeth.domain.board.domain.entity.enums.ResponseMessage.*;
+import static leets.weeth.domain.board.presentation.ResponseMessage.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,32 +26,32 @@ public class PostController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonResponse<String> save(@RequestPart @Valid PostDTO.Save dto,
                                        @RequestPart(value = "files", required = false) List<MultipartFile> files,
-                                       @CurrentUser Long userId) {
+                                       @Parameter(hidden = true) @CurrentUser Long userId) {
         postUsecase.save(dto, files, userId);
         return CommonResponse.createSuccess(POST_CREATED_SUCCESS.getMessage());
     }
 
     @GetMapping
     public CommonResponse<List<PostDTO.ResponseAll>> findPosts(@RequestParam(required = false) Long postId, @RequestParam Integer count) {
-        return CommonResponse.createSuccess(postUsecase.findPosts(postId, count));
+        return CommonResponse.createSuccess(POST_FIND_ALL_SUCCESS.getMessage(), postUsecase.findPosts(postId, count));
     }
 
     @GetMapping("/{postId}")
     public CommonResponse<PostDTO.Response> findPost(@PathVariable Long postId) {
-        return CommonResponse.createSuccess(postUsecase.findPost(postId));
+        return CommonResponse.createSuccess(POST_FIND_BY_ID_SUCCESS.getMessage(),postUsecase.findPost(postId));
     }
 
     @PatchMapping(value = "/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonResponse<String> update(@PathVariable Long postId,
                                          @RequestPart @Valid PostDTO.Update dto,
                                          @RequestPart(value = "files", required = false) List<MultipartFile> files,
-                                         @CurrentUser Long userId) throws UserNotMatchException {
+                                         @Parameter(hidden = true) @CurrentUser Long userId) throws UserNotMatchException {
         postUsecase.update(postId, dto, files, userId);
         return CommonResponse.createSuccess(POST_UPDATED_SUCCESS.getMessage());
     }
 
     @DeleteMapping("/{postId}")
-    public CommonResponse<String> delete(@PathVariable Long postId, @CurrentUser Long userId) throws UserNotMatchException {
+    public CommonResponse<String> delete(@PathVariable Long postId, @Parameter(hidden = true) @CurrentUser Long userId) throws UserNotMatchException {
         postUsecase.delete(postId, userId);
         return CommonResponse.createSuccess(POST_DELETED_SUCCESS.getMessage());
     }

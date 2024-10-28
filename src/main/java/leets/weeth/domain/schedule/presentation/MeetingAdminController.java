@@ -1,5 +1,6 @@
 package leets.weeth.domain.schedule.presentation;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import leets.weeth.domain.schedule.application.dto.MeetingDTO;
 import leets.weeth.domain.schedule.application.usecase.MeetingUseCase;
@@ -12,6 +13,11 @@ import java.util.List;
 
 import static leets.weeth.domain.schedule.application.dto.MeetingDTO.Save;
 import static leets.weeth.domain.schedule.application.dto.MeetingDTO.Update;
+import static leets.weeth.domain.schedule.presentation.ResponseMessage.MEETING_ALL_FIND_SUCCESS;
+import static leets.weeth.domain.schedule.presentation.ResponseMessage.MEETING_CARDINAL_FIND_SUCCESS;
+import static leets.weeth.domain.schedule.presentation.ResponseMessage.MEETING_DELETE_SUCCESS;
+import static leets.weeth.domain.schedule.presentation.ResponseMessage.MEETING_SAVE_SUCCESS;
+import static leets.weeth.domain.schedule.presentation.ResponseMessage.MEETING_UPDATE_SUCCESS;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,31 +27,31 @@ public class MeetingAdminController {
     private final MeetingUseCase meetingUseCase;
 
     @PostMapping
-    public CommonResponse<Void> save(@RequestBody @Valid Save dto, @CurrentUser Long userId) {
+    public CommonResponse<Void> save(@RequestBody @Valid Save dto, @Parameter(hidden = true) @CurrentUser Long userId) {
         meetingUseCase.save(dto, userId);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess(MEETING_SAVE_SUCCESS.getMessage());
     }
 
     @PostMapping("/{cardinal}")
     public CommonResponse<List<MeetingDTO.ResponseAll>> findAll(@PathVariable Integer cardinal) {
-        return CommonResponse.createSuccess(meetingUseCase.findAll(cardinal));
+        return CommonResponse.createSuccess(MEETING_CARDINAL_FIND_SUCCESS.getMessage(),meetingUseCase.findAll(cardinal));
 
     }
 
     @GetMapping
     public CommonResponse<List<MeetingDTO.ResponseAll>> findAll() {
-        return CommonResponse.createSuccess(meetingUseCase.findAll());
+        return CommonResponse.createSuccess(MEETING_ALL_FIND_SUCCESS.getMessage(),meetingUseCase.findAll());
     }
 
     @PatchMapping("/{meetingId}")
-    public CommonResponse<Void> update(@RequestBody @Valid Update dto, @CurrentUser Long userId, @PathVariable Long meetingId) {
+    public CommonResponse<Void> update(@RequestBody @Valid Update dto, @Parameter(hidden = true) @CurrentUser Long userId, @PathVariable Long meetingId) {
         meetingUseCase.update(dto, userId, meetingId);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess(MEETING_UPDATE_SUCCESS.getMessage());
     }
 
     @DeleteMapping("/{meetingId}")
     public CommonResponse<Void> delete(@PathVariable Long meetingId) {
         meetingUseCase.delete(meetingId);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess(MEETING_DELETE_SUCCESS.getMessage());
     }
 }

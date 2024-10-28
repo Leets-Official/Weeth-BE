@@ -1,5 +1,10 @@
 package leets.weeth.domain.comment.presentation;
 
+import static leets.weeth.domain.comment.presentation.ResponseMessage.COMMENT_CREATED_SUCCESS;
+import static leets.weeth.domain.comment.presentation.ResponseMessage.COMMENT_DELETED_SUCCESS;
+import static leets.weeth.domain.comment.presentation.ResponseMessage.COMMENT_UPDATED_SUCCESS;
+
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import leets.weeth.domain.comment.application.dto.CommentDTO;
 import leets.weeth.domain.comment.application.usecase.NoticeCommentUsecase;
@@ -9,7 +14,6 @@ import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import static leets.weeth.domain.comment.domain.entity.enums.ResponseMessage.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,19 +23,22 @@ public class NoticeCommentController {
     private final NoticeCommentUsecase noticeCommentUsecase;
 
     @PostMapping
-    public CommonResponse<String> saveNoticeComment(@RequestBody @Valid CommentDTO.Save dto, @PathVariable Long noticeId, @CurrentUser Long userId) {
+    public CommonResponse<String> saveNoticeComment(@RequestBody @Valid CommentDTO.Save dto, @PathVariable Long noticeId,
+                                                    @Parameter(hidden = true) @CurrentUser Long userId) {
         noticeCommentUsecase.saveNoticeComment(dto, noticeId, userId);
         return CommonResponse.createSuccess(COMMENT_CREATED_SUCCESS.getMessage());
     }
 
     @PatchMapping("{commentId}")
-    public CommonResponse<String> updateNoticeComment(@RequestBody @Valid CommentDTO.Update dto, @PathVariable Long noticeId, @PathVariable Long commentId, @CurrentUser Long userId) throws UserNotMatchException {
+    public CommonResponse<String> updateNoticeComment(@RequestBody @Valid CommentDTO.Update dto, @PathVariable Long noticeId,
+                                                      @PathVariable Long commentId,@Parameter(hidden = true) @CurrentUser Long userId) throws UserNotMatchException {
         noticeCommentUsecase.updateNoticeComment(dto, noticeId, commentId, userId);
         return CommonResponse.createSuccess(COMMENT_UPDATED_SUCCESS.getMessage());
     }
 
     @DeleteMapping("{commentId}")
-    public CommonResponse<String> deleteNoticeComment(@PathVariable Long commentId, @CurrentUser Long userId) throws UserNotMatchException {
+    public CommonResponse<String> deleteNoticeComment(@PathVariable Long commentId,
+                                                      @Parameter(hidden = true) @CurrentUser Long userId) throws UserNotMatchException {
         noticeCommentUsecase.deleteNoticeComment(commentId, userId);
         return CommonResponse.createSuccess(COMMENT_DELETED_SUCCESS.getMessage());
     }

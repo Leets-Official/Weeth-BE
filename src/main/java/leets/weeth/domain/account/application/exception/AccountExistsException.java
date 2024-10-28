@@ -1,9 +1,8 @@
 package leets.weeth.domain.account.application.exception;
 
+import leets.weeth.global.common.exception.BusinessLogicException;
 
-import jakarta.persistence.EntityExistsException;
-
-public class AccountExistsException extends EntityExistsException {
-    public AccountExistsException() { super("이미 생성된 장부입니다.");}
+public class AccountExistsException extends BusinessLogicException {
+    public AccountExistsException() { super(400, "이미 생성된 장부입니다.");}
 }
 
