@@ -1,41 +1,29 @@
 package leets.weeth.domain.user.application.usecase;
 
 import jakarta.servlet.http.HttpServletRequest;
-import leets.weeth.domain.user.application.dto.request.UserRequestDto;
-import leets.weeth.domain.user.application.dto.response.UserResponseDto;
-import leets.weeth.global.auth.jwt.service.JwtRedisService;
-import leets.weeth.global.auth.jwt.service.JwtService;
+import leets.weeth.global.auth.jwt.application.dto.JwtDto;
+import leets.weeth.global.auth.jwt.application.usecase.JwtManageUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static leets.weeth.domain.user.application.dto.request.UserRequestDto.refreshRequest;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserManageUseCaseImpl implements UserManageUseCase {
-    private final JwtService jwtService;
-    private final JwtRedisService jwtRedisService;
+    private final JwtManageUseCase jwtManageUseCase;
 
     @Override
     @Transactional
-    public UserResponseDto.refreshResponse refresh(UserRequestDto.refreshRequest dto, HttpServletRequest request) {
+    public JwtDto refresh(refreshRequest dto, HttpServletRequest request) {
 
-        String refreshToken = jwtService.extractRefreshToken(request);
-        jwtService.validate(refreshToken);
-        Long userId = jwtService.extractId(refreshToken).get();
-        String email = dto.email();
+        JwtDto token = jwtManageUseCase.reIssueToken(dto.email(), request);
 
-        // redis에 저장된 토큰과 비교
-        jwtRedisService.validateRefreshToken(email, refreshToken);
-
-        String newAccessToken = jwtService.createAccessToken(userId, email);
-        String newRefreshToken = jwtService.createRefreshToken(userId);
-
-        jwtRedisService.set(email, newRefreshToken);
-
-        log.info("RefreshToken 발급 완료: {}", email);
-        return new UserResponseDto.refreshResponse(newAccessToken, newRefreshToken);
+        log.info("RefreshToken 발급 완료: {}", dto.email());
+        return new JwtDto(token.accessToken(), token.refreshToken());
     }
 
 }

@@ -9,6 +9,13 @@ import java.util.List;
 
 public class UserResponseDto {
 
+    public record SocialLoginResponse(
+            Long id,
+            String accessToken,
+            String refreshToken
+    ) {
+    }
+
     public record Response(
             Integer id,
             String name,
@@ -19,9 +26,10 @@ public class UserResponseDto {
             List<Integer> cardinals,
             Position position,
             Role role
-    ) {}
+    ) {
+    }
 
-    public record AdminResponse (
+    public record AdminResponse(
             Integer id,
             String name,
             String email,
@@ -38,11 +46,7 @@ public class UserResponseDto {
             Integer penaltyCount,
             LocalDateTime createdAt,
             LocalDateTime modifiedAt
-    ) {}
-
-    public record refreshResponse(
-            String accessToken,
-            String refreshToken
-    ){}
+    ) {
+    }
 
 }

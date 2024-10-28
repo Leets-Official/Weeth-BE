@@ -3,6 +3,7 @@ package leets.weeth.global.auth.jwt.service;
 import leets.weeth.global.auth.jwt.exception.InvalidTokenException;
 import leets.weeth.global.auth.jwt.exception.RedisTokenNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JwtRedisService {
@@ -24,6 +26,7 @@ public class JwtRedisService {
     public void set(String email, String refreshToken) {
         String key = getKey(email);
         redisTemplate.opsForValue().set(key, refreshToken, expirationTime, TimeUnit.MILLISECONDS);
+        log.info("Refresh Token 저장/업데이트: {}", key);
     }
 
     public void delete(String email) {

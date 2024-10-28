@@ -1,9 +1,10 @@
 package leets.weeth.domain.user.application.usecase;
 
 import jakarta.servlet.http.HttpServletRequest;
-import leets.weeth.domain.user.application.dto.request.UserRequestDto;
-import leets.weeth.domain.user.application.dto.response.UserResponseDto;
+import leets.weeth.global.auth.jwt.application.dto.JwtDto;
+
+import static leets.weeth.domain.user.application.dto.request.UserRequestDto.refreshRequest;
 
 public interface UserManageUseCase {
-    UserResponseDto.refreshResponse refresh(UserRequestDto.refreshRequest dto, HttpServletRequest request);
+    JwtDto refresh(refreshRequest dto, HttpServletRequest request);
 }

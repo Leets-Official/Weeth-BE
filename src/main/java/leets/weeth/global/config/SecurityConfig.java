@@ -1,17 +1,18 @@
 package leets.weeth.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import leets.weeth.domain.user.domain.repository.UserRepository;
+import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.global.auth.authentication.CustomAccessDeniedHandler;
 import leets.weeth.global.auth.authentication.CustomAuthenticationEntryPoint;
+import leets.weeth.global.auth.jwt.application.usecase.JwtManageUseCase;
 import leets.weeth.global.auth.jwt.filter.JwtAuthenticationProcessingFilter;
+import leets.weeth.global.auth.jwt.service.JwtProvider;
 import leets.weeth.global.auth.jwt.service.JwtService;
 import leets.weeth.global.auth.login.filter.CustomJsonUsernamePasswordAuthenticationFilter;
 import leets.weeth.global.auth.login.handler.LoginFailureHandler;
 import leets.weeth.global.auth.login.handler.LoginSuccessHandler;
 import leets.weeth.global.auth.login.service.LoginService;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,8 +32,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -42,8 +41,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     private final LoginService loginService;
+    private final JwtProvider jwtProvider;
     private final JwtService jwtService;
-    private final UserRepository userRepository;
+    private final JwtManageUseCase jwtManageUseCase;
+    private final UserGetService userGetService;
     private final ObjectMapper objectMapper;
 
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
@@ -70,9 +71,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
-                                        .requestMatchers("/api/v1/users/apply", "/api/v1/users/email", "/api/v1/users/refresh").permitAll()
+                                        .requestMatchers("/api/v1/users/social-login", "/api/v1/users/apply", "/api/v1/users/email", "/api/v1/users/refresh").permitAll()
                                         .requestMatchers("/health-check").permitAll()
-                                        .requestMatchers("/admin","/admin/login","/admin/account", "/admin/meeting", "/admin/member","/admin/penalty",
+                                        .requestMatchers("/admin", "/admin/login", "/admin/account", "/admin/meeting", "/admin/member", "/admin/penalty",
                                                 "/js/**", "/img/**", "/scss/**", "/vendor/**").permitAll()
                                         // 스웨거 경로
                                         .requestMatchers("/v3/api-docs", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/swagger/**").permitAll()
@@ -120,7 +121,7 @@ public class SecurityConfig {
 
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(jwtService, userRepository);
+        return new LoginSuccessHandler(jwtManageUseCase, userGetService);
     }
 
     @Bean
@@ -140,6 +141,6 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
-        return new JwtAuthenticationProcessingFilter(jwtService, userRepository);
+        return new JwtAuthenticationProcessingFilter(jwtProvider, jwtService, userGetService);
     }
 }
