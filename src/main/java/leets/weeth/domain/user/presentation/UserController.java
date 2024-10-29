@@ -1,5 +1,6 @@
 package leets.weeth.domain.user.presentation;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,33 +32,39 @@ public class UserController {
     private final UserGetService userGetService;
 
     @PostMapping("/apply")
+    @Operation(summary="동아리 지원 신청")
     public CommonResponse<Void> apply(@RequestBody @Valid SignUp dto) {
         userUseCase.apply(dto);
         return CommonResponse.createSuccess(USER_APPLY_SUCCESS.getMessage());
     }
 
     @GetMapping("/email")
+    @Operation(summary="이메일 중복 확인")
     public CommonResponse<Boolean> checkEmail(@RequestParam String email) {
         return CommonResponse.createSuccess(USER_EMAIL_CHECK_SUCCESS.getMessage(),userGetService.check(email));
     }
 
     @GetMapping("/all")
+    @Operation(summary="동아리 멤버 전체 조회(전체/기수별)")
     public CommonResponse<Map<Integer, List<Response>>> findAll() {
         return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(),userUseCase.findAll());
     }
 
     @GetMapping
+    @Operation(summary="내 정보 조회")
     public CommonResponse<Response> find(@Parameter(hidden = true) @CurrentUser Long userId) {
         return CommonResponse.createSuccess(USER_FIND_BY_ID_SUCCESS.getMessage(),userUseCase.find(userId));
     }
 
     @PatchMapping
+    @Operation(summary="내 정보 수정")
     public CommonResponse<Void> update(@RequestBody @Valid Update dto, @Parameter(hidden = true) @CurrentUser Long userId) {
         userUseCase.update(dto, userId);
         return CommonResponse.createSuccess(USER_UPDATE_SUCCESS.getMessage());
     }
 
     @DeleteMapping
+    @Operation(summary="동아리 탈퇴")
     public CommonResponse<Void> leave(@Parameter(hidden = true) @CurrentUser Long userId) {
         userUseCase.leave(userId);
         return CommonResponse.createSuccess(USER_LEAVE_SUCCESS.getMessage());

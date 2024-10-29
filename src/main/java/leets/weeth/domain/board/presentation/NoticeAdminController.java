@@ -1,6 +1,8 @@
 package leets.weeth.domain.board.presentation;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import leets.weeth.domain.board.application.dto.NoticeDTO;
 import leets.weeth.domain.board.application.usecase.NoticeUsecase;
@@ -16,6 +18,7 @@ import java.util.List;
 
 import static leets.weeth.domain.board.presentation.ResponseMessage.*;
 
+@Tag(name = "NoticeAdminController", description = "공지사항 관련 어드민 컨트롤러")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/notices")
@@ -24,6 +27,7 @@ public class NoticeAdminController {
     private final NoticeUsecase noticeUsecase;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary="공지사항 생성")
     public CommonResponse<String> save(@RequestPart @Valid NoticeDTO.Save dto,
                                        @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                        @Parameter(hidden = true) @CurrentUser Long userId) {
@@ -32,6 +36,7 @@ public class NoticeAdminController {
     }
 
     @PatchMapping(value = "/{noticeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary="특정 공지사항 수정")
     public CommonResponse<String> update(@PathVariable Long noticeId,
                                          @RequestPart @Valid NoticeDTO.Update dto,
                                          @RequestPart(value = "files", required = false) List<MultipartFile> files,
@@ -41,6 +46,7 @@ public class NoticeAdminController {
     }
 
     @DeleteMapping("/{noticeId}")
+    @Operation(summary="특정 공지사항 삭제")
     public CommonResponse<String> delete(@PathVariable Long noticeId, @Parameter(hidden = true) @CurrentUser Long userId) throws UserNotMatchException {
         noticeUsecase.delete(noticeId, userId);
         return CommonResponse.createSuccess(NOTICE_DELETED_SUCCESS.getMessage());
