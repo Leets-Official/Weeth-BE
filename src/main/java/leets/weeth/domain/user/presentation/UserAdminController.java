@@ -17,7 +17,7 @@ import static leets.weeth.domain.user.presentation.ResponseMessage.USER_FIND_ALL
 import static leets.weeth.domain.user.presentation.ResponseMessage.USER_PASSWORD_RESET_SUCCESS;
 import static leets.weeth.domain.user.presentation.ResponseMessage.USER_ROLE_UPDATE_SUCCESS;
 
-@Tag(name = "AdminController", description = "어드민 관련 컨트롤러")
+@Tag(name = "UserAdminController", description = "유저 관련 어드민 컨트롤러")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/users")

@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Tag(name = "AdminController", description = "어드민 관련 컨트롤러")
+@Tag(name = "ReceiptAdminController", description = "회비 내역 관련 어드민 컨트롤러")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/receipts")
