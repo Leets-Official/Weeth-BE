@@ -34,6 +34,7 @@ public class UserController {
     private final UserGetService userGetService;
 
     @PostMapping("/social-login")
+    @Operation(summary = "카카오 소셜 로그인/회원가입 API")
     public CommonResponse<SocialLoginResponse> login(@RequestBody @Valid login dto) {
         SocialLoginResponse response = userUseCase.login(dto);
         if (response.status() == LOGIN) {
@@ -82,6 +83,7 @@ public class UserController {
     }
 
     @PostMapping("/refresh")
+    @Operation(summary = "JWT 토큰 재발급 API")
     public CommonResponse<JwtDto> refresh(@Valid @RequestBody refreshRequest dto, HttpServletRequest request) {
         return CommonResponse.createSuccess(JWT_REFRESH_SUCCESS.getMessage(), userManageUseCase.refresh(dto, request));
     }
