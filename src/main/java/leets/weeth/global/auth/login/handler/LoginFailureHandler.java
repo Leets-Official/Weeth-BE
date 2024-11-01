@@ -10,10 +10,11 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 
 import java.io.IOException;
 
-import static leets.weeth.global.auth.login.handler.ErrorMessage.LOGIN_FAIL;
-
 @Slf4j
 public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+
+    private static final int LOGIN_FAIL_CODE = 400;
+    private static final String LOGIN_FAIL_MESSAGE = "로그인에 실패했습니다.";
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -34,7 +35,7 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        String message = new ObjectMapper().writeValueAsString(CommonResponse.createFailure(LOGIN_FAIL.getCode(), LOGIN_FAIL.getMessage()));
+        String message = new ObjectMapper().writeValueAsString(CommonResponse.createFailure(LOGIN_FAIL_CODE, LOGIN_FAIL_MESSAGE));
         response.getWriter().write(message);
     }
 
@@ -43,8 +44,9 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        String message = new ObjectMapper().writeValueAsString(CommonResponse.createFailure(LOGIN_FAIL.getCode(), errorMessage));
+        String message = new ObjectMapper().writeValueAsString(CommonResponse.createFailure(LOGIN_FAIL_CODE, errorMessage));
         response.getWriter().write(message);
     }
+
 }
 
