@@ -4,14 +4,20 @@ import jakarta.transaction.Transactional;
 import leets.weeth.domain.attendance.domain.service.AttendanceSaveService;
 import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.schedule.domain.service.MeetingGetService;
+import leets.weeth.domain.user.application.exception.StudentIdExistsException;
+import leets.weeth.domain.user.application.exception.TelExistsException;
 import leets.weeth.domain.user.application.mapper.UserMapper;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserDeleteService;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.domain.user.domain.service.UserSaveService;
 import leets.weeth.domain.user.domain.service.UserUpdateService;
-import leets.weeth.domain.user.application.exception.StudentIdExistsException;
-import leets.weeth.domain.user.application.exception.TelExistsException;
+import leets.weeth.global.auth.jwt.application.dto.JwtDto;
+import leets.weeth.global.auth.jwt.application.usecase.JwtManageUseCase;
+import leets.weeth.global.auth.jwt.service.JwtRedisService;
+import leets.weeth.global.auth.kakao.KakaoAuthService;
+import leets.weeth.global.auth.kakao.dto.KakaoTokenResponse;
+import leets.weeth.global.auth.kakao.dto.KakaoUserInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,7 +28,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static leets.weeth.domain.user.application.dto.UserDTO.*;
+import static leets.weeth.domain.user.application.dto.request.UserRequestDto.*;
+import static leets.weeth.domain.user.application.dto.response.UserResponseDto.*;
+import static leets.weeth.domain.user.domain.entity.enums.LoginStatus.LOGIN;
+import static leets.weeth.domain.user.domain.entity.enums.LoginStatus.REGISTER;
 import static leets.weeth.domain.user.domain.entity.enums.Status.ACTIVE;
 
 @Service
@@ -37,6 +46,48 @@ public class UserUseCaseImpl implements UserUseCase {
     private final PasswordEncoder passwordEncoder;
     private final AttendanceSaveService attendanceSaveService;
     private final MeetingGetService meetingGetService;
+
+    private final JwtRedisService jwtRedisService;
+    private final JwtManageUseCase jwtManageUseCase;
+
+    private final KakaoAuthService kakaoAuthService;
+
+    @Override
+    @Transactional
+    public SocialLoginResponse login(login dto) {
+        KakaoTokenResponse tokenResponse = kakaoAuthService.getKakaoToken(dto.authCode());
+        KakaoUserInfoResponse userInfo = kakaoAuthService.getUserInfo(tokenResponse.access_token());
+
+        String email = userInfo.kakao_account().email();
+
+        if (existUser(email)) {
+            return login(email);
+        }
+        return registerUser(email);
+    }
+
+    public boolean existUser(String email) {
+        return !userGetService.check(email);
+    }
+
+    private SocialLoginResponse registerUser(String email) {
+        User user = User.builder()
+                .email(email)
+                .build();
+        userSaveService.save(user);
+
+        JwtDto dto = jwtManageUseCase.create(user.getId(), email);
+
+        return new SocialLoginResponse(user.getId(), REGISTER, dto.accessToken(), dto.refreshToken());
+    }
+
+    private SocialLoginResponse login(String email) {
+        User user = userGetService.find(email);
+
+        JwtDto dto = jwtManageUseCase.create(user.getId(), email);
+
+        return new SocialLoginResponse(user.getId(), LOGIN, dto.accessToken(), dto.refreshToken());
+    }
 
     @Override
     public void apply(SignUp dto) {
@@ -75,7 +126,8 @@ public class UserUseCaseImpl implements UserUseCase {
         userUpdateService.update(user, dto, passwordEncoder);
     }
 
-    @Override @Transactional
+    @Override
+    @Transactional
     public void accept(Long userId) {
         User user = userGetService.find(userId);
 
@@ -95,21 +147,25 @@ public class UserUseCaseImpl implements UserUseCase {
     @Override
     public void leave(Long userId) {
         User user = userGetService.find(userId);
+        // 탈퇴하는 경우 리프레시 토큰 삭제
+        jwtRedisService.delete(user.getEmail());
         userDeleteService.leave(user);
     }
 
     @Override
     public void ban(Long userId) {
         User user = userGetService.find(userId);
+        jwtRedisService.delete(user.getEmail());
         userDeleteService.ban(user);
     }
 
-    @Override @Transactional
+    @Override
+    @Transactional
     public void applyOB(Long userId, Integer cardinal) {
         User user = userGetService.find(userId);
 
         if (user.notContains(cardinal)) {
-            if(user.isCurrent(cardinal)) {
+            if (user.isCurrent(cardinal)) {
                 user.initAttendance();
                 List<Meeting> meetings = meetingGetService.find(cardinal);
                 attendanceSaveService.save(user, meetings);
@@ -126,16 +182,16 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     private void validate(SignUp dto) {
-        if(userGetService.validateStudentId(dto.studentId()))
+        if (userGetService.validateStudentId(dto.studentId()))
             throw new StudentIdExistsException();
-        if(userGetService.validateTel(dto.tel()))
+        if (userGetService.validateTel(dto.tel()))
             throw new TelExistsException();
     }
 
     private void validate(Update dto, Long userId) {
-        if(userGetService.validateStudentId(dto.studentId(), userId))
+        if (userGetService.validateStudentId(dto.studentId(), userId))
             throw new StudentIdExistsException();
-        if(userGetService.validateTel(dto.tel(), userId))
+        if (userGetService.validateTel(dto.tel(), userId))
             throw new TelExistsException();
     }
 }

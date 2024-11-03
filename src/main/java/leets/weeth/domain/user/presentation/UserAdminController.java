@@ -9,13 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static leets.weeth.domain.user.application.dto.UserDTO.AdminResponse;
-import static leets.weeth.domain.user.presentation.ResponseMessage.USER_ACCEPT_SUCCESS;
-import static leets.weeth.domain.user.presentation.ResponseMessage.USER_APPLY_OB_SUCCESS;
-import static leets.weeth.domain.user.presentation.ResponseMessage.USER_BAN_SUCCESS;
-import static leets.weeth.domain.user.presentation.ResponseMessage.USER_FIND_ALL_SUCCESS;
-import static leets.weeth.domain.user.presentation.ResponseMessage.USER_PASSWORD_RESET_SUCCESS;
-import static leets.weeth.domain.user.presentation.ResponseMessage.USER_ROLE_UPDATE_SUCCESS;
+import static leets.weeth.domain.user.application.dto.response.UserResponseDto.AdminResponse;
+import static leets.weeth.domain.user.presentation.ResponseMessage.*;
 
 @Tag(name = "UserAdminController", description = "유저 관련 어드민 컨트롤러")
 @RestController
@@ -28,7 +23,7 @@ public class UserAdminController {
     @GetMapping("/all")
     @Operation(summary="어드민용 회원 조회")
     public CommonResponse<List<AdminResponse>> findAll() {
-        return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(),userUseCase.findAllByAdmin());
+        return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(), userUseCase.findAllByAdmin());
     }
 
     @PatchMapping

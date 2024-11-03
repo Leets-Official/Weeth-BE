@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import leets.weeth.domain.attendance.domain.entity.Attendance;
 import leets.weeth.domain.penalty.domain.entity.Penalty;
 import leets.weeth.domain.user.application.converter.CardinalListConverter;
-import leets.weeth.domain.user.application.dto.UserDTO;
+import leets.weeth.domain.user.application.dto.request.UserRequestDto;
 import leets.weeth.domain.user.domain.entity.enums.Department;
 import leets.weeth.domain.user.domain.entity.enums.Position;
 import leets.weeth.domain.user.domain.entity.enums.Role;
@@ -20,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static leets.weeth.domain.user.application.dto.request.UserRequestDto.*;
 
 @Entity
 @Getter
@@ -101,7 +103,7 @@ public class User extends BaseEntity {
         return this.status != Status.ACTIVE;
     }
 
-    public void update(UserDTO.Update dto, PasswordEncoder passwordEncoder) {
+    public void update(Update dto, PasswordEncoder passwordEncoder) {
         this.name = dto.name();
         this.email = dto.email();
         this.password = passwordEncoder.encode(dto.password());

@@ -1,8 +1,6 @@
-package leets.weeth.domain.user.application.dto;
+package leets.weeth.domain.user.application.dto.response;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import leets.weeth.domain.user.domain.entity.enums.LoginStatus;
 import leets.weeth.domain.user.domain.entity.enums.Position;
 import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.domain.user.domain.entity.enums.Status;
@@ -10,27 +8,15 @@ import leets.weeth.domain.user.domain.entity.enums.Status;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class UserDTO {
+public class UserResponseDto {
 
-    public record SignUp (
-        @NotBlank        String name,
-        @Email @NotBlank String email,
-        @NotBlank        String password,
-        @NotBlank        String studentId,
-        @NotBlank        String tel,
-        @NotNull         String position,
-        @NotNull         String department,
-        @NotNull         Integer cardinal
-    ) {}
-
-    public record Update (
-            @NotBlank        String name,
-            @Email @NotBlank String email,
-            @NotBlank        String password,
-            @NotBlank        String studentId,
-            @NotBlank        String tel,
-            @NotNull         String department
-    ) {}
+    public record SocialLoginResponse(
+            Long id,
+            LoginStatus status,
+            String accessToken,
+            String refreshToken
+    ) {
+    }
 
     public record Response(
             Integer id,
@@ -42,9 +28,10 @@ public class UserDTO {
             List<Integer> cardinals,
             Position position,
             Role role
-    ) {}
+    ) {
+    }
 
-    public record AdminResponse (
+    public record AdminResponse(
             Integer id,
             String name,
             String email,
@@ -61,5 +48,7 @@ public class UserDTO {
             Integer penaltyCount,
             LocalDateTime createdAt,
             LocalDateTime modifiedAt
-    ) {}
+    ) {
+    }
+
 }

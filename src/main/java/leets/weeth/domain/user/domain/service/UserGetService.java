@@ -20,6 +20,11 @@ public class UserGetService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
+    public User find(String email){
+        return userRepository.findByEmail(email)
+                .orElseThrow(UserNotFoundException::new);
+    }
+
     public Boolean check(String email) {
         return !userRepository.existsByEmail(email);
     }

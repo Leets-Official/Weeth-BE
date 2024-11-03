@@ -5,7 +5,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import leets.weeth.domain.user.domain.entity.User;
-import leets.weeth.domain.user.domain.repository.UserRepository;
+import leets.weeth.domain.user.domain.service.UserGetService;
+import leets.weeth.global.auth.jwt.exception.TokenNotFoundException;
+import leets.weeth.global.auth.jwt.service.JwtProvider;
 import leets.weeth.global.auth.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.TooManyListenersException;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -24,8 +27,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private static final String NO_CHECK_URL = "/api/v1/login";
 
+    private final JwtProvider jwtProvider;
     private final JwtService jwtService;
-    private final UserRepository userRepository;
+    private final UserGetService userGetService;
 
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
@@ -35,68 +39,19 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
-        String refreshToken = jwtService.extractRefreshToken(request)
-                .filter(jwtService::isTokenValid)
-                .orElse(null);
-
-        if (refreshToken != null) {
-            checkAccessTokenAndRefreshToken(request, response, filterChain, refreshToken);
-            return;
+        // 유저 캐싱 도입
+        try {
+            String accessToken = jwtService.extractAccessToken(request)
+                    .orElseThrow(TokenNotFoundException::new);
+            if (jwtProvider.validate(accessToken)) {
+                saveAuthentication(find(accessToken));
+            }
+        } catch (RuntimeException e) {
+            log.info("error token: {}", e.getMessage());
         }
-
-        checkAccessTokenAndAuthentication(request, response, filterChain);
-
-    }
-
-    public void checkAccessTokenAndRefreshToken(HttpServletRequest request, HttpServletResponse response,
-                                                FilterChain filterChain, String refreshToken) throws ServletException, IOException {
-        log.info("checkAccessTokenAndRefreshToken() 호출");
-
-        String accessToken = jwtService.extractAccessToken(request)
-                .filter(jwtService::isTokenValid)
-                .orElse(null);
-
-        if (accessToken == null) {
-            checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
-        } else {
-            jwtService.extractEmail(accessToken)
-                    .ifPresent(email -> userRepository.findByEmail(email)
-                            .ifPresent(this::saveAuthentication));
-
-            filterChain.doFilter(request, response);
-        }
-
-
-    }
-
-    public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
-        userRepository.findByRefreshToken(refreshToken)
-                .ifPresent(user -> {
-                    String reIssuedRefreshToken = reIssueRefreshToken(user);
-                    String accessToken = jwtService.createAccessToken(user.getId(), user.getEmail());
-                    jwtService.sendAccessAndRefreshToken(response, accessToken, reIssuedRefreshToken);
-                    jwtService.sendAccessToken(response, accessToken);
-                });
-    }
-
-    private String reIssueRefreshToken(User user) {
-        String reIssuedRefreshToken = jwtService.createRefreshToken();
-        user.updateRefreshToken(reIssuedRefreshToken);
-        userRepository.saveAndFlush(user);
-        return reIssuedRefreshToken;
-    }
-
-    public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                                  FilterChain filterChain) throws ServletException, IOException {
-        log.info("checkAccessTokenAndAuthentication() 호출");
-        jwtService.extractAccessToken(request)
-                .filter(jwtService::isTokenValid)
-                .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
-                        .ifPresent(email -> userRepository.findByEmail(email)
-                                .ifPresent(this::saveAuthentication)));
 
         filterChain.doFilter(request, response);
+
     }
 
     public void saveAuthentication(User myUser) {
@@ -113,5 +68,10 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                         authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    private User find(String accessToken) {
+        String email = jwtService.extractEmail(accessToken).get();
+        return userGetService.find(email);
     }
 }

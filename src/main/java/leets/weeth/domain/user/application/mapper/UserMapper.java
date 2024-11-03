@@ -5,7 +5,9 @@ import leets.weeth.domain.user.domain.entity.enums.Department;
 import org.mapstruct.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static leets.weeth.domain.user.application.dto.UserDTO.*;
+import static leets.weeth.domain.user.application.dto.request.UserRequestDto.SignUp;
+import static leets.weeth.domain.user.application.dto.response.UserResponseDto.AdminResponse;
+import static leets.weeth.domain.user.application.dto.response.UserResponseDto.Response;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
