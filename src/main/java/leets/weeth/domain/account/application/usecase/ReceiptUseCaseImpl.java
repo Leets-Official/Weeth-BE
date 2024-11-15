@@ -9,7 +9,7 @@ import leets.weeth.domain.account.domain.service.AccountGetService;
 import leets.weeth.domain.account.domain.service.ReceiptDeleteService;
 import leets.weeth.domain.account.domain.service.ReceiptGetService;
 import leets.weeth.domain.account.domain.service.ReceiptSaveService;
-import leets.weeth.domain.file.service.FileSaveService;
+import leets.weeth.domain.file.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,14 +22,14 @@ public class ReceiptUseCaseImpl implements ReceiptUseCase {
 
     private final ReceiptDeleteService receiptDeleteService;
     private final ReceiptSaveService receiptSaveService;
-    private final FileSaveService fileSaveService;
+    private final S3Service s3Service;
     private final ReceiptMapper mapper;
     private final AccountGetService accountGetService;
     private final ReceiptGetService receiptGetService;
 
     @Override @Transactional
     public void save(ReceiptDTO.Save dto, List<MultipartFile> files) {
-        List<String> images = fileSaveService.uploadFiles(files);
+        List<String> images = s3Service.uploadFiles(files);
         Account account = accountGetService.find(dto.cardinal());
         Receipt receipt = receiptSaveService.save(mapper.from(dto, images, account));
         account.spend(receipt);
