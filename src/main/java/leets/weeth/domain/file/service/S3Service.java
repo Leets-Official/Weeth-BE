@@ -1,12 +1,12 @@
 package leets.weeth.domain.file.service;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,24 +16,29 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class FileSaveService {
+public class S3Service {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    private final AmazonS3 s3Client;
+    private final S3Client s3Client;
 
     public List<String> uploadFiles(List<MultipartFile> files) {
         // 다중 업로드 && 리스트 ","을 기준으로 하나의 문자열 반환
-        // files 갯수 0 이면 반환 ""
-        if(files == null || files.isEmpty())
+        if (files == null || files.isEmpty()) {
             return List.of();
+        }
 
         return files.parallelStream()
                 .map(file -> {
                     java.io.File fileObj = convertMultiPartFileToFile(file);
                     String fileName = getFileName(file);
-                    s3Client.putObject(new PutObjectRequest(bucket, fileName, fileObj));
+                    PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                            .bucket(bucket)
+                            .key(fileName)
+                            .build();
+
+                    s3Client.putObject(putObjectRequest, software.amazon.awssdk.core.sync.RequestBody.fromFile(fileObj));
                     fileObj.delete();
 
                     return extractUrl(fileName);
@@ -45,9 +50,8 @@ public class FileSaveService {
         return UUID.randomUUID() + "." + getFileExtension(file.getOriginalFilename());
     }
 
-    //Todo 상수처리
     private String extractUrl(String fileName) {
-        return "https://" + s3Client.getUrl(bucket, fileName).getHost() + s3Client.getUrl(bucket, fileName).getFile();
+        return "https://" + bucket + ".s3.amazonaws.com/" + fileName;
     }
 
     private java.io.File convertMultiPartFileToFile(MultipartFile file) {
