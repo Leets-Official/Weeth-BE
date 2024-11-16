@@ -11,6 +11,7 @@ import leets.weeth.domain.board.domain.service.NoticeUpdateService;
 import leets.weeth.domain.file.application.dto.response.FileResponse;
 import leets.weeth.domain.file.application.mapper.FileMapper;
 import leets.weeth.domain.file.domain.entity.File;
+import leets.weeth.domain.file.domain.service.FileDeleteService;
 import leets.weeth.domain.file.domain.service.FileGetService;
 import leets.weeth.domain.file.domain.service.FileSaveService;
 import leets.weeth.domain.file.domain.service.FileUpdateService;
@@ -35,9 +36,11 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     private final NoticeDeleteService noticeDeleteService;
 
     private final UserGetService userGetService;
+
     private final FileSaveService fileSaveService;
     private final FileGetService fileGetService;
     private final FileUpdateService fileUpdateService;
+    private final FileDeleteService fileDeleteService;
 
     private final NoticeMapper mapper;
     private final FileMapper fileMapper;
@@ -61,7 +64,7 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     public NoticeDTO.Response findNotice(Long noticeId) {
         Notice notice = noticeFindService.find(noticeId);
 
-        List<FileResponse> response = fileGetService.findAllByNotice(noticeId).stream()
+        List<FileResponse> response = getFiles(noticeId).stream()
                 .map(fileMapper::toFileResponse)
                 .toList();
 
@@ -97,7 +100,7 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     public void update(Long noticeId, NoticeDTO.Update dto, Long userId) throws UserNotMatchException {
         Notice notice = validateOwner(noticeId, userId);
 
-        List<File> fileList = fileGetService.findAllByNotice(noticeId);
+        List<File> fileList = getFiles(noticeId);
 
         fileUpdateService.updateFiles(fileList, dto.files());
 
@@ -108,7 +111,15 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     @Transactional
     public void delete(Long noticeId, Long userId) throws UserNotMatchException {
         validateOwner(noticeId, userId);
+
+        List<File> fileList = getFiles(noticeId);
+        fileDeleteService.delete(fileList);
+
         noticeDeleteService.delete(noticeId);
+    }
+
+    private List<File> getFiles(Long noticeId) {
+        return fileGetService.findAllByNotice(noticeId);
     }
 
     private Notice validateOwner(Long noticeId, Long userId) throws UserNotMatchException {

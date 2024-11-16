@@ -8,10 +8,10 @@ import leets.weeth.domain.board.domain.service.PostDeleteService;
 import leets.weeth.domain.board.domain.service.PostFindService;
 import leets.weeth.domain.board.domain.service.PostSaveService;
 import leets.weeth.domain.board.domain.service.PostUpdateService;
-import leets.weeth.domain.file.application.dto.request.FileUpdateRequest;
 import leets.weeth.domain.file.application.dto.response.FileResponse;
 import leets.weeth.domain.file.application.mapper.FileMapper;
 import leets.weeth.domain.file.domain.entity.File;
+import leets.weeth.domain.file.domain.service.FileDeleteService;
 import leets.weeth.domain.file.domain.service.FileGetService;
 import leets.weeth.domain.file.domain.service.FileSaveService;
 import leets.weeth.domain.file.domain.service.FileUpdateService;
@@ -36,9 +36,11 @@ public class PostUseCaseImpl implements PostUsecase {
     private final PostDeleteService postDeleteService;
 
     private final UserGetService userGetService;
+
     private final FileSaveService fileSaveService;
     private final FileGetService fileGetService;
     private final FileUpdateService fileUpdateService;
+    private final FileDeleteService fileDeleteService;
 
     private final PostMapper mapper;
     private final FileMapper fileMapper;
@@ -62,7 +64,7 @@ public class PostUseCaseImpl implements PostUsecase {
     public PostDTO.Response findPost(Long postId) {
         Post post = postFindService.find(postId);
 
-        List<FileResponse> response = fileGetService.findAllByPost(postId).stream()
+        List<FileResponse> response = getFiles(postId).stream()
                 .map(fileMapper::toFileResponse)
                 .toList();
 
@@ -98,7 +100,7 @@ public class PostUseCaseImpl implements PostUsecase {
     public void update(Long postId, PostDTO.Update dto, Long userId) {
         Post post = validateOwner(postId, userId);
 
-        List<File> fileList = fileGetService.findAllByPost(postId);
+        List<File> fileList = getFiles(postId);
 
         fileUpdateService.updateFiles(fileList, dto.files());
 
@@ -109,7 +111,15 @@ public class PostUseCaseImpl implements PostUsecase {
     @Transactional
     public void delete(Long postId, Long userId) {
         validateOwner(postId, userId);
+
+        List<File> fileList = getFiles(postId);
+        fileDeleteService.delete(fileList);
+
         postDeleteService.delete(postId);
+    }
+
+    private List<File> getFiles(Long postId) {
+        return fileGetService.findAllByPost(postId);
     }
 
     private Post validateOwner(Long postId, Long userId) {
