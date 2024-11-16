@@ -19,7 +19,7 @@ public interface PostMapper {
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "user", source = "user")
     })
-    Post fromPostDto(PostDTO.Save dto, List<String> fileUrls, User user);
+    Post fromPostDto(PostDTO.Save dto, User user);
 
     @Mappings({
             @Mapping(target = "name", source = "user.name"),

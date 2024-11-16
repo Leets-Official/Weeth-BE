@@ -19,7 +19,7 @@ public interface NoticeMapper {
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "user", source = "user")
     })
-    Notice fromNoticeDto(NoticeDTO.Save dto, List<String> fileUrls, User user);
+    Notice fromNoticeDto(NoticeDTO.Save dto, User user);
 
     @Mappings({
             @Mapping(target = "name", source = "user.name"),
