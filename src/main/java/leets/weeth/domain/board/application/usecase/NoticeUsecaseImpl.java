@@ -1,22 +1,26 @@
 package leets.weeth.domain.board.application.usecase;
 
 import leets.weeth.domain.board.application.dto.NoticeDTO;
+import leets.weeth.domain.board.application.exception.NoticeNotFoundException;
 import leets.weeth.domain.board.application.mapper.NoticeMapper;
 import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.board.domain.service.NoticeDeleteService;
 import leets.weeth.domain.board.domain.service.NoticeFindService;
 import leets.weeth.domain.board.domain.service.NoticeSaveService;
 import leets.weeth.domain.board.domain.service.NoticeUpdateService;
-import leets.weeth.domain.file.service.S3Service;
+import leets.weeth.domain.file.application.mapper.FileMapper;
+import leets.weeth.domain.file.domain.entity.File;
+import leets.weeth.domain.file.domain.service.FileGetService;
+import leets.weeth.domain.file.domain.service.FileSaveService;
+import leets.weeth.domain.file.domain.service.FileUpdateService;
+import leets.weeth.domain.user.application.exception.UserNotMatchException;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
-import leets.weeth.domain.board.application.exception.NoticeNotFoundException;
-import leets.weeth.domain.user.application.exception.UserNotMatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,17 +34,26 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     private final NoticeDeleteService noticeDeleteService;
 
     private final UserGetService userGetService;
-    private final S3Service s3Service;
+    private final FileSaveService fileSaveService;
+    private final FileGetService fileGetService;
+    private final FileUpdateService fileUpdateService;
 
     private final NoticeMapper mapper;
+    private final FileMapper fileMapper;
 
     @Override
-    public void save(NoticeDTO.Save request, List<MultipartFile> files, Long userId) {
+    @Transactional
+    public void save(NoticeDTO.Save request, Long userId) {
         User user = userGetService.find(userId);
 
-        List<String> fileUrls;
-        fileUrls = s3Service.uploadFiles(files);
-        noticeSaveService.save(mapper.fromNoticeDto(request, fileUrls, user));
+        Notice notice = mapper.fromNoticeDto(request, user);
+        noticeSaveService.save(notice);
+
+        List<File> files = request.files().stream()
+                .map(fileSaveRequest -> fileMapper.toFile(fileSaveRequest.fileName(), fileSaveRequest.fileUrl(), notice))
+                .toList();
+
+        fileSaveService.save(files);
     }
 
     @Override
@@ -55,12 +68,12 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
         Long finalNoticeId = noticeFindService.findFinalNoticeId();
 
         // 첫번째 요청인 경우
-        if(noticeId==null){
+        if (noticeId == null) {
             noticeId = finalNoticeId + 1;
         }
 
         // postId가 1 이하이거나 최대값보다 클경우
-        if(noticeId < 1 || noticeId > finalNoticeId + 1){
+        if (noticeId < 1 || noticeId > finalNoticeId + 1) {
             throw new NoticeNotFoundException();
         }
 
@@ -74,18 +87,19 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     }
 
     @Override
-    public void update(Long noticeId, NoticeDTO.Update dto, List<MultipartFile> files, Long userId) throws UserNotMatchException {
+    @Transactional
+    public void update(Long noticeId, NoticeDTO.Update dto, Long userId) throws UserNotMatchException {
         Notice notice = validateOwner(noticeId, userId);
 
-        List<String> fileUrls = notice.getFileUrls();
-        List<String> uploadedFileUrls = s3Service.uploadFiles(files);
+        List<File> fileList = fileGetService.findAllByNotice(noticeId);
 
-        fileUrls.addAll(uploadedFileUrls);
+        fileUpdateService.updateFiles(fileList, dto.files());
 
-        noticeUpdateService.update(notice, dto, fileUrls);
+        noticeUpdateService.update(notice, dto);
     }
 
     @Override
+    @Transactional
     public void delete(Long noticeId, Long userId) throws UserNotMatchException {
         validateOwner(noticeId, userId);
         noticeDeleteService.delete(noticeId);
