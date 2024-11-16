@@ -97,7 +97,7 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
 
     @Override
     @Transactional
-    public void update(Long noticeId, NoticeDTO.Update dto, Long userId) throws UserNotMatchException {
+    public void update(Long noticeId, NoticeDTO.Update dto, Long userId) {
         Notice notice = validateOwner(noticeId, userId);
 
         List<File> fileList = getFiles(noticeId);
@@ -109,7 +109,7 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
 
     @Override
     @Transactional
-    public void delete(Long noticeId, Long userId) throws UserNotMatchException {
+    public void delete(Long noticeId, Long userId) {
         validateOwner(noticeId, userId);
 
         List<File> fileList = getFiles(noticeId);
@@ -122,7 +122,7 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
         return fileGetService.findAllByNotice(noticeId);
     }
 
-    private Notice validateOwner(Long noticeId, Long userId) throws UserNotMatchException {
+    private Notice validateOwner(Long noticeId, Long userId) {
         Notice notice = noticeFindService.find(noticeId);
         if (!notice.getUser().getId().equals(userId)) {
             throw new UserNotMatchException();
