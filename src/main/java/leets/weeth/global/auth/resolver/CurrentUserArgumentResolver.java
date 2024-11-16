@@ -1,6 +1,7 @@
 package leets.weeth.global.auth.resolver;
 
 import leets.weeth.global.auth.annotation.CurrentUser;
+import leets.weeth.global.auth.jwt.exception.AnonymousAuthenticationException;
 import leets.weeth.global.auth.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -31,7 +32,7 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();     // 인증 객체 가져오기
 
         if (authentication instanceof AnonymousAuthenticationToken) {   // 익명 인증 토큰의 인스턴스라면 0 반환
-            return 0;
+            throw new AnonymousAuthenticationException();
         }
 
         String token = Optional.ofNullable(webRequest.getHeader("Authorization"))
