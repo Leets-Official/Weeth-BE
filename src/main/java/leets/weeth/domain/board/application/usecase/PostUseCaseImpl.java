@@ -94,7 +94,7 @@ public class PostUseCaseImpl implements PostUsecase {
 
         List<File> fileList = fileGetService.findAllByPost(postId);
 
-        updateFiles(fileList, dto.files());
+        fileUpdateService.updateFiles(fileList, dto.files());
 
         postUpdateService.update(post, dto);
     }
@@ -104,15 +104,6 @@ public class PostUseCaseImpl implements PostUsecase {
     public void delete(Long postId, Long userId) throws UserNotMatchException {
         validateOwner(postId, userId);
         postDeleteService.delete(postId);
-    }
-
-    private void updateFiles(List<File> fileList, List<FileUpdateRequest> dto) {
-        for (File file : fileList) {
-            dto.stream()
-                    .filter(updateRequest -> updateRequest.fileId().equals(file.getId()))
-                    .findFirst()
-                    .ifPresent(updateRequest -> fileUpdateService.update(file, updateRequest));
-        }
     }
 
     private Post validateOwner(Long postId, Long userId) throws UserNotMatchException {
