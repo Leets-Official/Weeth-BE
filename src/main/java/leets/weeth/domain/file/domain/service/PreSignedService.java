@@ -1,5 +1,6 @@
 package leets.weeth.domain.file.domain.service;
 
+import leets.weeth.domain.file.application.dto.response.UrlResponse;
 import leets.weeth.domain.file.application.mapper.FileMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +26,7 @@ public class PreSignedService {
     @Value("${cloud.aws.region.static}")
     private String region;
 
-    public String generateUrl(String fileName) {
+    public UrlResponse generateUrl(String fileName) {
         String key = generateKey(fileName);
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
@@ -42,7 +43,7 @@ public class PreSignedService {
 
         String putUrl = presignedUrlRequest.url().toString();
 
-        return putUrl;
+        return fileMapper.toUrlResponse(fileName, putUrl);
     }
 
     public String generateGetUrl(String key) {
