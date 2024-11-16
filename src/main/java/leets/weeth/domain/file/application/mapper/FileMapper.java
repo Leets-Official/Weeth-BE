@@ -20,6 +20,7 @@ public interface FileMapper {
     @Mapping(target = "notice", source = "notice")
     File toFile(String fileName, String fileUrl, Notice notice);
 
+    @Mapping(target = "fileId", source = "file.id")
     FileResponse toFileResponse(File file);
 
     UrlResponse toUrlResponse(String fileName, String putUrl);
