@@ -109,7 +109,7 @@ public class PostUseCaseImpl implements PostUsecase {
     private Post validateOwner(Long postId, Long userId) {
         Post post = postFindService.find(postId);
 
-        if (post.getUser().getId().equals(userId)) {
+        if (!post.getUser().getId().equals(userId)) {
             throw new UserNotMatchException();
         }
         return post;
