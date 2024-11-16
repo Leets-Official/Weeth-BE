@@ -38,9 +38,6 @@ public class Board extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Convert(converter = FileListConverter.class)
-    private List<String> fileUrls = new ArrayList<>();
-
     private Integer commentCount;
 
     @PrePersist
@@ -64,16 +61,14 @@ public class Board extends BaseEntity {
                 .count();
     }
 
-    public void updateUpperClass(NoticeDTO.Update dto, List<String> fileUrls) {
+    public void updateUpperClass(NoticeDTO.Update dto) {
         this.title = dto.title();
         this.content = dto.content();
-        this.fileUrls = fileUrls;
     }
 
-    public void updateUpperClass(PostDTO.Update dto, List<String> fileUrls) {
+    public void updateUpperClass(PostDTO.Update dto) {
         this.title = dto.title();
         this.content = dto.content();
-        this.fileUrls = fileUrls;
     }
 
 }
