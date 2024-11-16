@@ -9,6 +9,7 @@ import leets.weeth.domain.board.domain.service.PostFindService;
 import leets.weeth.domain.board.domain.service.PostSaveService;
 import leets.weeth.domain.board.domain.service.PostUpdateService;
 import leets.weeth.domain.file.application.dto.request.FileUpdateRequest;
+import leets.weeth.domain.file.application.dto.response.FileResponse;
 import leets.weeth.domain.file.application.mapper.FileMapper;
 import leets.weeth.domain.file.domain.entity.File;
 import leets.weeth.domain.file.domain.service.FileGetService;
@@ -60,7 +61,12 @@ public class PostUseCaseImpl implements PostUsecase {
     @Override
     public PostDTO.Response findPost(Long postId) {
         Post post = postFindService.find(postId);
-        return mapper.toPostDto(post);
+
+        List<FileResponse> response = fileGetService.findAllByPost(postId).stream()
+                .map(fileMapper::toFileResponse)
+                .toList();
+
+        return mapper.toPostDto(post, response);
     }
 
     @Override

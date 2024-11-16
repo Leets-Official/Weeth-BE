@@ -5,6 +5,7 @@ import leets.weeth.domain.board.domain.entity.Post;
 import leets.weeth.domain.comment.application.dto.CommentDTO;
 import leets.weeth.domain.comment.application.mapper.CommentMapper;
 import leets.weeth.domain.comment.domain.entity.Comment;
+import leets.weeth.domain.file.application.dto.response.FileResponse;
 import leets.weeth.domain.user.domain.entity.User;
 import org.mapstruct.*;
 
@@ -28,11 +29,11 @@ public interface PostMapper {
     PostDTO.ResponseAll toAll(Post post);
 
     @Mappings({
-            @Mapping(target = "name", source = "user.name"),
+            @Mapping(target = "name", source = "post.user.name"),
             @Mapping(target = "comments", expression = "java(filterParentComments(post.getComments()))"),
-            @Mapping(target = "time", source = "modifiedAt")
+            @Mapping(target = "time", source = "post.modifiedAt")
     })
-    PostDTO.Response toPostDto(Post post);
+    PostDTO.Response toPostDto(Post post, List<FileResponse> files);
 
     default List<CommentDTO.Response> filterParentComments(List<Comment> comments) {
         if (comments == null || comments.isEmpty()) {
