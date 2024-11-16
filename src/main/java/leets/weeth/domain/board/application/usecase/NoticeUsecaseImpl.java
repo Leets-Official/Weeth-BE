@@ -8,6 +8,7 @@ import leets.weeth.domain.board.domain.service.NoticeDeleteService;
 import leets.weeth.domain.board.domain.service.NoticeFindService;
 import leets.weeth.domain.board.domain.service.NoticeSaveService;
 import leets.weeth.domain.board.domain.service.NoticeUpdateService;
+import leets.weeth.domain.file.application.dto.response.FileResponse;
 import leets.weeth.domain.file.application.mapper.FileMapper;
 import leets.weeth.domain.file.domain.entity.File;
 import leets.weeth.domain.file.domain.service.FileGetService;
@@ -59,7 +60,12 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     @Override
     public NoticeDTO.Response findNotice(Long noticeId) {
         Notice notice = noticeFindService.find(noticeId);
-        return mapper.toNoticeDto(notice);
+
+        List<FileResponse> response = fileGetService.findAllByNotice(noticeId).stream()
+                .map(fileMapper::toFileResponse)
+                .toList();
+
+        return mapper.toNoticeDto(notice, response);
     }
 
     @Override

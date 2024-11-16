@@ -5,6 +5,8 @@ import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.comment.application.dto.CommentDTO;
 import leets.weeth.domain.comment.application.mapper.CommentMapper;
 import leets.weeth.domain.comment.domain.entity.Comment;
+import leets.weeth.domain.file.application.dto.response.FileResponse;
+import leets.weeth.domain.file.domain.entity.File;
 import leets.weeth.domain.user.domain.entity.User;
 import org.mapstruct.*;
 
@@ -28,11 +30,11 @@ public interface NoticeMapper {
     NoticeDTO.ResponseAll toAll(Notice notice);
 
     @Mappings({
-            @Mapping(target = "name", source = "user.name"),
+            @Mapping(target = "name", source = "notice.user.name"),
             @Mapping(target = "comments", expression = "java(filterParentComments(notice.getComments()))"),
-            @Mapping(target = "time", source = "modifiedAt")
+            @Mapping(target = "time", source = "notice.modifiedAt")
     })
-    NoticeDTO.Response toNoticeDto(Notice notice);
+    NoticeDTO.Response toNoticeDto(Notice notice, List<FileResponse> files);
 
     default List<CommentDTO.Response> filterParentComments(List<Comment> comments) {
         if (comments == null || comments.isEmpty()) {
