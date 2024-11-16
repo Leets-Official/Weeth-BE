@@ -26,22 +26,20 @@ public class NoticeAdminController {
 
     private final NoticeUsecase noticeUsecase;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     @Operation(summary="공지사항 생성")
-    public CommonResponse<String> save(@RequestPart @Valid NoticeDTO.Save dto,
-                                       @RequestPart(value = "files", required = false) List<MultipartFile> files,
+    public CommonResponse<String> save(@RequestBody @Valid NoticeDTO.Save dto,
                                        @Parameter(hidden = true) @CurrentUser Long userId) {
-        noticeUsecase.save(dto, files, userId);
+        noticeUsecase.save(dto, userId);
         return CommonResponse.createSuccess(NOTICE_CREATED_SUCCESS.getMessage());
     }
 
-    @PatchMapping(value = "/{noticeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/{noticeId}")
     @Operation(summary="특정 공지사항 수정")
     public CommonResponse<String> update(@PathVariable Long noticeId,
-                                         @RequestPart @Valid NoticeDTO.Update dto,
-                                         @RequestPart(value = "files", required = false) List<MultipartFile> files,
+                                         @RequestBody @Valid NoticeDTO.Update dto,
                                          @Parameter(hidden = true) @CurrentUser Long userId) throws UserNotMatchException {
-        noticeUsecase.update(noticeId, dto, files, userId);
+        noticeUsecase.update(noticeId, dto, userId);
         return CommonResponse.createSuccess(NOTICE_UPDATED_SUCCESS.getMessage());
     }
 
