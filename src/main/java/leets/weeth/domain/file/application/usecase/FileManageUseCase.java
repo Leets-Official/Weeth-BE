@@ -14,7 +14,6 @@ public class FileManageUseCase {
 
     private final PreSignedService preSignedService;
 
-    @Transactional
     public List<UrlResponse> getUrl(List<String> fileNames) {
         return fileNames.stream()
                 .map(preSignedService::generateUrl)
