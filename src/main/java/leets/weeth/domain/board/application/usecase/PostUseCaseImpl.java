@@ -89,7 +89,7 @@ public class PostUseCaseImpl implements PostUsecase {
 
     @Override
     @Transactional
-    public void update(Long postId, PostDTO.Update dto, Long userId) throws UserNotMatchException {
+    public void update(Long postId, PostDTO.Update dto, Long userId) {
         Post post = validateOwner(postId, userId);
 
         List<File> fileList = fileGetService.findAllByPost(postId);
@@ -101,12 +101,12 @@ public class PostUseCaseImpl implements PostUsecase {
 
     @Override
     @Transactional
-    public void delete(Long postId, Long userId) throws UserNotMatchException {
+    public void delete(Long postId, Long userId) {
         validateOwner(postId, userId);
         postDeleteService.delete(postId);
     }
 
-    private Post validateOwner(Long postId, Long userId) throws UserNotMatchException {
+    private Post validateOwner(Long postId, Long userId) {
         Post post = postFindService.find(postId);
 
         if (post.getUser().getId().equals(userId)) {
