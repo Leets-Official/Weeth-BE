@@ -18,6 +18,6 @@ public class FileGetService {
     }
 
     public List<File> findAllByNotice(Long noticeId) {
-        return fileRepository.findAllByPostId(noticeId);
+        return fileRepository.findAllByNoticeId(noticeId);
     }
 }
