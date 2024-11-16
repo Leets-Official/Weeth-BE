@@ -1,6 +1,7 @@
 package leets.weeth.domain.file.domain.entity;
 
 import jakarta.persistence.*;
+import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.board.domain.entity.Post;
 import lombok.*;
 
@@ -22,4 +23,13 @@ public class File {
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
+
+    @ManyToOne
+    @JoinColumn(name = "notice_id")
+    private Notice notice;
+
+    public void update(String fileName, String fileUrl) {
+        this.fileName = fileName;
+        this.fileUrl = fileUrl;
+    }
 }
