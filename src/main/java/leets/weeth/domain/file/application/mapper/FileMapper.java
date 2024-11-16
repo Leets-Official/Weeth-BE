@@ -14,10 +14,10 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = CommentMapper.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FileMapper {
 
-    @Mapping(target = "post", source = "post") // post 매핑
+    @Mapping(target = "post", source = "post")
     File toFile(String fileName, String fileUrl, Post post);
 
-    @Mapping(target = "notice", source = "notice") // post 매핑
+    @Mapping(target = "notice", source = "notice")
     File toFile(String fileName, String fileUrl, Notice notice);
 
     FileResponse toFileResponse(File file);
