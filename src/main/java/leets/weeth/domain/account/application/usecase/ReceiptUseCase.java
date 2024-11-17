@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface ReceiptUseCase {
-    void save(ReceiptDTO.Save dto, List<MultipartFile> images);
+    void save(ReceiptDTO.Save dto);
 
     void delete(Long id);
 }
