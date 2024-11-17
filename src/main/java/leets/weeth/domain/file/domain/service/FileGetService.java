@@ -20,4 +20,8 @@ public class FileGetService {
     public List<File> findAllByNotice(Long noticeId) {
         return fileRepository.findAllByNoticeId(noticeId);
     }
+
+    public List<File> findAllByReceipt(Long receiptId) {
+        return fileRepository.findAllByReceiptId(receiptId);
+    }
 }
