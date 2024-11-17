@@ -53,10 +53,7 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
         Notice notice = mapper.fromNoticeDto(request, user);
         noticeSaveService.save(notice);
 
-        List<File> files = request.files().stream()
-                .map(fileSaveRequest -> fileMapper.toFile(fileSaveRequest.fileName(), fileSaveRequest.fileUrl(), notice))
-                .toList();
-
+        List<File> files = fileMapper.toFileList(request.files(), notice);
         fileSaveService.save(files);
     }
 

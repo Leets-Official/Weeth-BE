@@ -53,10 +53,7 @@ public class PostUseCaseImpl implements PostUsecase {
         Post post = mapper.fromPostDto(request, user);
         postSaveService.save(post);
 
-        List<File> files = request.files().stream()
-                .map(fileSaveRequest -> fileMapper.toFile(fileSaveRequest.fileName(), fileSaveRequest.fileUrl(), post))
-                .toList();
-
+        List<File> files = fileMapper.toFileList(request.files(), post);
         fileSaveService.save(files);
     }
 
