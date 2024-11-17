@@ -24,10 +24,10 @@ public class ReceiptAdminController {
 
     private final ReceiptUseCase receiptUseCase;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     @Operation(summary="회비 사용 내역 기입")
-    public CommonResponse<Void> save(@RequestPart @Valid ReceiptDTO.Save dto, @RequestPart(required = false) List<MultipartFile> images) {
-        receiptUseCase.save(dto, images);
+    public CommonResponse<Void> save(@RequestBody @Valid ReceiptDTO.Save dto) {
+        receiptUseCase.save(dto);
         return CommonResponse.createSuccess(RECEIPT_SAVE_SUCCESS.getMessage());
     }
 
