@@ -1,8 +1,10 @@
 package leets.weeth.domain.file.application.mapper;
 
+import leets.weeth.domain.account.domain.entity.Receipt;
 import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.board.domain.entity.Post;
 import leets.weeth.domain.comment.application.mapper.CommentMapper;
+import leets.weeth.domain.file.application.dto.request.FileSaveRequest;
 import leets.weeth.domain.file.application.dto.response.FileResponse;
 import leets.weeth.domain.file.application.dto.response.UrlResponse;
 import leets.weeth.domain.file.domain.entity.File;
@@ -10,6 +12,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = CommentMapper.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FileMapper {
@@ -20,8 +26,42 @@ public interface FileMapper {
     @Mapping(target = "notice", source = "notice")
     File toFile(String fileName, String fileUrl, Notice notice);
 
+    @Mapping(target = "receipt", source = "receipt")
+    File toFile(String fileName, String fileUrl, Receipt receipt);
+
     @Mapping(target = "fileId", source = "file.id")
     FileResponse toFileResponse(File file);
 
     UrlResponse toUrlResponse(String fileName, String putUrl);
+
+    default List<File> toFileList(List<FileSaveRequest> requests, Post post) {
+        List<FileSaveRequest> dto = requests;
+        if (dto == null || dto.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return dto.stream()
+                .map(request -> toFile(request.fileName(), request.fileUrl(), post))
+                .collect(Collectors.toList());
+    }
+
+    default List<File> toFileList(List<FileSaveRequest> requests, Notice notice) {
+        if (requests == null || requests.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return requests.stream()
+                .map(request -> toFile(request.fileName(), request.fileUrl(), notice))
+                .collect(Collectors.toList());
+    }
+
+    default List<File> toFileList(List<FileSaveRequest> requests, Receipt receipt) {
+        if (requests == null || requests.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return requests.stream()
+                .map(request -> toFile(request.fileName(), request.fileUrl(), receipt))
+                .collect(Collectors.toList());
+    }
 }
