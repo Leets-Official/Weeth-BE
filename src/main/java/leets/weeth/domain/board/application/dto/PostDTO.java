@@ -1,5 +1,6 @@
 package leets.weeth.domain.board.application.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import leets.weeth.domain.comment.application.dto.CommentDTO;
 import leets.weeth.domain.file.application.dto.request.FileSaveRequest;
@@ -16,14 +17,14 @@ public class PostDTO {
     public record Save(
             @NotNull String title,
             @NotNull String content,
-            List<FileSaveRequest> files
+            @Valid List<@NotNull FileSaveRequest> files
     ){}
 
     @Builder
     public record Update(
             @NotNull String title,
             @NotNull String content,
-            List<FileUpdateRequest> files
+            @Valid List<@NotNull FileUpdateRequest> files
     ){}
 
     @Builder

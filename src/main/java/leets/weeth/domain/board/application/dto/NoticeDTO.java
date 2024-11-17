@@ -1,5 +1,6 @@
 package leets.weeth.domain.board.application.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import leets.weeth.domain.comment.application.dto.CommentDTO;
 import leets.weeth.domain.file.application.dto.request.FileSaveRequest;
@@ -16,15 +17,17 @@ public class NoticeDTO {
     public record Save(
             @NotNull String title,
             @NotNull String content,
-            List<FileSaveRequest> files
-    ){}
+            @Valid List<@NotNull FileUpdateRequest> files
+    ) {
+    }
 
     @Builder
     public record Update(
             @NotNull String title,
             @NotNull String content,
-            List<FileUpdateRequest> files
-    ){}
+            @Valid List<@NotNull FileUpdateRequest> files
+    ) {
+    }
 
     @Builder
     public record Response(
@@ -36,7 +39,8 @@ public class NoticeDTO {
             Integer commentCount,
             List<CommentDTO.Response> comments,
             List<FileResponse> files
-    ){}
+    ) {
+    }
 
     @Builder
     public record ResponseAll(
@@ -46,6 +50,7 @@ public class NoticeDTO {
             String content,
             LocalDateTime time,//modifiedAt
             Integer commentCount
-    ){}
+    ) {
+    }
 
 }
