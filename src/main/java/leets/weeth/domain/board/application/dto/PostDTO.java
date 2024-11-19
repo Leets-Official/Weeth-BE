@@ -24,7 +24,7 @@ public class PostDTO {
     public record Update(
             @NotNull String title,
             @NotNull String content,
-            @Valid List<@NotNull FileUpdateRequest> fileUrls
+            @Valid List<@NotNull FileUpdateRequest> files
     ){}
 
     @Builder
@@ -36,7 +36,7 @@ public class PostDTO {
             LocalDateTime time,//modifiedAt
             Integer commentCount,
             List<CommentDTO.Response> comments,
-            List<FileResponse> files
+            List<FileResponse> fileUrls
     ){}
 
     @Builder

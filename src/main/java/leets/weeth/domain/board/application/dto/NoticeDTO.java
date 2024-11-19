@@ -25,7 +25,7 @@ public class NoticeDTO {
     public record Update(
             @NotNull String title,
             @NotNull String content,
-            @Valid List<@NotNull FileUpdateRequest> fileUrls
+            @Valid List<@NotNull FileUpdateRequest> files
     ) {
     }
 
@@ -38,7 +38,7 @@ public class NoticeDTO {
             LocalDateTime time,//modifiedAt
             Integer commentCount,
             List<CommentDTO.Response> comments,
-            List<FileResponse> files
+            List<FileResponse> fileUrls
     ) {
     }
 
