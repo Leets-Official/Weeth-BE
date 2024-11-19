@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static leets.weeth.domain.user.presentation.ResponseMessage.USER_APPLY_SUCCESS;
-
 @Tag(name = "FileController")
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +24,6 @@ public class FileController {
     @GetMapping("/")
     @Operation(summary = "파일 업로드를 위한 presigned url을 요청하는 API 입니다.")
     public CommonResponse<List<UrlResponse>> getUrl(@RequestParam(required = false) List<String> fileName) {
-        return CommonResponse.createSuccess(USER_APPLY_SUCCESS.getMessage(), fileManageUseCase.getUrl(fileName));
+        return CommonResponse.createSuccess(ResponseMessage.PRESIGNED_URL_GET_SUCCESS.getMessage(), fileManageUseCase.getUrl(fileName));
     }
 }
