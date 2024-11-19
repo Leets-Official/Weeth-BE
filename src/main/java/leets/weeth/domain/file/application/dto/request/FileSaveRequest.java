@@ -5,6 +5,6 @@ import org.hibernate.validator.constraints.URL;
 
 public record FileSaveRequest(
         @NotBlank String fileName,
-        @URL String fileUrl
+        @NotBlank @URL String fileUrl
 ) {
 }

@@ -6,6 +6,6 @@ import org.hibernate.validator.constraints.URL;
 public record FileUpdateRequest(
         @NotBlank Long fileId,
         @NotBlank String fileName,
-        @URL String fileUrl
+        @NotBlank @URL String fileUrl
 ) {
 }
