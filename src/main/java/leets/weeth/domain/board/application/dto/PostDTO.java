@@ -24,7 +24,7 @@ public class PostDTO {
     public record Update(
             @NotNull String title,
             @NotNull String content,
-            @Valid List<@NotNull FileUpdateRequest> files
+            @Valid List<@NotNull FileUpdateRequest> fileUrls
     ){}
 
     @Builder

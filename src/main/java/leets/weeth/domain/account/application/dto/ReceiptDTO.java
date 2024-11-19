@@ -15,7 +15,7 @@ public class ReceiptDTO {
         String description,
         Integer amount,
         LocalDate date,
-        List<FileResponse> files
+        List<FileResponse> fileUrls
     ) {}
 
     public record Save(
