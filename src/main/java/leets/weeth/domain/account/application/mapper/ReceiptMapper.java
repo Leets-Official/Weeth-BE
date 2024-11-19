@@ -16,7 +16,7 @@ public interface ReceiptMapper {
 
     List<ReceiptDTO.Response> to(List<Receipt> account);
 
-    ReceiptDTO.Response to(Receipt receipt, List<FileResponse> files);
+    ReceiptDTO.Response to(Receipt receipt, List<FileResponse> fileUrls);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "description", source = "dto.description")

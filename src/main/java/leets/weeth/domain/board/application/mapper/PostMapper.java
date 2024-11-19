@@ -33,7 +33,7 @@ public interface PostMapper {
             @Mapping(target = "comments", expression = "java(filterParentComments(post.getComments()))"),
             @Mapping(target = "time", source = "post.modifiedAt")
     })
-    PostDTO.Response toPostDto(Post post, List<FileResponse> files);
+    PostDTO.Response toPostDto(Post post, List<FileResponse> fileUrls);
 
     default List<CommentDTO.Response> filterParentComments(List<Comment> comments) {
         if (comments == null || comments.isEmpty()) {

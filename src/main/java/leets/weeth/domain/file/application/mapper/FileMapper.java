@@ -20,12 +20,15 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = CommentMapper.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FileMapper {
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "post", source = "post")
     File toFile(String fileName, String fileUrl, Post post);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "notice", source = "notice")
     File toFile(String fileName, String fileUrl, Notice notice);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "receipt", source = "receipt")
     File toFile(String fileName, String fileUrl, Receipt receipt);
 

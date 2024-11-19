@@ -34,7 +34,7 @@ public interface NoticeMapper {
             @Mapping(target = "comments", expression = "java(filterParentComments(notice.getComments()))"),
             @Mapping(target = "time", source = "notice.modifiedAt")
     })
-    NoticeDTO.Response toNoticeDto(Notice notice, List<FileResponse> files);
+    NoticeDTO.Response toNoticeDto(Notice notice, List<FileResponse> fileUrls);
 
     default List<CommentDTO.Response> filterParentComments(List<Comment> comments) {
         if (comments == null || comments.isEmpty()) {
