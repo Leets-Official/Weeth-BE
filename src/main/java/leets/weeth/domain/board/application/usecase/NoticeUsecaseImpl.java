@@ -7,7 +7,7 @@ import leets.weeth.domain.board.domain.service.NoticeDeleteService;
 import leets.weeth.domain.board.domain.service.NoticeFindService;
 import leets.weeth.domain.board.domain.service.NoticeSaveService;
 import leets.weeth.domain.board.domain.service.NoticeUpdateService;
-import leets.weeth.domain.file.service.FileSaveService;
+import leets.weeth.domain.file.service.S3Service;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.domain.board.application.exception.NoticeNotFoundException;
@@ -30,7 +30,7 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     private final NoticeDeleteService noticeDeleteService;
 
     private final UserGetService userGetService;
-    private final FileSaveService fileSaveService;
+    private final S3Service s3Service;
 
     private final NoticeMapper mapper;
 
@@ -39,7 +39,7 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
         User user = userGetService.find(userId);
 
         List<String> fileUrls;
-        fileUrls = fileSaveService.uploadFiles(files);
+        fileUrls = s3Service.uploadFiles(files);
         noticeSaveService.save(mapper.fromNoticeDto(request, fileUrls, user));
     }
 
@@ -78,7 +78,7 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
         Notice notice = validateOwner(noticeId, userId);
 
         List<String> fileUrls = notice.getFileUrls();
-        List<String> uploadedFileUrls = fileSaveService.uploadFiles(files);
+        List<String> uploadedFileUrls = s3Service.uploadFiles(files);
 
         fileUrls.addAll(uploadedFileUrls);
 

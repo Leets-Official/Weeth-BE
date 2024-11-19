@@ -7,7 +7,7 @@ import leets.weeth.domain.board.domain.service.PostDeleteService;
 import leets.weeth.domain.board.domain.service.PostFindService;
 import leets.weeth.domain.board.domain.service.PostSaveService;
 import leets.weeth.domain.board.domain.service.PostUpdateService;
-import leets.weeth.domain.file.service.FileSaveService;
+import leets.weeth.domain.file.service.S3Service;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.domain.board.application.exception.PostNotFoundException;
@@ -30,7 +30,7 @@ public class PostUseCaseImpl implements PostUsecase {
     private final PostDeleteService postDeleteService;
 
     private final UserGetService userGetService;
-    private final FileSaveService fileSaveService;
+    private final S3Service s3Service;
 
     private final PostMapper mapper;
 
@@ -39,7 +39,7 @@ public class PostUseCaseImpl implements PostUsecase {
         User user = userGetService.find(userId);
 
         List<String> fileUrls;
-        fileUrls = fileSaveService.uploadFiles(files);
+        fileUrls = s3Service.uploadFiles(files);
         postSaveService.save(mapper.fromPostDto(request, fileUrls, user));
     }
 
@@ -78,7 +78,7 @@ public class PostUseCaseImpl implements PostUsecase {
         Post post = validateOwner(postId, userId);
 
         List<String> fileUrls = post.getFileUrls();
-        List<String> uploadedFileUrls = fileSaveService.uploadFiles(files);
+        List<String> uploadedFileUrls = s3Service.uploadFiles(files);
 
         fileUrls.addAll(uploadedFileUrls);
 
