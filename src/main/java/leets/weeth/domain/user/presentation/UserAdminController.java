@@ -2,6 +2,7 @@ package leets.weeth.domain.user.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import leets.weeth.domain.user.application.dto.response.UserResponseDto.AdminSummaryResponse;
 import leets.weeth.domain.user.application.usecase.UserUseCase;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class UserAdminController {
 
     @GetMapping("/all")
     @Operation(summary="어드민용 회원 조회")
-    public CommonResponse<List<AdminResponse>> findAll() {
+    public CommonResponse<List<AdminSummaryResponse>> findAll() {
         return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(), userUseCase.findAllByAdmin());
     }
 
