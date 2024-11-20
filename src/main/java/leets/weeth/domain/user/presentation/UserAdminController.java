@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static leets.weeth.domain.user.application.dto.response.UserResponseDto.AdminResponse;
 import static leets.weeth.domain.user.presentation.ResponseMessage.*;
 
 @Tag(name = "UserAdminController", description = "유저 관련 어드민 컨트롤러")
