@@ -7,7 +7,6 @@ import org.mapstruct.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static leets.weeth.domain.user.application.dto.request.UserRequestDto.SignUp;
-import static leets.weeth.domain.user.application.dto.response.UserResponseDto.AdminResponse;
 import static leets.weeth.domain.user.application.dto.response.UserResponseDto.Response;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -22,14 +21,10 @@ public interface UserMapper {
 
     @Mapping(target = "department", expression = "java( toString(user.getDepartment()) )")
     Response to(User user);
-
-    @Mappings({
-            // 수정: 출석률, 출석 횟수, 결석 횟수 매핑 추후 추가 예정
-    })
-    AdminResponse toAdminResponse(User user);
     @Mappings({
             @Mapping(target = "cardinals", source = "cardinals"),
             @Mapping(target = "department", expression = "java(user.getDepartment().getValue())")
+            // 수정: 출석률, 출석 횟수, 결석 횟수 매핑 추후 추가 예정
     })
     AdminSummaryResponse toSummary(User user);
     default String toString(Department department) {
