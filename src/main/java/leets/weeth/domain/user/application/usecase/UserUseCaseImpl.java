@@ -6,6 +6,7 @@ import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.schedule.domain.service.MeetingGetService;
 import leets.weeth.domain.user.application.exception.StudentIdExistsException;
 import leets.weeth.domain.user.application.exception.TelExistsException;
+import leets.weeth.domain.user.application.exception.UserNotFoundException;
 import leets.weeth.domain.user.application.mapper.UserMapper;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserDeleteService;
@@ -106,14 +107,33 @@ public class UserUseCaseImpl implements UserUseCase {
                 .collect(Collectors.groupingBy(Map.Entry::getKey,   // key = 기수, value = 유저 정보
                         Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
     }
-
+    @Override
+    public Map<Integer, List<SummaryResponse>> findAllUser() {
+        return userGetService.findAllByStatus(ACTIVE).stream()
+                .flatMap(user -> Stream.concat(
+                        user.getCardinals().stream()
+                                .map(cardinal -> new AbstractMap.SimpleEntry<>(cardinal, mapper.toSummaryResponse(user))), // 기수별 Map
+                        Stream.of(new AbstractMap.SimpleEntry<>(0, mapper.toSummaryResponse(user))) // 모든 기수는 cardinal 0에 저장
+                ))
+                .collect(Collectors.groupingBy(
+                        Map.Entry::getKey, // key = 기수
+                        Collectors.mapping(Map.Entry::getValue, Collectors.toList()) // value = 요약 정보 리스트
+                ));
+    }
     @Override
     public List<AdminResponse> findAllByAdmin() {
         return userGetService.findAll().stream()
                 .map(mapper::toAdminResponse)
                 .toList();
     }
-
+    @Override
+    public Response findUserDetails(Long userId) {
+        User user = userGetService.find(userId);
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+        return mapper.toResponse(user);
+    }
     @Override
     public Response find(Long userId) {
         return mapper.to(userGetService.find(userId));
