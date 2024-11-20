@@ -6,6 +6,7 @@ import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.schedule.domain.service.MeetingGetService;
 import leets.weeth.domain.user.application.exception.StudentIdExistsException;
 import leets.weeth.domain.user.application.exception.TelExistsException;
+import leets.weeth.domain.user.application.exception.UserNotFoundException;
 import leets.weeth.domain.user.application.mapper.UserMapper;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserDeleteService;
@@ -33,7 +34,6 @@ import static leets.weeth.domain.user.application.dto.response.UserResponseDto.*
 import static leets.weeth.domain.user.domain.entity.enums.LoginStatus.LOGIN;
 import static leets.weeth.domain.user.domain.entity.enums.LoginStatus.REGISTER;
 import static leets.weeth.domain.user.domain.entity.enums.Status.ACTIVE;
-
 @Service
 @RequiredArgsConstructor
 public class UserUseCaseImpl implements UserUseCase {
@@ -114,7 +114,14 @@ public class UserUseCaseImpl implements UserUseCase {
                 .map(mapper::toSummary)
                 .toList();
     }
-
+    @Override
+    public AdminResponse findUserDetails(Long userId) {
+        User user = userGetService.find(userId);
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+        return mapper.toAdminResponse(user);
+    }
     @Override
     public Response find(Long userId) {
         return mapper.to(userGetService.find(userId));
