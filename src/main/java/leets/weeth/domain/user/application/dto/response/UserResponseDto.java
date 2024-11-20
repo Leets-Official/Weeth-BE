@@ -30,7 +30,12 @@ public class UserResponseDto {
             Role role
     ) {
     }
-
+    public record SummaryResponse(
+            Integer id,
+            String name,
+            List<Integer> cardinals,
+            String department
+    ) {}
     public record AdminResponse(
             Integer id,
             String name,
@@ -50,10 +55,4 @@ public class UserResponseDto {
             LocalDateTime modifiedAt
     ) {
     }
-    public record AdminSummaryResponse(
-            Integer id,
-            String name,
-            List<Integer> cardinals,
-            String department
-    ) {}
 }
