@@ -98,6 +98,7 @@ public class UserUseCaseImpl implements UserUseCase {
     @Override
     public Map<Integer, List<Response>> findAll() {
         return userGetService.findAllByStatus(ACTIVE).stream()
+                .filter(user -> !"admin".equals(user.getName()))
                 .flatMap(user -> Stream.concat(
                         user.getCardinals().stream()
                                 .map(cardinal -> new AbstractMap.SimpleEntry<>(cardinal, mapper.to(user))), // 기수별 Map
@@ -108,9 +109,9 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     @Override
-    public List<AdminResponse> findAllByAdmin() {
+    public List<AdminSummaryResponse> findAllByAdmin() {
         return userGetService.findAll().stream()
-                .map(mapper::toAdminResponse)
+                .map(mapper::toSummary)
                 .toList();
     }
 
