@@ -50,5 +50,10 @@ public class UserResponseDto {
             LocalDateTime modifiedAt
     ) {
     }
-
+    public record AdminSummaryResponse(
+            Integer id,
+            String name,
+            List<Integer> cardinals,
+            String department
+    ) {}
 }
