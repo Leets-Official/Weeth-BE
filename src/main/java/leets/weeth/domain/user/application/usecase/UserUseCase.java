@@ -19,7 +19,7 @@ public interface UserUseCase {
 
     Map<Integer, List<Response>> findAll();
 
-    List<AdminResponse> findAllByAdmin();
+    List<AdminSummaryResponse> findAllByAdmin();
 
     void update(Update dto, Long userId);
 
