@@ -6,7 +6,6 @@ import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.schedule.domain.service.MeetingGetService;
 import leets.weeth.domain.user.application.exception.StudentIdExistsException;
 import leets.weeth.domain.user.application.exception.TelExistsException;
-import leets.weeth.domain.user.application.exception.UserNotFoundException;
 import leets.weeth.domain.user.application.mapper.UserMapper;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserDeleteService;
@@ -34,6 +33,7 @@ import static leets.weeth.domain.user.application.dto.response.UserResponseDto.*
 import static leets.weeth.domain.user.domain.entity.enums.LoginStatus.LOGIN;
 import static leets.weeth.domain.user.domain.entity.enums.LoginStatus.REGISTER;
 import static leets.weeth.domain.user.domain.entity.enums.Status.ACTIVE;
+
 @Service
 @RequiredArgsConstructor
 public class UserUseCaseImpl implements UserUseCase {
@@ -98,7 +98,6 @@ public class UserUseCaseImpl implements UserUseCase {
     @Override
     public Map<Integer, List<Response>> findAll() {
         return userGetService.findAllByStatus(ACTIVE).stream()
-                .filter(user -> !"admin".equals(user.getName()))
                 .flatMap(user -> Stream.concat(
                         user.getCardinals().stream()
                                 .map(cardinal -> new AbstractMap.SimpleEntry<>(cardinal, mapper.to(user))), // 기수별 Map
@@ -109,19 +108,12 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     @Override
-    public List<AdminSummaryResponse> findAllByAdmin() {
+    public List<AdminResponse> findAllByAdmin() {
         return userGetService.findAll().stream()
-                .map(mapper::toSummary)
+                .map(mapper::toAdminResponse)
                 .toList();
     }
-    @Override
-    public AdminResponse findUserDetails(Long userId) {
-        User user = userGetService.find(userId);
-        if (user == null) {
-            throw new UserNotFoundException();
-        }
-        return mapper.toAdminResponse(user);
-    }
+
     @Override
     public Response find(Long userId) {
         return mapper.to(userGetService.find(userId));

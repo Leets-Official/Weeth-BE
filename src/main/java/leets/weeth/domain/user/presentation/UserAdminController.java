@@ -2,8 +2,6 @@ package leets.weeth.domain.user.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import leets.weeth.domain.user.application.dto.response.UserResponseDto.AdminResponse;
-import leets.weeth.domain.user.application.dto.response.UserResponseDto.AdminSummaryResponse;
 import leets.weeth.domain.user.application.usecase.UserUseCase;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static leets.weeth.domain.user.application.dto.response.UserResponseDto.AdminResponse;
 import static leets.weeth.domain.user.presentation.ResponseMessage.*;
 
 @Tag(name = "UserAdminController", description = "유저 관련 어드민 컨트롤러")
@@ -23,17 +22,10 @@ public class UserAdminController {
 
     @GetMapping("/all")
     @Operation(summary="어드민용 회원 조회")
-    public CommonResponse<List<AdminSummaryResponse>> findAll() {
+    public CommonResponse<List<AdminResponse>> findAll() {
         return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(), userUseCase.findAllByAdmin());
     }
-    @GetMapping("/details")
-    @Operation(summary = "어드민용 특정 멤버 상세 조회")
-    public CommonResponse<AdminResponse> findUserDetails(@RequestParam Long userId) {
-        return CommonResponse.createSuccess(
-                USER_DETAILS_SUCCESS.getMessage(),
-                userUseCase.findUserDetails(userId)
-        );
-    }
+
     @PatchMapping
     @Operation(summary="가입 신청 승인")
     public CommonResponse<Void> accept(@RequestParam Long userId) {
