@@ -21,6 +21,8 @@ public interface UserUseCase {
 
     List<AdminSummaryResponse> findAllByAdmin();
 
+    AdminResponse findUserDetails(Long userId);
+
     void update(Update dto, Long userId);
 
     void accept(Long userId);
