@@ -98,8 +98,10 @@ public class PostUseCaseImpl implements PostUsecase {
         Post post = validateOwner(postId, userId);
 
         List<File> fileList = getFiles(postId);
+        fileDeleteService.delete(fileList);
 
-        fileUpdateService.updateFiles(fileList, dto.files());
+        List<File> files = fileMapper.toFileList(dto.files(), post);
+        fileSaveService.save(files);
 
         postUpdateService.update(post, dto);
     }
