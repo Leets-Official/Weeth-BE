@@ -6,7 +6,6 @@ import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.schedule.domain.service.MeetingGetService;
 import leets.weeth.domain.user.application.exception.StudentIdExistsException;
 import leets.weeth.domain.user.application.exception.TelExistsException;
-import leets.weeth.domain.user.application.exception.UserNotFoundException;
 import leets.weeth.domain.user.application.mapper.UserMapper;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserDeleteService;
@@ -129,9 +128,6 @@ public class UserUseCaseImpl implements UserUseCase {
     @Override
     public Response findUserDetails(Long userId) {
         User user = userGetService.find(userId);
-        if (user == null) {
-            throw new UserNotFoundException();
-        }
         return mapper.toResponse(user);
     }
     @Override
