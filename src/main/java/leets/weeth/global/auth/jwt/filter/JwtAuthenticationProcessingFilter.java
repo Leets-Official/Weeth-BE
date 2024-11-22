@@ -19,13 +19,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.TooManyListenersException;
 
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private static final String NO_CHECK_URL = "/api/v1/login";
+    private final String DUMMY = "DUMMY_PASSWORD";
 
     private final JwtProvider jwtProvider;
     private final JwtService jwtService;
@@ -55,11 +55,10 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     }
 
     public void saveAuthentication(User myUser) {
-        String password = myUser.getPassword();
 
         UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
                 .username(myUser.getEmail())
-                .password(password)
+                .password(DUMMY)
                 .roles(myUser.getRole().name())
                 .build();
 
