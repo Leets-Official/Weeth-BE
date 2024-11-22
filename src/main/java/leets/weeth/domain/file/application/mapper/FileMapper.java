@@ -22,15 +22,15 @@ public interface FileMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "post", source = "post")
-    File toFile(String fileName, String fileUrl, Post post);
+    File toFileWithPost(String fileName, String fileUrl, Post post);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "notice", source = "notice")
-    File toFile(String fileName, String fileUrl, Notice notice);
+    File toFileWithNotice(String fileName, String fileUrl, Notice notice);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "receipt", source = "receipt")
-    File toFile(String fileName, String fileUrl, Receipt receipt);
+    File toFileWithReceipt(String fileName, String fileUrl, Receipt receipt);
 
     @Mapping(target = "fileId", source = "file.id")
     FileResponse toFileResponse(File file);
@@ -44,7 +44,7 @@ public interface FileMapper {
         }
 
         return dto.stream()
-                .map(request -> toFile(request.fileName(), request.fileUrl(), post))
+                .map(request -> toFileWithPost(request.fileName(), request.fileUrl(), post))
                 .collect(Collectors.toList());
     }
 
@@ -54,7 +54,7 @@ public interface FileMapper {
         }
 
         return requests.stream()
-                .map(request -> toFile(request.fileName(), request.fileUrl(), notice))
+                .map(request -> toFileWithNotice(request.fileName(), request.fileUrl(), notice))
                 .collect(Collectors.toList());
     }
 
@@ -64,7 +64,7 @@ public interface FileMapper {
         }
 
         return requests.stream()
-                .map(request -> toFile(request.fileName(), request.fileUrl(), receipt))
+                .map(request -> toFileWithReceipt(request.fileName(), request.fileUrl(), receipt))
                 .collect(Collectors.toList());
     }
 }
