@@ -66,8 +66,7 @@ public class UserController {
     @Operation(summary = "특정 멤버 상세 조회")
     public CommonResponse<Response> findUser(@RequestParam Long userId) {
         return CommonResponse.createSuccess(
-                USER_DETAILS_SUCCESS.getMessage(),
-                userUseCase.findUserDetails(userId)
+                USER_DETAILS_SUCCESS.getMessage(), userUseCase.findUserDetails(userId)
         );
     }
     @GetMapping
