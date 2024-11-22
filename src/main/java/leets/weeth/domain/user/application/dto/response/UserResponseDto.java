@@ -55,4 +55,14 @@ public class UserResponseDto {
             LocalDateTime modifiedAt
     ) {
     }
+    public record UserResponse(
+            Integer id,
+            String name,
+            String email,
+            String studentId,
+            String department,
+            List<Integer> cardinals,
+            Position position
+    ) {
+    }
 }
