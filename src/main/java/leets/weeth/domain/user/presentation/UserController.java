@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import leets.weeth.domain.user.application.dto.response.UserResponseDto.SummaryResponse;
+import leets.weeth.domain.user.application.dto.response.UserResponseDto.UserResponse;
 import leets.weeth.domain.user.application.usecase.UserManageUseCase;
 import leets.weeth.domain.user.application.usecase.UserUseCase;
 import leets.weeth.domain.user.domain.service.UserGetService;
@@ -64,7 +65,7 @@ public class UserController {
     }
     @GetMapping("/details")
     @Operation(summary = "특정 멤버 상세 조회")
-    public CommonResponse<Response> findUser(@RequestParam Long userId) {
+    public CommonResponse<UserResponse> findUser(@RequestParam Long userId) {
         return CommonResponse.createSuccess(
                 USER_DETAILS_SUCCESS.getMessage(), userUseCase.findUserDetails(userId)
         );
