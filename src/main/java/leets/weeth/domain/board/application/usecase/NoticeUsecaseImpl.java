@@ -98,8 +98,10 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
         Notice notice = validateOwner(noticeId, userId);
 
         List<File> fileList = getFiles(noticeId);
+        fileDeleteService.delete(fileList);
 
-        fileUpdateService.updateFiles(fileList, dto.files());
+        List<File> files = fileMapper.toFileList(dto.files(), notice);
+        fileSaveService.save(files);
 
         noticeUpdateService.update(notice, dto);
     }

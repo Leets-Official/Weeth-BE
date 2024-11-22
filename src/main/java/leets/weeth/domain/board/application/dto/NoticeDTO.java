@@ -25,7 +25,7 @@ public class NoticeDTO {
     public record Update(
             @NotNull String title,
             @NotNull String content,
-            @Valid List<@NotNull FileUpdateRequest> files
+            @Valid List<@NotNull FileSaveRequest> files
     ) {
     }
 
