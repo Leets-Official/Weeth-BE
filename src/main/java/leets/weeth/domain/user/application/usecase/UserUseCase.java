@@ -23,7 +23,7 @@ public interface UserUseCase {
 
     List<AdminResponse> findAllByAdmin();
 
-    Response findUserDetails(Long userId);
+    UserResponse findUserDetails(Long userId);
 
     void update(Update dto, Long userId);
 
