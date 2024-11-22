@@ -126,9 +126,9 @@ public class UserUseCaseImpl implements UserUseCase {
                 .toList();
     }
     @Override
-    public Response findUserDetails(Long userId) {
+    public UserResponse findUserDetails(Long userId) {
         User user = userGetService.find(userId);
-        return mapper.toResponse(user);
+        return mapper.toUserResponse(user);
     }
     @Override
     public Response find(Long userId) {
