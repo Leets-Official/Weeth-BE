@@ -109,10 +109,10 @@ public class UserUseCaseImpl implements UserUseCase {
     @Override
     public Map<Integer, List<SummaryResponse>> findAllUser() {
         return userGetService.findAllByStatus(ACTIVE).stream()
-                .flatMap(user -> Stream.concat(
-                        user.getCardinals().stream()
-                                .map(cardinal -> new AbstractMap.SimpleEntry<>(cardinal, mapper.toSummaryResponse(user))), // 기수별 Map
-                        Stream.of(new AbstractMap.SimpleEntry<>(0, mapper.toSummaryResponse(user))) // 모든 기수는 cardinal 0에 저장
+                .map(user -> new AbstractMap.SimpleEntry<>(user.getCardinals(), mapper.toSummaryResponse(user)))
+                .flatMap(entry -> Stream.concat(
+                        entry.getKey().stream().map(cardinal -> new AbstractMap.SimpleEntry<>(cardinal, entry.getValue())), // 기수별 Map
+                        Stream.of(new AbstractMap.SimpleEntry<>(0, entry.getValue())) // 모든 기수는 cardinal 0에 저장
                 ))
                 .collect(Collectors.groupingBy(
                         Map.Entry::getKey, // key = 기수
