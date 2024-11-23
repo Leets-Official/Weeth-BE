@@ -1,5 +1,7 @@
 package leets.weeth.domain.user.application.mapper;
 
+import leets.weeth.domain.user.application.dto.response.UserResponseDto.SummaryResponse;
+import leets.weeth.domain.user.application.dto.response.UserResponseDto.UserResponse;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.entity.enums.Department;
 import org.mapstruct.*;
@@ -26,7 +28,15 @@ public interface UserMapper {
             // 수정: 출석률, 출석 횟수, 결석 횟수 매핑 추후 추가 예정
     })
     AdminResponse toAdminResponse(User user);
+    @Mappings({
+            @Mapping(target = "department", expression = "java( toString(user.getDepartment()) )")
+    })
+    SummaryResponse toSummaryResponse(User user);
 
+    @Mappings({
+            // 상세 데이터 매핑
+    })
+    UserResponse toUserResponse(User user);
     default String toString(Department department) {
         return department.getValue();
     }

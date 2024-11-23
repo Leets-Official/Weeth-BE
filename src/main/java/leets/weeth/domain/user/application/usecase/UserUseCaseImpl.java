@@ -106,14 +106,30 @@ public class UserUseCaseImpl implements UserUseCase {
                 .collect(Collectors.groupingBy(Map.Entry::getKey,   // key = 기수, value = 유저 정보
                         Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
     }
-
+    @Override
+    public Map<Integer, List<SummaryResponse>> findAllUser() {
+        return userGetService.findAllByStatus(ACTIVE).stream()
+                .map(user -> new AbstractMap.SimpleEntry<>(user.getCardinals(), mapper.toSummaryResponse(user)))
+                .flatMap(entry -> Stream.concat(
+                        entry.getKey().stream().map(cardinal -> new AbstractMap.SimpleEntry<>(cardinal, entry.getValue())), // 기수별 Map
+                        Stream.of(new AbstractMap.SimpleEntry<>(0, entry.getValue())) // 모든 기수는 cardinal 0에 저장
+                ))
+                .collect(Collectors.groupingBy(
+                        Map.Entry::getKey, // key = 기수
+                        Collectors.mapping(Map.Entry::getValue, Collectors.toList()) // value = 요약 정보 리스트
+                ));
+    }
     @Override
     public List<AdminResponse> findAllByAdmin() {
         return userGetService.findAll().stream()
                 .map(mapper::toAdminResponse)
                 .toList();
     }
-
+    @Override
+    public UserResponse findUserDetails(Long userId) {
+        User user = userGetService.find(userId);
+        return mapper.toUserResponse(user);
+    }
     @Override
     public Response find(Long userId) {
         return mapper.to(userGetService.find(userId));
