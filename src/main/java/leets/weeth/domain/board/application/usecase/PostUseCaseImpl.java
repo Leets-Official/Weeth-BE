@@ -1,22 +1,28 @@
 package leets.weeth.domain.board.application.usecase;
 
 import leets.weeth.domain.board.application.dto.PostDTO;
+import leets.weeth.domain.board.application.exception.PostNotFoundException;
 import leets.weeth.domain.board.application.mapper.PostMapper;
 import leets.weeth.domain.board.domain.entity.Post;
 import leets.weeth.domain.board.domain.service.PostDeleteService;
 import leets.weeth.domain.board.domain.service.PostFindService;
 import leets.weeth.domain.board.domain.service.PostSaveService;
 import leets.weeth.domain.board.domain.service.PostUpdateService;
-import leets.weeth.domain.file.service.S3Service;
+import leets.weeth.domain.file.application.dto.response.FileResponse;
+import leets.weeth.domain.file.application.mapper.FileMapper;
+import leets.weeth.domain.file.domain.entity.File;
+import leets.weeth.domain.file.domain.service.FileDeleteService;
+import leets.weeth.domain.file.domain.service.FileGetService;
+import leets.weeth.domain.file.domain.service.FileSaveService;
+import leets.weeth.domain.file.domain.service.FileUpdateService;
+import leets.weeth.domain.user.application.exception.UserNotMatchException;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
-import leets.weeth.domain.board.application.exception.PostNotFoundException;
-import leets.weeth.domain.user.application.exception.UserNotMatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,23 +36,36 @@ public class PostUseCaseImpl implements PostUsecase {
     private final PostDeleteService postDeleteService;
 
     private final UserGetService userGetService;
-    private final S3Service s3Service;
+
+    private final FileSaveService fileSaveService;
+    private final FileGetService fileGetService;
+    private final FileUpdateService fileUpdateService;
+    private final FileDeleteService fileDeleteService;
 
     private final PostMapper mapper;
+    private final FileMapper fileMapper;
 
     @Override
-    public void save(PostDTO.Save request, List<MultipartFile> files, Long userId) {
+    @Transactional
+    public void save(PostDTO.Save request, Long userId) {
         User user = userGetService.find(userId);
 
-        List<String> fileUrls;
-        fileUrls = s3Service.uploadFiles(files);
-        postSaveService.save(mapper.fromPostDto(request, fileUrls, user));
+        Post post = mapper.fromPostDto(request, user);
+        postSaveService.save(post);
+
+        List<File> files = fileMapper.toFileList(request.files(), post);
+        fileSaveService.save(files);
     }
 
     @Override
     public PostDTO.Response findPost(Long postId) {
         Post post = postFindService.find(postId);
-        return mapper.toPostDto(post);
+
+        List<FileResponse> response = getFiles(postId).stream()
+                .map(fileMapper::toFileResponse)
+                .toList();
+
+        return mapper.toPostDto(post, response);
     }
 
     @Override
@@ -55,12 +74,12 @@ public class PostUseCaseImpl implements PostUsecase {
         Long finalPostId = postFindService.findFinalPostId();
 
         // 첫번째 요청인 경우
-        if(postId==null){
+        if (postId == null) {
             postId = finalPostId + 1;
         }
 
         // postId가 1 이하이거나 최대값보다 클경우
-        if(postId < 1 || postId > finalPostId + 1){
+        if (postId < 1 || postId > finalPostId + 1) {
             throw new PostNotFoundException();
         }
 
@@ -74,24 +93,35 @@ public class PostUseCaseImpl implements PostUsecase {
     }
 
     @Override
-    public void update(Long postId, PostDTO.Update dto, List<MultipartFile> files, Long userId) throws UserNotMatchException {
+    @Transactional
+    public void update(Long postId, PostDTO.Update dto, Long userId) {
         Post post = validateOwner(postId, userId);
 
-        List<String> fileUrls = post.getFileUrls();
-        List<String> uploadedFileUrls = s3Service.uploadFiles(files);
+        List<File> fileList = getFiles(postId);
+        fileDeleteService.delete(fileList);
 
-        fileUrls.addAll(uploadedFileUrls);
+        List<File> files = fileMapper.toFileList(dto.files(), post);
+        fileSaveService.save(files);
 
-        postUpdateService.update(post, dto, fileUrls);
+        postUpdateService.update(post, dto);
     }
 
     @Override
-    public void delete(Long postId, Long userId) throws UserNotMatchException {
+    @Transactional
+    public void delete(Long postId, Long userId) {
         validateOwner(postId, userId);
+
+        List<File> fileList = getFiles(postId);
+        fileDeleteService.delete(fileList);
+
         postDeleteService.delete(postId);
     }
 
-    private Post validateOwner(Long postId, Long userId) throws UserNotMatchException {
+    private List<File> getFiles(Long postId) {
+        return fileGetService.findAllByPost(postId);
+    }
+
+    private Post validateOwner(Long postId, Long userId) {
         Post post = postFindService.find(postId);
 
         if (!post.getUser().getId().equals(userId)) {

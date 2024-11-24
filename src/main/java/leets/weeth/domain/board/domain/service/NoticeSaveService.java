@@ -12,7 +12,6 @@ public class NoticeSaveService {
 
     private final NoticeRepository noticeRepository;
 
-    @Transactional
     public void save(Notice notice){
         noticeRepository.save(notice);
     }

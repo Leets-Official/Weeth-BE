@@ -9,19 +9,15 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class FileGetService {
+public class FileDeleteService {
 
     private final FileRepository fileRepository;
 
-    public List<File> findAllByPost(Long postId) {
-        return fileRepository.findAllByPostId(postId);
+    public void delete(File file) {
+        fileRepository.delete(file);
     }
 
-    public List<File> findAllByNotice(Long noticeId) {
-        return fileRepository.findAllByNoticeId(noticeId);
-    }
-
-    public List<File> findAllByReceipt(Long receiptId) {
-        return fileRepository.findAllByReceiptId(receiptId);
+    public void delete(List<File> files) {
+        fileRepository.deleteAll(files);
     }
 }

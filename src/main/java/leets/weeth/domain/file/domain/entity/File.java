@@ -1,6 +1,7 @@
 package leets.weeth.domain.file.domain.entity;
 
 import jakarta.persistence.*;
+import leets.weeth.domain.account.domain.entity.Receipt;
 import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.board.domain.entity.Post;
 import lombok.*;
@@ -14,7 +15,7 @@ public class File {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
 
     private String fileName;
 
@@ -27,6 +28,10 @@ public class File {
     @ManyToOne
     @JoinColumn(name = "notice_id")
     private Notice notice;
+
+    @ManyToOne
+    @JoinColumn(name = "receipt_id")
+    private Receipt receipt;
 
     public void update(String fileName, String fileUrl) {
         this.fileName = fileName;

@@ -15,9 +15,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostUpdateService {
 
-    @Transactional
-    public void update(Post post, PostDTO.Update dto, List<String> fileUrls){
-        post.update(dto, fileUrls);
+    public void update(Post post, PostDTO.Update dto){
+        post.update(dto);
     }
 
 }

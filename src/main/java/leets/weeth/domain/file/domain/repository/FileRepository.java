@@ -10,4 +10,6 @@ public interface FileRepository extends JpaRepository<File, Long> {
     List<File> findAllByPostId(Long postId);
 
     List<File> findAllByNoticeId(Long noticeId);
+
+    List<File> findAllByReceiptId(Long receiptId);
 }

@@ -26,12 +26,11 @@ public class PostController {
 
     private final PostUsecase postUsecase;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     @Operation(summary="게시글 생성")
-    public CommonResponse<String> save(@RequestPart @Valid PostDTO.Save dto,
-                                       @RequestPart(value = "files", required = false) List<MultipartFile> files,
+    public CommonResponse<String> save(@RequestBody @Valid PostDTO.Save dto,
                                        @Parameter(hidden = true) @CurrentUser Long userId) {
-        postUsecase.save(dto, files, userId);
+        postUsecase.save(dto, userId);
         return CommonResponse.createSuccess(POST_CREATED_SUCCESS.getMessage());
     }
 
@@ -47,13 +46,12 @@ public class PostController {
         return CommonResponse.createSuccess(POST_FIND_BY_ID_SUCCESS.getMessage(),postUsecase.findPost(postId));
     }
 
-    @PatchMapping(value = "/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/{postId}")
     @Operation(summary="특정 게시글 수정")
     public CommonResponse<String> update(@PathVariable Long postId,
-                                         @RequestPart @Valid PostDTO.Update dto,
-                                         @RequestPart(value = "files", required = false) List<MultipartFile> files,
+                                         @RequestBody @Valid PostDTO.Update dto,
                                          @Parameter(hidden = true) @CurrentUser Long userId) throws UserNotMatchException {
-        postUsecase.update(postId, dto, files, userId);
+        postUsecase.update(postId, dto, userId);
         return CommonResponse.createSuccess(POST_UPDATED_SUCCESS.getMessage());
     }
 
