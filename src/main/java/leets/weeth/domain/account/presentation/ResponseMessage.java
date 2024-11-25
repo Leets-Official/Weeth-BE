@@ -14,7 +14,8 @@ public enum ResponseMessage {
 
     // ReceiptAdminController 관련
     RECEIPT_SAVE_SUCCESS("영수증이 성공적으로 저장되었습니다."),
-    RECEIPT_DELETE_SUCCESS("영수증이 성공적으로 삭제되었습니다.");
+    RECEIPT_DELETE_SUCCESS("영수증이 성공적으로 삭제되었습니다."),
+    RECEIPT_UPDATE_SUCCESS("영수증이 성공적으로 업데이트 되었습니다.");
 
     private final String message;
 }
