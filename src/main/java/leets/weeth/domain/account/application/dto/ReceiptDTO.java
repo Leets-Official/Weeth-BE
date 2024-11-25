@@ -25,4 +25,12 @@ public class ReceiptDTO {
             @NotNull Integer cardinal,
             @Valid List<@NotNull FileSaveRequest> files
     ) {}
+
+    public record Update(
+            String description,
+            @NotNull Integer amount,
+            @NotNull LocalDate date,
+            @NotNull Integer cardinal,
+            @Valid List<FileSaveRequest> files
+    ) {}
 }
