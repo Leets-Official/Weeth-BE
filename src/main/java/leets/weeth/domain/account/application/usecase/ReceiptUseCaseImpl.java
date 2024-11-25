@@ -47,13 +47,13 @@ public class ReceiptUseCaseImpl implements ReceiptUseCase {
 
     @Override
     @Transactional
-    public void update(Long reciptId, ReceiptDTO.Update dto){
+    public void update(Long receiptId, ReceiptDTO.Update dto){
         Account account = accountGetService.find(dto.cardinal());
-        Receipt receipt = receiptGetService.find(reciptId);
+        Receipt receipt = receiptGetService.find(receiptId);
         account.cancel(receipt);
 
         if(!dto.files().isEmpty()){ // 업데이트하려는 파일이 있다면 파일을 전체 삭제한 뒤 저장
-            List<File> fileList = getFiles(reciptId);
+            List<File> fileList = getFiles(receiptId);
             fileDeleteService.delete(fileList);
 
             List<File> files = fileMapper.toFileList(dto.files(), receipt);
@@ -63,8 +63,8 @@ public class ReceiptUseCaseImpl implements ReceiptUseCase {
         account.spend(receipt);
     }
 
-    private List<File> getFiles(Long reciptId) {
-        return fileGetService.findAllByReceipt(reciptId);
+    private List<File> getFiles(Long receiptId) {
+        return fileGetService.findAllByReceipt(receiptId);
     }
 
     @Override
