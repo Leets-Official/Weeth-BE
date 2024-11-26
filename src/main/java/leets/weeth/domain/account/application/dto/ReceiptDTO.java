@@ -31,6 +31,6 @@ public class ReceiptDTO {
             @NotNull Integer amount,
             @NotNull LocalDate date,
             @NotNull Integer cardinal,
-            @Valid List<FileSaveRequest> files
+            @Valid List<@NotNull FileSaveRequest> files
     ) {}
 }
