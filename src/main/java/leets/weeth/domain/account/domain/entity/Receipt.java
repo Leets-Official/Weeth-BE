@@ -31,18 +31,11 @@ public class Receipt extends BaseEntity {
 
     private LocalDate date;
 
-    @Convert(converter = FileListConverter.class)
-    private List<String> images;
-
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
 
     public void update(ReceiptDTO.Update dto){
-        this.updateUpperClass(dto);
-    }
-
-    public void updateUpperClass(ReceiptDTO.Update dto) {
         this.description = dto.description();
         this.amount = dto.amount();
         this.date = dto.date();
