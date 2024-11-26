@@ -1,6 +1,7 @@
 package leets.weeth.domain.account.domain.entity;
 
 import jakarta.persistence.*;
+import leets.weeth.domain.account.application.dto.ReceiptDTO;
 import leets.weeth.domain.file.converter.FileListConverter;
 import leets.weeth.global.common.entity.BaseEntity;
 import lombok.AccessLevel;
@@ -30,10 +31,13 @@ public class Receipt extends BaseEntity {
 
     private LocalDate date;
 
-    @Convert(converter = FileListConverter.class)
-    private List<String> images;
-
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
+
+    public void update(ReceiptDTO.Update dto){
+        this.description = dto.description();
+        this.amount = dto.amount();
+        this.date = dto.date();
+    }
 }
