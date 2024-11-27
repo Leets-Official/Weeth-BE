@@ -34,7 +34,7 @@ public class UserResponseDto {
             Integer id,
             String name,
             List<Integer> cardinals,
-            String department
+            Position position
     ) {}
     public record AdminResponse(
             Integer id,
