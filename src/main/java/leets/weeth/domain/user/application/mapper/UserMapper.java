@@ -28,9 +28,7 @@ public interface UserMapper {
             // 수정: 출석률, 출석 횟수, 결석 횟수 매핑 추후 추가 예정
     })
     AdminResponse toAdminResponse(User user);
-    @Mappings({
-            @Mapping(target = "department", expression = "java( toString(user.getDepartment()) )")
-    })
+
     SummaryResponse toSummaryResponse(User user);
 
     @Mappings({
