@@ -72,9 +72,4 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
-
-    private User find(String accessToken) {
-        String email = jwtService.extractEmail(accessToken).get();
-        return userGetService.find(email);
-    }
 }
