@@ -76,7 +76,7 @@ public class UserUseCaseImpl implements UserUseCase {
                 .build();
         userSaveService.save(user);
 
-        JwtDto dto = jwtManageUseCase.create(user.getId(), email);
+        JwtDto dto = jwtManageUseCase.create(user.getId(), email, user.getRole());
 
         return new SocialLoginResponse(user.getId(), REGISTER, dto.accessToken(), dto.refreshToken());
     }
@@ -84,7 +84,7 @@ public class UserUseCaseImpl implements UserUseCase {
     private SocialLoginResponse login(String email) {
         User user = userGetService.find(email);
 
-        JwtDto dto = jwtManageUseCase.create(user.getId(), email);
+        JwtDto dto = jwtManageUseCase.create(user.getId(), email, user.getRole());
 
         return new SocialLoginResponse(user.getId(), LOGIN, dto.accessToken(), dto.refreshToken());
     }
@@ -158,6 +158,7 @@ public class UserUseCaseImpl implements UserUseCase {
     public void update(Long userId, String role) {
         User user = userGetService.find(userId);
         userUpdateService.update(user, role);
+        jwtRedisService.updateRole(user.getEmail(), role);
     }
 
     @Override
