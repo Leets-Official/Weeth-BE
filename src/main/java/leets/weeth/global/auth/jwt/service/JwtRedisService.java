@@ -1,5 +1,7 @@
 package leets.weeth.global.auth.jwt.service;
 
+import leets.weeth.domain.user.application.exception.RoleNotFoundException;
+import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.global.auth.jwt.exception.InvalidTokenException;
 import leets.weeth.global.auth.jwt.exception.RedisTokenNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +25,12 @@ public class JwtRedisService {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public void set(String email, String refreshToken) {
+    public void set(String email, String refreshToken, Role role) {
         String key = getKey(email);
-        redisTemplate.opsForValue().set(key, refreshToken, expirationTime, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForHash().put(key, "token", refreshToken);
+        redisTemplate.opsForHash().put(key, "role", role.toString());
+        redisTemplate.opsForHash().put(key, "email", email);
+        redisTemplate.expire(key, expirationTime, TimeUnit.MINUTES);
         log.info("Refresh Token 저장/업데이트: {}", key);
     }
 
@@ -40,14 +45,30 @@ public class JwtRedisService {
         }
     }
 
+    public Role getRole(String email) {
+        String key = getKey(email);
+        String roleValue = (String) redisTemplate.opsForHash().get(key, "role");
+
+        return Optional.ofNullable(roleValue)
+                .map(Role::valueOf)
+                .orElseThrow(RoleNotFoundException::new);
+    }
+
+    public void updateRole(String email, String role) {
+        String key = getKey(email);
+
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
+            redisTemplate.opsForHash().put(key, "role", role);
+        }
+    }
+
     private String find(String email) {
         String key = getKey(email);
-        return Optional.ofNullable(redisTemplate.opsForValue().get(key))
+        return Optional.ofNullable((String) redisTemplate.opsForHash().get(key, "token"))
                 .orElseThrow(RedisTokenNotFoundException::new);
     }
 
     private String getKey(String email){
         return PREFIX + email;
     }
-
 }
