@@ -21,11 +21,11 @@ public class JwtManageUseCase {
     private final JwtRedisService jwtRedisService;
 
     // 토큰 발급
-    public JwtDto create(Long id, String email, Role role){
-        String accessToken = jwtProvider.createAccessToken(id, email, role);
-        String refreshToken = jwtProvider.createRefreshToken(id);
+    public JwtDto create(Long userId, String email, Role role){
+        String accessToken = jwtProvider.createAccessToken(userId, email, role);
+        String refreshToken = jwtProvider.createRefreshToken(userId);
 
-        updateToken(email, refreshToken, role);
+        updateToken(userId, refreshToken, role, email);
 
         return new JwtDto(accessToken, refreshToken);
     }
@@ -36,24 +36,26 @@ public class JwtManageUseCase {
     }
 
     // 토큰 재발급
-    public JwtDto reIssueToken(String email, HttpServletRequest request){
+    public JwtDto reIssueToken(HttpServletRequest request){
         String requestToken = jwtService.extractRefreshToken(request);
         jwtProvider.validate(requestToken);
 
-        jwtRedisService.validateRefreshToken(email, requestToken);
-
         Long userId = jwtService.extractId(requestToken).get();
-        Role role = jwtRedisService.getRole(email);
+
+        jwtRedisService.validateRefreshToken(userId, requestToken);
+
+        Role role = jwtRedisService.getRole(userId);
+        String email = jwtRedisService.getEmail(userId);
 
         JwtDto token = create(userId, email, role);
-        jwtRedisService.set(email, token.refreshToken(), role);
+        jwtRedisService.set(userId, token.refreshToken(), role, email);
 
         return token;
     }
 
     // 리프레시 토큰 업데이트
-    private void updateToken(String email, String refreshToken, Role role){
-        jwtRedisService.set(email, refreshToken, role);
+    private void updateToken(long userId, String refreshToken, Role role, String email){
+        jwtRedisService.set(userId, refreshToken, role, email);
     }
 
 }

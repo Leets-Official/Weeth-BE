@@ -25,8 +25,8 @@ public class JwtRedisService {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public void set(String email, String refreshToken, Role role) {
-        String key = getKey(email);
+    public void set(long userId, String refreshToken, Role role, String email) {
+        String key = getKey(userId);
         redisTemplate.opsForHash().put(key, "token", refreshToken);
         redisTemplate.opsForHash().put(key, "role", role.toString());
         redisTemplate.opsForHash().put(key, "email", email);
@@ -34,19 +34,27 @@ public class JwtRedisService {
         log.info("Refresh Token 저장/업데이트: {}", key);
     }
 
-    public void delete(String email) {
-        String key = getKey(email);
+    public void delete(Long userId) {
+        String key = getKey(userId);
         redisTemplate.delete(key);
     }
 
-    public void validateRefreshToken(String email, String requestToken) {
-        if (!find(email).equals(requestToken)) {
+    public void validateRefreshToken(long userId, String requestToken) {
+        if (!find(userId).equals(requestToken)) {
             throw new InvalidTokenException();
         }
     }
 
-    public Role getRole(String email) {
-        String key = getKey(email);
+    public String getEmail(long userId) {
+        String key = getKey(userId);
+        String roleValue = (String) redisTemplate.opsForHash().get(key, "email");
+
+        return Optional.ofNullable(roleValue)
+                .orElseThrow(RoleNotFoundException::new);
+    }
+
+    public Role getRole(long userId) {
+        String key = getKey(userId);
         String roleValue = (String) redisTemplate.opsForHash().get(key, "role");
 
         return Optional.ofNullable(roleValue)
@@ -54,21 +62,21 @@ public class JwtRedisService {
                 .orElseThrow(RoleNotFoundException::new);
     }
 
-    public void updateRole(String email, String role) {
-        String key = getKey(email);
+    public void updateRole(long userId, String role) {
+        String key = getKey(userId);
 
         if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
             redisTemplate.opsForHash().put(key, "role", role);
         }
     }
 
-    private String find(String email) {
-        String key = getKey(email);
+    private String find(long userId) {
+        String key = getKey(userId);
         return Optional.ofNullable((String) redisTemplate.opsForHash().get(key, "token"))
                 .orElseThrow(RedisTokenNotFoundException::new);
     }
 
-    private String getKey(String email){
-        return PREFIX + email;
+    private String getKey(long userId) {
+        return PREFIX + userId;
     }
 }
