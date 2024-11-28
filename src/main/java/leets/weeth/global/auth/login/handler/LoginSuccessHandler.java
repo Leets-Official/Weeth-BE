@@ -30,7 +30,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         Long userId = user.getId();
 
         // 토큰 발급 및 레디스에 저장
-        JwtDto token = jwtManageUseCase.create(userId, email);
+        JwtDto token = jwtManageUseCase.create(userId, email, user.getRole());
 
         // 바디에 담아서 보내기
         jwtManageUseCase.sendToken(token, response); // 응답 헤더에 AccessToken, RefreshToken 실어서 응답
