@@ -18,11 +18,11 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
 
     @Override
     @Transactional
-    public JwtDto refresh(refreshRequest dto, HttpServletRequest request) {
+    public JwtDto refresh(HttpServletRequest request) {
 
-        JwtDto token = jwtManageUseCase.reIssueToken(dto.email(), request);
+        JwtDto token = jwtManageUseCase.reIssueToken(request);
 
-        log.info("RefreshToken 발급 완료: {}", dto.email());
+        log.info("RefreshToken 발급 완료: {}", token);
         return new JwtDto(token.accessToken(), token.refreshToken());
     }
 

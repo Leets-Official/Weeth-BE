@@ -6,5 +6,5 @@ import leets.weeth.global.auth.jwt.application.dto.JwtDto;
 import static leets.weeth.domain.user.application.dto.request.UserRequestDto.refreshRequest;
 
 public interface UserManageUseCase {
-    JwtDto refresh(refreshRequest dto, HttpServletRequest request);
+    JwtDto refresh(HttpServletRequest request);
 }

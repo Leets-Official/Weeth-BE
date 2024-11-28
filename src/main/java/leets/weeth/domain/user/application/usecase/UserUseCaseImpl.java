@@ -158,21 +158,21 @@ public class UserUseCaseImpl implements UserUseCase {
     public void update(Long userId, String role) {
         User user = userGetService.find(userId);
         userUpdateService.update(user, role);
-        jwtRedisService.updateRole(user.getEmail(), role);
+        jwtRedisService.updateRole(user.getId(), role);
     }
 
     @Override
     public void leave(Long userId) {
         User user = userGetService.find(userId);
         // 탈퇴하는 경우 리프레시 토큰 삭제
-        jwtRedisService.delete(user.getEmail());
+        jwtRedisService.delete(user.getId());
         userDeleteService.leave(user);
     }
 
     @Override
     public void ban(Long userId) {
         User user = userGetService.find(userId);
-        jwtRedisService.delete(user.getEmail());
+        jwtRedisService.delete(user.getId());
         userDeleteService.ban(user);
     }
 
