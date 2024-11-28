@@ -1,5 +1,6 @@
 package leets.weeth.global.auth.jwt.service;
 
+import leets.weeth.domain.user.application.exception.EmailNotFoundException;
 import leets.weeth.domain.user.application.exception.RoleNotFoundException;
 import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.global.auth.jwt.exception.InvalidTokenException;
@@ -50,7 +51,7 @@ public class JwtRedisService {
         String roleValue = (String) redisTemplate.opsForHash().get(key, "email");
 
         return Optional.ofNullable(roleValue)
-                .orElseThrow(RoleNotFoundException::new);
+                .orElseThrow(EmailNotFoundException::new);
     }
 
     public Role getRole(long userId) {
