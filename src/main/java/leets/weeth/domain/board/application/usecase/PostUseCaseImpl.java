@@ -73,7 +73,7 @@ public class PostUseCaseImpl implements PostUsecase {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Slice<Post> recentPosts = postFindService.findRecentPosts(pageable);
 
-        return recentPosts.map(post -> mapper.toAll(post));
+        return recentPosts.map(mapper::toAll);
     }
 
     @Override
