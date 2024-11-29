@@ -1,7 +1,7 @@
 package leets.weeth.domain.board.application.usecase;
 
 import leets.weeth.domain.board.application.dto.PostDTO;
-import leets.weeth.domain.board.application.exception.PostNotFoundException;
+import leets.weeth.domain.board.application.exception.PageNotFoundException;
 import leets.weeth.domain.board.application.mapper.PostMapper;
 import leets.weeth.domain.board.domain.entity.Post;
 import leets.weeth.domain.board.domain.service.PostDeleteService;
@@ -69,7 +69,9 @@ public class PostUseCaseImpl implements PostUsecase {
 
     @Override
     public Slice<PostDTO.ResponseAll> findPosts(Integer pageNumber, Integer pageSize) {
-
+        if (pageNumber < 0) {
+            throw new PageNotFoundException();
+        }
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Slice<Post> recentPosts = postFindService.findRecentPosts(pageable);
 

@@ -1,6 +1,7 @@
 package leets.weeth.domain.board.application.usecase;
 
 import leets.weeth.domain.board.application.dto.NoticeDTO;
+import leets.weeth.domain.board.application.exception.PageNotFoundException;
 import leets.weeth.domain.board.application.mapper.NoticeMapper;
 import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.board.domain.service.NoticeDeleteService;
@@ -71,7 +72,9 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
 
     @Override
     public Slice<NoticeDTO.ResponseAll> findNotices(Integer pageNumber, Integer pageSize) {
-
+        if (pageNumber < 0) {
+            throw new PageNotFoundException();
+        }
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id")); // id를 기준으로 내림차순
         Slice<Notice> notices = noticeFindService.findRecentNotices(pageable);
 
