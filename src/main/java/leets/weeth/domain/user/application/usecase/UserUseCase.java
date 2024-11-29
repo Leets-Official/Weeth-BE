@@ -15,6 +15,8 @@ public interface UserUseCase {
 
     void apply(SignUp dto);
 
+    void register(Register dto, Long userId);
+
     Response find(Long userId);
 
     Map<Integer, List<Response>> findAll();
