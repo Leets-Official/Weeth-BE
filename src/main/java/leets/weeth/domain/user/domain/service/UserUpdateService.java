@@ -18,7 +18,9 @@ public class UserUpdateService {
     public void update(User user, Update dto, PasswordEncoder passwordEncoder) {
         user.update(dto, passwordEncoder);
     }
-
+    public void update(User user, Register dto) {
+        user.update(dto);
+    }
     public void accept(User user) {
         user.accept();
     }
