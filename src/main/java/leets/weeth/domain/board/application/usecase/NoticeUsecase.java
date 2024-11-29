@@ -2,9 +2,8 @@ package leets.weeth.domain.board.application.usecase;
 
 import leets.weeth.domain.board.application.dto.NoticeDTO;
 import leets.weeth.domain.user.application.exception.UserNotMatchException;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Slice;
 
-import java.util.List;
 
 public interface NoticeUsecase {
 
@@ -12,7 +11,7 @@ public interface NoticeUsecase {
 
     NoticeDTO.Response findNotice(Long noticeId);
 
-    List<NoticeDTO.ResponseAll> findNotices(Long noticeId, Integer count);
+    Slice<NoticeDTO.ResponseAll> findNotices(Integer pageNumber, Integer pageSize);
 
     void update(Long noticeId, NoticeDTO.Update dto, Long userId) throws UserNotMatchException;
 

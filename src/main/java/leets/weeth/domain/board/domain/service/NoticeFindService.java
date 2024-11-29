@@ -5,6 +5,7 @@ import leets.weeth.domain.board.domain.repository.NoticeRepository;
 import leets.weeth.domain.board.application.exception.NoticeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,13 +25,9 @@ public class NoticeFindService {
         return noticeRepository.findAll();
     }
 
-    public Long findFinalNoticeId(){
-        return noticeRepository.findLastId()
-                .orElseThrow(NoticeNotFoundException::new);
-    }
 
-    public List<Notice> findRecentNotices(Long postId, Pageable pageable) {
-        return noticeRepository.findRecentNotices(postId, pageable);
+    public Slice<Notice> findRecentNotices(Pageable pageable) {
+        return noticeRepository.findPageBy(pageable);
     }
 
 }
