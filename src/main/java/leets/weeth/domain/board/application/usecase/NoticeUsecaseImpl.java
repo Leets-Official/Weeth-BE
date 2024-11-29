@@ -71,7 +71,7 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     }
 
     @Override
-    public Slice<NoticeDTO.ResponseAll> findNotices(Integer pageNumber, Integer pageSize) {
+    public Slice<NoticeDTO.ResponseAll> findNotices(int pageNumber, int pageSize) {
         if (pageNumber < 0) {
             throw new PageNotFoundException();
         }

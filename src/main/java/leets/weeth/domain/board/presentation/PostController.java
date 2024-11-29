@@ -34,8 +34,8 @@ public class PostController {
 
     @GetMapping
     @Operation(summary="최근 게시글 조회 및 입력된 개수 만큼 조회")
-    public CommonResponse<Slice<PostDTO.ResponseAll>> findPosts(@RequestParam("pageNumber") Integer pageNumber,
-                                                                      @RequestParam("pageSize") Integer pageSize) {
+    public CommonResponse<Slice<PostDTO.ResponseAll>> findPosts(@RequestParam("pageNumber") int pageNumber,
+                                                                      @RequestParam("pageSize") int pageSize) {
         return CommonResponse.createSuccess(POST_FIND_ALL_SUCCESS.getMessage(), postUsecase.findPosts(pageNumber, pageSize));
     }
 

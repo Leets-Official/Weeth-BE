@@ -11,7 +11,7 @@ public interface NoticeUsecase {
 
     NoticeDTO.Response findNotice(Long noticeId);
 
-    Slice<NoticeDTO.ResponseAll> findNotices(Integer pageNumber, Integer pageSize);
+    Slice<NoticeDTO.ResponseAll> findNotices(int pageNumber, int pageSize);
 
     void update(Long noticeId, NoticeDTO.Update dto, Long userId) throws UserNotMatchException;
 

@@ -24,8 +24,8 @@ public class NoticeController {
 
     @GetMapping
     @Operation(summary="최근 공지사항 조회 및 입력된 개수 만큼 조회")
-    public CommonResponse<Slice<NoticeDTO.ResponseAll>> findNotices(@RequestParam("pageNumber") Integer pageNumber,
-                                                                   @RequestParam("pageSize") Integer pageSize) {
+    public CommonResponse<Slice<NoticeDTO.ResponseAll>> findNotices(@RequestParam("pageNumber") int pageNumber,
+                                                                   @RequestParam("pageSize") int pageSize) {
         return CommonResponse.createSuccess(NOTICE_FIND_ALL_SUCCESS.getMessage(), noticeUsecase.findNotices(pageNumber, pageSize));
     }
 

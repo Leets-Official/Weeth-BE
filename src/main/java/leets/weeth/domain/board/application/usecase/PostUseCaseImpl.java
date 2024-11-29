@@ -68,7 +68,7 @@ public class PostUseCaseImpl implements PostUsecase {
     }
 
     @Override
-    public Slice<PostDTO.ResponseAll> findPosts(Integer pageNumber, Integer pageSize) {
+    public Slice<PostDTO.ResponseAll> findPosts(int pageNumber, int pageSize) {
         if (pageNumber < 0) {
             throw new PageNotFoundException();
         }

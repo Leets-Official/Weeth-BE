@@ -11,7 +11,7 @@ public interface PostUsecase {
 
     PostDTO.Response findPost(Long postId);
 
-    Slice<PostDTO.ResponseAll> findPosts(Integer pageNumber, Integer pageSize);
+    Slice<PostDTO.ResponseAll> findPosts(int pageNumber, int pageSize);
 
     void update(Long postId, PostDTO.Update dto, Long userId) throws UserNotMatchException;
 
