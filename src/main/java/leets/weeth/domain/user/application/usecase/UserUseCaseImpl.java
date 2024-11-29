@@ -96,6 +96,14 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     @Override
+    @Transactional
+    public void register(Register dto, Long userId) {
+        validate(dto, userId);
+        User user = userGetService.find(userId);
+        userUpdateService.update(user, dto);
+    }
+
+    @Override
     public Map<Integer, List<Response>> findAll() {
         return userGetService.findAllByStatus(ACTIVE).stream()
                 .flatMap(user -> Stream.concat(
@@ -209,5 +217,13 @@ public class UserUseCaseImpl implements UserUseCase {
             throw new StudentIdExistsException();
         if (userGetService.validateTel(dto.tel(), userId))
             throw new TelExistsException();
+    }
+    private void validate(Register dto, Long userId) {
+        if (userGetService.validateStudentId(dto.studentId(), userId)) {
+            throw new StudentIdExistsException();
+        }
+        if (userGetService.validateTel(dto.tel(), userId)) {
+            throw new TelExistsException();
+        }
     }
 }
