@@ -52,6 +52,15 @@ public class UserController {
         return CommonResponse.createSuccess(USER_APPLY_SUCCESS.getMessage());
     }
 
+    @PatchMapping("/register")
+    @Operation(summary = "소셜 로그인 후 정보입력")
+    public CommonResponse<Void> register(
+            @RequestBody @Valid Register dto,
+            @Parameter(hidden = true) @CurrentUser Long userId) {
+        userUseCase.register(dto, userId);
+        return CommonResponse.createSuccess(USER_APPLY_SUCCESS.getMessage());
+    }
+
     @GetMapping("/email")
     @Operation(summary="이메일 중복 확인")
     public CommonResponse<Boolean> checkEmail(@RequestParam String email) {
