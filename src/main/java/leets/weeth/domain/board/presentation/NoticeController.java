@@ -10,9 +10,9 @@ import leets.weeth.domain.board.application.dto.NoticeDTO;
 import leets.weeth.domain.board.application.usecase.NoticeUsecase;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Tag(name = "NoticeController", description = "공지사항 관련 컨트롤러")
 @RestController
@@ -24,8 +24,9 @@ public class NoticeController {
 
     @GetMapping
     @Operation(summary="최근 공지사항 조회 및 입력된 개수 만큼 조회")
-    public CommonResponse<List<NoticeDTO.ResponseAll>> findNotices(@RequestParam(required = false) Long noticeId, @RequestParam Integer count) {
-        return CommonResponse.createSuccess(NOTICE_FIND_ALL_SUCCESS.getMessage(), noticeUsecase.findNotices(noticeId, count));
+    public CommonResponse<Slice<NoticeDTO.ResponseAll>> findNotices(@RequestParam("pageNumber") int pageNumber,
+                                                                   @RequestParam("pageSize") int pageSize) {
+        return CommonResponse.createSuccess(NOTICE_FIND_ALL_SUCCESS.getMessage(), noticeUsecase.findNotices(pageNumber, pageSize));
     }
 
     @GetMapping("/{noticeId}")

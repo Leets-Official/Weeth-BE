@@ -10,11 +10,9 @@ import leets.weeth.global.auth.annotation.CurrentUser;
 import leets.weeth.domain.user.application.exception.UserNotMatchException;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 
 import static leets.weeth.domain.board.presentation.ResponseMessage.*;
 
@@ -36,8 +34,9 @@ public class PostController {
 
     @GetMapping
     @Operation(summary="최근 게시글 조회 및 입력된 개수 만큼 조회")
-    public CommonResponse<List<PostDTO.ResponseAll>> findPosts(@RequestParam(required = false) Long postId, @RequestParam Integer count) {
-        return CommonResponse.createSuccess(POST_FIND_ALL_SUCCESS.getMessage(), postUsecase.findPosts(postId, count));
+    public CommonResponse<Slice<PostDTO.ResponseAll>> findPosts(@RequestParam("pageNumber") int pageNumber,
+                                                                      @RequestParam("pageSize") int pageSize) {
+        return CommonResponse.createSuccess(POST_FIND_ALL_SUCCESS.getMessage(), postUsecase.findPosts(pageNumber, pageSize));
     }
 
     @GetMapping("/{postId}")

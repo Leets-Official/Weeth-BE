@@ -1,7 +1,7 @@
 package leets.weeth.domain.board.application.usecase;
 
 import leets.weeth.domain.board.application.dto.PostDTO;
-import leets.weeth.domain.board.application.exception.PostNotFoundException;
+import leets.weeth.domain.board.application.exception.PageNotFoundException;
 import leets.weeth.domain.board.application.mapper.PostMapper;
 import leets.weeth.domain.board.domain.entity.Post;
 import leets.weeth.domain.board.domain.service.PostDeleteService;
@@ -19,8 +19,7 @@ import leets.weeth.domain.user.application.exception.UserNotMatchException;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,27 +68,14 @@ public class PostUseCaseImpl implements PostUsecase {
     }
 
     @Override
-    public List<PostDTO.ResponseAll> findPosts(Long postId, Integer count) {
-
-        Long finalPostId = postFindService.findFinalPostId();
-
-        // 첫번째 요청인 경우
-        if (postId == null) {
-            postId = finalPostId + 1;
+    public Slice<PostDTO.ResponseAll> findPosts(int pageNumber, int pageSize) {
+        if (pageNumber < 0) {
+            throw new PageNotFoundException();
         }
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        Slice<Post> recentPosts = postFindService.findRecentPosts(pageable);
 
-        // postId가 1 이하이거나 최대값보다 클경우
-        if (postId < 1 || postId > finalPostId + 1) {
-            throw new PostNotFoundException();
-        }
-
-        Pageable pageable = PageRequest.of(0, count); // 첫 페이지, 페이지당 15개 게시글
-
-        List<Post> posts = postFindService.findRecentPosts(postId, pageable);
-
-        return posts.stream()
-                .map(mapper::toAll)
-                .toList();
+        return recentPosts.map(mapper::toAll);
     }
 
     @Override

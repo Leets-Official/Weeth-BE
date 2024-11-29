@@ -1,7 +1,7 @@
 package leets.weeth.domain.board.application.usecase;
 
 import leets.weeth.domain.board.application.dto.NoticeDTO;
-import leets.weeth.domain.board.application.exception.NoticeNotFoundException;
+import leets.weeth.domain.board.application.exception.PageNotFoundException;
 import leets.weeth.domain.board.application.mapper.NoticeMapper;
 import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.board.domain.service.NoticeDeleteService;
@@ -21,6 +21,8 @@ import leets.weeth.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,27 +71,14 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     }
 
     @Override
-    public List<NoticeDTO.ResponseAll> findNotices(Long noticeId, Integer count) {
-
-        Long finalNoticeId = noticeFindService.findFinalNoticeId();
-
-        // 첫번째 요청인 경우
-        if (noticeId == null) {
-            noticeId = finalNoticeId + 1;
+    public Slice<NoticeDTO.ResponseAll> findNotices(int pageNumber, int pageSize) {
+        if (pageNumber < 0) {
+            throw new PageNotFoundException();
         }
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id")); // id를 기준으로 내림차순
+        Slice<Notice> notices = noticeFindService.findRecentNotices(pageable);
 
-        // postId가 1 이하이거나 최대값보다 클경우
-        if (noticeId < 1 || noticeId > finalNoticeId + 1) {
-            throw new NoticeNotFoundException();
-        }
-
-        Pageable pageable = PageRequest.of(0, count); // 첫 페이지, 페이지당 15개 게시글
-
-        List<Notice> notices = noticeFindService.findRecentNotices(noticeId, pageable);
-
-        return notices.stream()
-                .map(mapper::toAll)
-                .toList();
+        return notices.map(mapper::toAll);
     }
 
     @Override
