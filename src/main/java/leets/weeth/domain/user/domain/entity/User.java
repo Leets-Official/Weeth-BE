@@ -111,7 +111,14 @@ public class User extends BaseEntity {
         this.tel = dto.tel();
         this.department = Department.to(dto.department());
     }
-
+    public void update(Register dto) {
+        this.name = dto.name();
+        this.studentId = dto.studentId();
+        this.tel = dto.tel();
+        this.department = Department.to(dto.department());
+        this.cardinals = List.of(dto.cardinal());
+        this.position = Position.valueOf(dto.position());
+    }
     public void accept() {
         this.status = Status.ACTIVE;
     }

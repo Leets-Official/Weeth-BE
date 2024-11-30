@@ -20,6 +20,14 @@ public class UserRequestDto {
             @NotNull         String department,
             @NotNull         Integer cardinal
     ) {}
+    public record Register (
+            @NotBlank String name,
+            @NotBlank        String studentId,
+            @NotNull         String department,
+            @NotBlank        String tel,
+            @NotNull         Integer cardinal,
+            @NotNull String position
+            ) {}
 
     public record Update (
             @NotBlank        String name,
