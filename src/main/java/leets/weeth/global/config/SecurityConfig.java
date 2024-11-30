@@ -94,9 +94,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource source() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.addAllowedHeader("*");
+
+        configuration.addAllowedOriginPattern("http://localhost:3000");
         configuration.addAllowedMethod("*");
+        configuration.addAllowedHeader("*");
         configuration.addExposedHeader("Authorization");
         configuration.addExposedHeader("Authorization_refresh");
         configuration.setAllowCredentials(true);
