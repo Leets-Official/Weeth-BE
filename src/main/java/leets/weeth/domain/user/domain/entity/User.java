@@ -61,8 +61,6 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private String refreshToken;
-
     private Integer attendanceCount;
 
     private Integer absenceCount;
@@ -85,10 +83,6 @@ public class User extends BaseEntity {
         absenceCount = 0;
         attendanceRate = 0;
         penaltyCount = 0;
-    }
-
-    public void updateRefreshToken(String updatedToken) {
-        this.refreshToken = updatedToken;
     }
 
     public void leave() {
