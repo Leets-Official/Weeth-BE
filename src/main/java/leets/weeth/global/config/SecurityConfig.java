@@ -94,10 +94,10 @@ public class SecurityConfig {
 
 
     @Bean
-    public CorsConfigurationSource source() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://3.38.193.157.nip.io"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "https://3.38.193.157.nip.io"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setExposedHeaders(Arrays.asList("Authorization", "Authorization_refresh"));
