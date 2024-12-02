@@ -23,14 +23,17 @@ public class JwtRedisService {
     private Long expirationTime;
 
     private static final String PREFIX = "refreshToken:";
+    private static final String TOKEN = "token";
+    private static final String ROLE = "role";
+    private static final String EMAIL = "email";
 
     private final RedisTemplate<String, String> redisTemplate;
 
     public void set(long userId, String refreshToken, Role role, String email) {
         String key = getKey(userId);
-        redisTemplate.opsForHash().put(key, "token", refreshToken);
-        redisTemplate.opsForHash().put(key, "role", role.toString());
-        redisTemplate.opsForHash().put(key, "email", email);
+        put(key, TOKEN, refreshToken);
+        put(key, ROLE, role.toString());
+        put(key, EMAIL, email);
         redisTemplate.expire(key, expirationTime, TimeUnit.MINUTES);
         log.info("Refresh Token 저장/업데이트: {}", key);
     }
@@ -79,5 +82,9 @@ public class JwtRedisService {
 
     private String getKey(long userId) {
         return PREFIX + userId;
+    }
+
+    private void put(String key, String hashKey, Object value) {
+        redisTemplate.opsForHash().put(key, hashKey, value);
     }
 }
