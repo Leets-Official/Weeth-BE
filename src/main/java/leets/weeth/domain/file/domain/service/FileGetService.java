@@ -29,4 +29,8 @@ public class FileGetService {
     public boolean checkFileExists(Notice notice){
         return !findAllByNotice(notice.getId()).isEmpty();
     }
+
+    public boolean checkFileExistsByPost(Long postId){
+        return !findAllByPost(postId).isEmpty();
+    }
 }
