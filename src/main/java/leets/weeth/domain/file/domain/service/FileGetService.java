@@ -26,8 +26,8 @@ public class FileGetService {
         return fileRepository.findAllByReceiptId(receiptId);
     }
 
-    public boolean checkFileExists(Notice notice){
-        return !findAllByNotice(notice.getId()).isEmpty();
+    public boolean checkFileExistsByNotice(Long noticeId){
+        return !findAllByNotice(noticeId).isEmpty();
     }
 
     public boolean checkFileExistsByPost(Long postId){

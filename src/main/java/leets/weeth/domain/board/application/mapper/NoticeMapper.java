@@ -32,7 +32,7 @@ public interface NoticeMapper {
 
     default boolean checkHasFile(@MappingTarget Notice notice, FileGetService fileGetService) {
         // 게시글에 파일이 존재하는지 확인
-        return fileGetService.checkFileExists(notice);
+        return fileGetService.checkFileExistsByNotice(notice.id);
     }
 
 
