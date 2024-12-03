@@ -6,7 +6,7 @@ import leets.weeth.domain.comment.application.dto.CommentDTO;
 import leets.weeth.domain.comment.application.mapper.CommentMapper;
 import leets.weeth.domain.comment.domain.entity.Comment;
 import leets.weeth.domain.file.application.dto.response.FileResponse;
-import leets.weeth.domain.file.domain.entity.File;
+import leets.weeth.domain.file.domain.service.FileGetService;
 import leets.weeth.domain.user.domain.entity.User;
 import org.mapstruct.*;
 
@@ -24,10 +24,17 @@ public interface NoticeMapper {
     Notice fromNoticeDto(NoticeDTO.Save dto, User user);
 
     @Mappings({
-            @Mapping(target = "name", source = "user.name"),
-            @Mapping(target = "time", source = "modifiedAt")
+            @Mapping(target = "name", source = "notice.user.name"),
+            @Mapping(target = "time", source = "notice.modifiedAt"),
+            @Mapping(target = "hasFile", expression = "java(checkHasFile(notice, fileGetService))")
     })
-    NoticeDTO.ResponseAll toAll(Notice notice);
+    NoticeDTO.ResponseAll toAll(Notice notice, FileGetService fileGetService);
+
+    default boolean checkHasFile(@MappingTarget Notice notice, FileGetService fileGetService) {
+        // 게시글에 파일이 존재하는지 확인
+        return fileGetService.checkFileExists(notice);
+    }
+
 
     @Mappings({
             @Mapping(target = "name", source = "notice.user.name"),

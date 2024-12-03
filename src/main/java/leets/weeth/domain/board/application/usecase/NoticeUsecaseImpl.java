@@ -78,7 +78,7 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id")); // id를 기준으로 내림차순
         Slice<Notice> notices = noticeFindService.findRecentNotices(pageable);
 
-        return notices.map(mapper::toAll);
+        return notices.map(notice->mapper.toAll(notice, fileGetService));
     }
 
     @Override
