@@ -73,9 +73,9 @@ public class PostUseCaseImpl implements PostUsecase {
             throw new PageNotFoundException();
         }
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-        Slice<Post> recentPosts = postFindService.findRecentPosts(pageable);
+        Slice<Post> posts = postFindService.findRecentPosts(pageable);
 
-        return recentPosts.map(mapper::toAll);
+        return posts.map(post->mapper.toAll(post, fileGetService));
     }
 
     @Override
