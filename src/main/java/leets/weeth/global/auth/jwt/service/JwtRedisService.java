@@ -1,5 +1,8 @@
 package leets.weeth.global.auth.jwt.service;
 
+import leets.weeth.domain.user.application.exception.EmailNotFoundException;
+import leets.weeth.domain.user.application.exception.RoleNotFoundException;
+import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.global.auth.jwt.exception.InvalidTokenException;
 import leets.weeth.global.auth.jwt.exception.RedisTokenNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,34 +23,68 @@ public class JwtRedisService {
     private Long expirationTime;
 
     private static final String PREFIX = "refreshToken:";
+    private static final String TOKEN = "token";
+    private static final String ROLE = "role";
+    private static final String EMAIL = "email";
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public void set(String email, String refreshToken) {
-        String key = getKey(email);
-        redisTemplate.opsForValue().set(key, refreshToken, expirationTime, TimeUnit.MILLISECONDS);
+    public void set(long userId, String refreshToken, Role role, String email) {
+        String key = getKey(userId);
+        put(key, TOKEN, refreshToken);
+        put(key, ROLE, role.toString());
+        put(key, EMAIL, email);
+        redisTemplate.expire(key, expirationTime, TimeUnit.MINUTES);
         log.info("Refresh Token 저장/업데이트: {}", key);
     }
 
-    public void delete(String email) {
-        String key = getKey(email);
+    public void delete(Long userId) {
+        String key = getKey(userId);
         redisTemplate.delete(key);
     }
 
-    public void validateRefreshToken(String email, String requestToken) {
-        if (!find(email).equals(requestToken)) {
+    public void validateRefreshToken(long userId, String requestToken) {
+        if (!find(userId).equals(requestToken)) {
             throw new InvalidTokenException();
         }
     }
 
-    private String find(String email) {
-        String key = getKey(email);
-        return Optional.ofNullable(redisTemplate.opsForValue().get(key))
+    public String getEmail(long userId) {
+        String key = getKey(userId);
+        String roleValue = (String) redisTemplate.opsForHash().get(key, "email");
+
+        return Optional.ofNullable(roleValue)
+                .orElseThrow(EmailNotFoundException::new);
+    }
+
+    public Role getRole(long userId) {
+        String key = getKey(userId);
+        String roleValue = (String) redisTemplate.opsForHash().get(key, "role");
+
+        return Optional.ofNullable(roleValue)
+                .map(Role::valueOf)
+                .orElseThrow(RoleNotFoundException::new);
+    }
+
+    public void updateRole(long userId, String role) {
+        String key = getKey(userId);
+
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
+            redisTemplate.opsForHash().put(key, "role", role);
+        }
+    }
+
+    private String find(long userId) {
+        String key = getKey(userId);
+        return Optional.ofNullable((String) redisTemplate.opsForHash().get(key, "token"))
                 .orElseThrow(RedisTokenNotFoundException::new);
     }
 
-    private String getKey(String email){
-        return PREFIX + email;
+    private String getKey(long userId) {
+        return PREFIX + userId;
     }
 
+    private void put(String key, String hashKey, Object value) {
+        redisTemplate.opsForHash().put(key, hashKey, value);
+    }
 }

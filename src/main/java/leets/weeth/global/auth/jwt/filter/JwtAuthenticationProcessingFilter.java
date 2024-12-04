@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import leets.weeth.domain.user.domain.entity.User;
+import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.global.auth.jwt.exception.TokenNotFoundException;
 import leets.weeth.global.auth.jwt.service.JwtProvider;
@@ -44,7 +45,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             String accessToken = jwtService.extractAccessToken(request)
                     .orElseThrow(TokenNotFoundException::new);
             if (jwtProvider.validate(accessToken)) {
-                saveAuthentication(find(accessToken));
+                saveAuthentication(accessToken);
             }
         } catch (RuntimeException e) {
             log.info("error token: {}", e.getMessage());
@@ -54,12 +55,15 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     }
 
-    public void saveAuthentication(User myUser) {
+    public void saveAuthentication(String accessToken) {
+
+        String email = jwtService.extractEmail(accessToken).get();
+        Role role = Role.valueOf(jwtService.extractRole(accessToken).get());
 
         UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-                .username(myUser.getEmail())
+                .username(email)
                 .password(DUMMY)
-                .roles(myUser.getRole().name())
+                .roles(role.name())
                 .build();
 
         UsernamePasswordAuthenticationToken authentication =
@@ -67,10 +71,5 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                         authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
-    private User find(String accessToken) {
-        String email = jwtService.extractEmail(accessToken).get();
-        return userGetService.find(email);
     }
 }

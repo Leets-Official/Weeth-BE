@@ -21,6 +21,7 @@ public class JwtService {
 
     private static final String EMAIL_CLAIM = "email";
     private static final String ID_CLAIM = "id";
+    private static final String ROLE_CLAIM = "role";
     private static final String BEARER = "Bearer ";
     private static final String LOGIN_SUCCESS_MESSAGE = "자체 로그인 성공.";
 
@@ -64,6 +65,19 @@ public class JwtService {
                     .verify(token)
                     .getClaim(ID_CLAIM)
                     .asLong());
+        } catch (Exception e) {
+            log.error("액세스 토큰이 유효하지 않습니다.");
+            return Optional.empty();
+        }
+    }
+
+    public Optional<String> extractRole(String token) {
+        try {
+            return Optional.ofNullable(JWT.require(Algorithm.HMAC512(key))
+                    .build()
+                    .verify(token)
+                    .getClaim(ROLE_CLAIM)
+                    .asString());
         } catch (Exception e) {
             log.error("액세스 토큰이 유효하지 않습니다.");
             return Optional.empty();

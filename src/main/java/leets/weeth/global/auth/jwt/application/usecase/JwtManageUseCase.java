@@ -2,6 +2,7 @@ package leets.weeth.global.auth.jwt.application.usecase;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.global.auth.jwt.application.dto.JwtDto;
 import leets.weeth.global.auth.jwt.service.JwtRedisService;
 import leets.weeth.global.auth.jwt.service.JwtProvider;
@@ -20,11 +21,11 @@ public class JwtManageUseCase {
     private final JwtRedisService jwtRedisService;
 
     // 토큰 발급
-    public JwtDto create(Long id, String email){
-        String accessToken = jwtProvider.createAccessToken(id, email);
-        String refreshToken = jwtProvider.createRefreshToken(id);
+    public JwtDto create(Long userId, String email, Role role){
+        String accessToken = jwtProvider.createAccessToken(userId, email, role);
+        String refreshToken = jwtProvider.createRefreshToken(userId);
 
-        updateToken(email, refreshToken);
+        updateToken(userId, refreshToken, role, email);
 
         return new JwtDto(accessToken, refreshToken);
     }
@@ -35,23 +36,26 @@ public class JwtManageUseCase {
     }
 
     // 토큰 재발급
-    public JwtDto reIssueToken(String email, HttpServletRequest request){
+    public JwtDto reIssueToken(HttpServletRequest request){
         String requestToken = jwtService.extractRefreshToken(request);
         jwtProvider.validate(requestToken);
 
         Long userId = jwtService.extractId(requestToken).get();
 
-        jwtRedisService.validateRefreshToken(email, requestToken);
+        jwtRedisService.validateRefreshToken(userId, requestToken);
 
-        JwtDto token = create(userId, email);
-        jwtRedisService.set(email, token.refreshToken());
+        Role role = jwtRedisService.getRole(userId);
+        String email = jwtRedisService.getEmail(userId);
+
+        JwtDto token = create(userId, email, role);
+        jwtRedisService.set(userId, token.refreshToken(), role, email);
 
         return token;
     }
 
     // 리프레시 토큰 업데이트
-    private void updateToken(String email, String refreshToken){
-        jwtRedisService.set(email, refreshToken);
+    private void updateToken(long userId, String refreshToken, Role role, String email){
+        jwtRedisService.set(userId, refreshToken, role, email);
     }
 
 }
