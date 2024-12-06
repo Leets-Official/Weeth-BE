@@ -101,7 +101,7 @@ public class UserController {
 
     @PostMapping("/refresh")
     @Operation(summary = "JWT 토큰 재발급 API")
-    public CommonResponse<JwtDto> refresh(HttpServletRequest request) {
-        return CommonResponse.createSuccess(JWT_REFRESH_SUCCESS.getMessage(), userUseCase.refresh(request));
+    public CommonResponse<JwtDto> refresh(@Parameter(hidden = true) @RequestHeader("Authorization_refresh") String refreshToken) {
+        return CommonResponse.createSuccess(JWT_REFRESH_SUCCESS.getMessage(), userUseCase.refresh(refreshToken));
     }
 }

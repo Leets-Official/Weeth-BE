@@ -37,6 +37,8 @@ public class UserUseCaseImpl implements UserUseCase {
     private final UserMapper mapper;
     private final PasswordEncoder passwordEncoder;
 
+    private static final String BEARER = "Bearer ";
+
     @Override
     @Transactional
     public UserResponseDto.SocialLoginResponse login(UserRequestDto.login dto) {
@@ -90,9 +92,11 @@ public class UserUseCaseImpl implements UserUseCase {
 
     @Override
     @Transactional
-    public JwtDto refresh(HttpServletRequest request) {
+    public JwtDto refresh(String refreshToken) {
 
-        JwtDto token = jwtManageUseCase.reIssueToken(request);
+        String requestToken = refreshToken.replace(BEARER, "");
+
+        JwtDto token = jwtManageUseCase.reIssueToken(requestToken);
 
         log.info("RefreshToken 발급 완료: {}", token);
         return new JwtDto(token.accessToken(), token.refreshToken());

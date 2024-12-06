@@ -19,6 +19,6 @@ public interface UserUseCase {
 
     void register(Register dto, Long userId);
 
-    JwtDto refresh(HttpServletRequest request);
+    JwtDto refresh(String refreshToken);
 
 }
