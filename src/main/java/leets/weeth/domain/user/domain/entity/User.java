@@ -36,6 +36,8 @@ public class User extends BaseEntity {
     @Column(name = "user_id")
     private Long id;
 
+    private Long kakaoId;
+
     private String name;
 
     private String email;
@@ -83,6 +85,10 @@ public class User extends BaseEntity {
         absenceCount = 0;
         attendanceRate = 0;
         penaltyCount = 0;
+    }
+
+    public void addKakaoId(long kakaoId) {
+        this.kakaoId = kakaoId;
     }
 
     public void leave() {
