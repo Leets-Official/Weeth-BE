@@ -75,7 +75,7 @@ public class PostUseCaseImpl implements PostUsecase {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Slice<Post> posts = postFindService.findRecentPosts(pageable);
 
-        return posts.map(post->mapper.toAll(post, fileGetService));
+        return posts.map(post->mapper.toAll(post, checkFileExistsByPost(post.id)));
     }
 
     @Override
@@ -114,6 +114,10 @@ public class PostUseCaseImpl implements PostUsecase {
             throw new UserNotMatchException();
         }
         return post;
+    }
+
+    public boolean checkFileExistsByPost(Long postId){
+        return !fileGetService.findAllByPost(postId).isEmpty();
     }
 
 }

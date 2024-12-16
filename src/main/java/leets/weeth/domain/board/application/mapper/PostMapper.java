@@ -26,14 +26,10 @@ public interface PostMapper {
     @Mappings({
             @Mapping(target = "name", source = "post.user.name"),
             @Mapping(target = "time", source = "post.modifiedAt"),
-            @Mapping(target = "hasFile", expression = "java(checkHasFile(post, fileGetService))")
+            @Mapping(target = "hasFile", expression = "java(fileExists)")
     })
-    PostDTO.ResponseAll toAll(Post post, FileGetService fileGetService);
+    PostDTO.ResponseAll toAll(Post post, boolean fileExists);
 
-    default boolean checkHasFile(@MappingTarget Post post, FileGetService fileGetService) {
-        // 게시글에 파일이 존재하는지 확인
-        return fileGetService.checkFileExistsByPost(post.id);
-    }
 
     @Mappings({
             @Mapping(target = "name", source = "post.user.name"),
