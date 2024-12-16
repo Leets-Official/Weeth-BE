@@ -26,15 +26,9 @@ public interface NoticeMapper {
     @Mappings({
             @Mapping(target = "name", source = "notice.user.name"),
             @Mapping(target = "time", source = "notice.modifiedAt"),
-            @Mapping(target = "hasFile", expression = "java(checkHasFile(notice, fileGetService))")
+            @Mapping(target = "hasFile", expression = "java(fileExists)")
     })
-    NoticeDTO.ResponseAll toAll(Notice notice, FileGetService fileGetService);
-
-    default boolean checkHasFile(@MappingTarget Notice notice, FileGetService fileGetService) {
-        // 게시글에 파일이 존재하는지 확인
-        return fileGetService.checkFileExistsByNotice(notice.id);
-    }
-
+    NoticeDTO.ResponseAll toAll(Notice notice, boolean fileExists);
 
     @Mappings({
             @Mapping(target = "name", source = "notice.user.name"),
