@@ -34,7 +34,7 @@ public interface UserUseCase {
 
     void apply(SignUp dto);
 
-    void register(Register dto, Long userId);
+    void register(Register dto);
 
     JwtDto refresh(String refreshToken);
 
