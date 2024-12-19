@@ -25,6 +25,11 @@ public class UserGetService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
+    public User find(long kakaoId){
+        return userRepository.findByKakaoId(kakaoId)
+                .orElse(null);
+    }
+
     public Boolean check(String email) {
         return !userRepository.existsByEmail(email);
     }
