@@ -55,8 +55,8 @@ public class UserController {
         return CommonResponse.createSuccess(USER_APPLY_SUCCESS.getMessage());
     }
 
-    @PatchMapping("/register")
-    @Operation(summary = "소셜 회원가입 후 정보입력")
+    @PostMapping("/register")
+    @Operation(summary = "소셜 회원가입")
     public CommonResponse<Void> register(@RequestBody @Valid Register dto) {
         userUseCase.register(dto);
         return CommonResponse.createSuccess(USER_APPLY_SUCCESS.getMessage());
