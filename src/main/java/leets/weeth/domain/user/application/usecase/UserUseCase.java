@@ -1,11 +1,6 @@
 package leets.weeth.domain.user.application.usecase;
 
-import jakarta.servlet.http.HttpServletRequest;
-import leets.weeth.domain.user.application.dto.request.UserRequestDto;
 import leets.weeth.global.auth.jwt.application.dto.JwtDto;
-
-import java.util.List;
-import java.util.Map;
 
 import static leets.weeth.domain.user.application.dto.request.UserRequestDto.*;
 import static leets.weeth.domain.user.application.dto.response.UserResponseDto.*;
@@ -13,12 +8,15 @@ import static leets.weeth.domain.user.application.dto.response.UserResponseDto.*
 
 public interface UserUseCase {
 
-    SocialLoginResponse login(UserRequestDto.login dto);
+    SocialLoginResponse login(Login dto);
+
+    SocialAuthResponse authenticate(Login dto);
+
+    SocialLoginResponse integrate(NormalLogin dto);
 
     void apply(SignUp dto);
 
-    void register(Register dto, Long userId);
+    void register(Register dto);
 
     JwtDto refresh(String refreshToken);
-
 }
