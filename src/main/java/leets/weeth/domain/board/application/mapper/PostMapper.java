@@ -6,6 +6,7 @@ import leets.weeth.domain.comment.application.dto.CommentDTO;
 import leets.weeth.domain.comment.application.mapper.CommentMapper;
 import leets.weeth.domain.comment.domain.entity.Comment;
 import leets.weeth.domain.file.application.dto.response.FileResponse;
+import leets.weeth.domain.file.domain.service.FileGetService;
 import leets.weeth.domain.user.domain.entity.User;
 import org.mapstruct.*;
 
@@ -23,10 +24,12 @@ public interface PostMapper {
     Post fromPostDto(PostDTO.Save dto, User user);
 
     @Mappings({
-            @Mapping(target = "name", source = "user.name"),
-            @Mapping(target = "time", source = "modifiedAt")
+            @Mapping(target = "name", source = "post.user.name"),
+            @Mapping(target = "time", source = "post.modifiedAt"),
+            @Mapping(target = "hasFile", expression = "java(fileExists)")
     })
-    PostDTO.ResponseAll toAll(Post post);
+    PostDTO.ResponseAll toAll(Post post, boolean fileExists);
+
 
     @Mappings({
             @Mapping(target = "name", source = "post.user.name"),
