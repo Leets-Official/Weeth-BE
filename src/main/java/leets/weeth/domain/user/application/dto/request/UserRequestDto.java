@@ -6,40 +6,49 @@ import jakarta.validation.constraints.NotNull;
 
 public class UserRequestDto {
 
-    public record login (
+    public record Login(
             @NotBlank String authCode
-    ){}
+    ) {
+    }
 
-    public record SignUp (
+    public record SignUp(
             @NotBlank String name,
             @Email @NotBlank String email,
-            @NotBlank        String password,
-            @NotBlank        String studentId,
-            @NotBlank        String tel,
+            @NotBlank String password,
+            @NotBlank String studentId,
+            @NotBlank String tel,
             @NotNull String position,
-            @NotNull         String department,
-            @NotNull         Integer cardinal
-    ) {}
-    public record Register (
+            @NotNull String department,
+            @NotNull Integer cardinal
+    ) {
+    }
+
+    public record Register(
+            @NotNull Long kakaoId,
             @NotBlank String name,
-            @NotBlank        String studentId,
-            @NotNull         String department,
-            @NotBlank        String tel,
-            @NotNull         Integer cardinal,
+            @NotBlank String studentId,
+            @NotNull String department,
+            @NotBlank String tel,
+            @NotNull Integer cardinal,
             @NotNull String position
-            ) {}
+    ) {
+    }
 
-    public record Update (
-            @NotBlank        String name,
+    public record Update(
+            @NotBlank String name,
             @Email @NotBlank String email,
-            @NotBlank        String password,
-            @NotBlank        String studentId,
-            @NotBlank        String tel,
-            @NotNull         String department
-    ) {}
+            @NotBlank String password,
+            @NotBlank String studentId,
+            @NotBlank String tel,
+            @NotNull String department
+    ) {
+    }
 
-    public record refreshRequest(
-            @Email String email
-    ){}
+    public record NormalLogin(
+            @NotBlank String email,
+            @NotBlank String passWord,
+            @NotNull Long kakaoId
+    ) {
+    }
 
 }
