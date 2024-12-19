@@ -99,6 +99,9 @@ public class User extends BaseEntity {
         this.cardinals.add(cardinal);
     }
 
+    /*
+    todo 차후 일반 로그인 비활성화시 해당 메서드에서 예외를 날리도록 수정
+     */
     public boolean isInactive() {
         return this.status != Status.ACTIVE;
     }
