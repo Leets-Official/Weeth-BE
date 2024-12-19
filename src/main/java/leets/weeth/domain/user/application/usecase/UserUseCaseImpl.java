@@ -41,11 +41,21 @@ public class UserUseCaseImpl implements UserUseCase {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public SocialLoginResponse login(Login dto) {
         long kakaoId = getKakaoId(dto);
+        User user = userGetService.find(kakaoId);
 
-        return login(kakaoId);
+        if (user == null) {
+            return mapper.toIntegrateResponse(kakaoId);
+        }
+
+        if (user.isInactive()) {
+            throw new UserInActiveException();
+        }
+
+        JwtDto token = jwtManageUseCase.create(user.getId(), user.getEmail(), user.getRole());
+        return mapper.toLoginResponse(user, token);
     }
 
     @Override
@@ -97,21 +107,6 @@ public class UserUseCaseImpl implements UserUseCase {
 
         log.info("RefreshToken 발급 완료: {}", token);
         return new JwtDto(token.accessToken(), token.refreshToken());
-    }
-
-    private SocialLoginResponse login(long kakaoId) {
-        User user = userGetService.find(kakaoId);
-
-        if (user == null) {
-            return mapper.toIntegrateResponse(kakaoId);
-        }
-
-        if (user.isInactive()) {
-            throw new UserInActiveException();
-        }
-
-        JwtDto token = jwtManageUseCase.create(user.getId(), user.getEmail(), user.getRole());
-        return mapper.toLoginResponse(user, token);
     }
 
     private long getKakaoId(Login dto) {
