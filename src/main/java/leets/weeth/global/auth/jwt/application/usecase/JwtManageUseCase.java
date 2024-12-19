@@ -36,8 +36,7 @@ public class JwtManageUseCase {
     }
 
     // 토큰 재발급
-    public JwtDto reIssueToken(HttpServletRequest request){
-        String requestToken = jwtService.extractRefreshToken(request);
+    public JwtDto reIssueToken(String requestToken){
         jwtProvider.validate(requestToken);
 
         Long userId = jwtService.extractId(requestToken).get();

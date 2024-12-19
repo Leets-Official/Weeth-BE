@@ -95,13 +95,13 @@ public class UserController {
     @DeleteMapping
     @Operation(summary="동아리 탈퇴")
     public CommonResponse<Void> leave(@Parameter(hidden = true) @CurrentUser Long userId) {
-        userUseCase.leave(userId);
+        userManageUseCase.leave(userId);
         return CommonResponse.createSuccess(USER_LEAVE_SUCCESS.getMessage());
     }
 
     @PostMapping("/refresh")
     @Operation(summary = "JWT 토큰 재발급 API")
-    public CommonResponse<JwtDto> refresh(HttpServletRequest request) {
-        return CommonResponse.createSuccess(JWT_REFRESH_SUCCESS.getMessage(), userManageUseCase.refresh(request));
+    public CommonResponse<JwtDto> refresh(@Parameter(hidden = true) @RequestHeader("Authorization_refresh") String refreshToken) {
+        return CommonResponse.createSuccess(JWT_REFRESH_SUCCESS.getMessage(), userUseCase.refresh(refreshToken));
     }
 }
