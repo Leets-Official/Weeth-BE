@@ -46,7 +46,8 @@ public class PostDTO {
             String title,
             String content,
             LocalDateTime time,//modifiedAt
-            Integer commentCount
+            Integer commentCount,
+            boolean hasFile
     ){}
 
 }

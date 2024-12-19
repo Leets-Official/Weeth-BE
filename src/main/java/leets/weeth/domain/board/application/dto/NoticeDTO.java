@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import leets.weeth.domain.comment.application.dto.CommentDTO;
 import leets.weeth.domain.file.application.dto.request.FileSaveRequest;
-import leets.weeth.domain.file.application.dto.request.FileUpdateRequest;
 import leets.weeth.domain.file.application.dto.response.FileResponse;
 import lombok.Builder;
 
@@ -49,7 +48,8 @@ public class NoticeDTO {
             String title,
             String content,
             LocalDateTime time,//modifiedAt
-            Integer commentCount
+            Integer commentCount,
+            boolean hasFile
     ) {
     }
 

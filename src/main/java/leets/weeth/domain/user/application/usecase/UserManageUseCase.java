@@ -8,17 +8,9 @@ import java.util.Map;
 
 public interface UserManageUseCase {
 
-    UserResponseDto.Response find(Long userId);
 
-    Map<Integer, List<UserResponseDto.Response>> findAll();
-
-    Map<Integer, List<UserResponseDto.SummaryResponse>> findAllUser();
 
     List<UserResponseDto.AdminResponse> findAllByAdmin();
-
-    UserResponseDto.UserResponse findUserDetails(Long userId);
-
-    void update(UserRequestDto.Update dto, Long userId);
 
     void accept(Long userId);
 

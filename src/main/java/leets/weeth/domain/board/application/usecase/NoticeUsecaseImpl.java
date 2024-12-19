@@ -77,8 +77,7 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
         }
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id")); // id를 기준으로 내림차순
         Slice<Notice> notices = noticeFindService.findRecentNotices(pageable);
-
-        return notices.map(mapper::toAll);
+        return notices.map(notice->mapper.toAll(notice, checkFileExistsByNotice(notice.id)));
     }
 
     @Override
@@ -116,6 +115,10 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
             throw new UserNotMatchException();
         }
         return notice;
+    }
+
+    public boolean checkFileExistsByNotice(Long noticeId){
+        return !fileGetService.findAllByNotice(noticeId).isEmpty();
     }
 
 }
