@@ -12,6 +12,7 @@ public class UserResponseDto {
 
     public record SocialLoginResponse(
             Long id,
+            Long kakaoId,
             LoginStatus status,
             String accessToken,
             String refreshToken
@@ -30,12 +31,15 @@ public class UserResponseDto {
             Role role
     ) {
     }
+
     public record SummaryResponse(
             Integer id,
             String name,
             List<Integer> cardinals,
             Position position
-    ) {}
+    ) {
+    }
+
     public record AdminResponse(
             Integer id,
             String name,
@@ -55,6 +59,7 @@ public class UserResponseDto {
             LocalDateTime modifiedAt
     ) {
     }
+
     public record UserResponse(
             Integer id,
             String name,
@@ -63,6 +68,11 @@ public class UserResponseDto {
             String department,
             List<Integer> cardinals,
             Position position
+    ) {
+    }
+
+    public record SocialAuthResponse(
+            Long kakaoId
     ) {
     }
 }
