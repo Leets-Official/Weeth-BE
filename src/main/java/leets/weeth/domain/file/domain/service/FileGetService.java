@@ -1,5 +1,6 @@
 package leets.weeth.domain.file.domain.service;
 
+import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.file.domain.entity.File;
 import leets.weeth.domain.file.domain.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,4 +25,5 @@ public class FileGetService {
     public List<File> findAllByReceipt(Long receiptId) {
         return fileRepository.findAllByReceiptId(receiptId);
     }
+
 }
