@@ -1,10 +1,12 @@
 package leets.weeth.domain.user.application.usecase;
 
-import jakarta.servlet.http.HttpServletRequest;
-import leets.weeth.domain.user.application.dto.request.UserRequestDto;
-import leets.weeth.domain.user.application.dto.response.UserResponseDto;
+import leets.weeth.domain.user.application.dto.request.UserRequestDto.Login;
+import leets.weeth.domain.user.application.dto.request.UserRequestDto.Register;
+import leets.weeth.domain.user.application.dto.request.UserRequestDto.SignUp;
+import leets.weeth.domain.user.application.exception.PasswordMismatchException;
 import leets.weeth.domain.user.application.exception.StudentIdExistsException;
 import leets.weeth.domain.user.application.exception.TelExistsException;
+import leets.weeth.domain.user.application.exception.UserInActiveException;
 import leets.weeth.domain.user.application.mapper.UserMapper;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
@@ -21,73 +23,68 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static leets.weeth.domain.user.domain.entity.enums.LoginStatus.LOGIN;
-import static leets.weeth.domain.user.domain.entity.enums.LoginStatus.REGISTER;
+import static leets.weeth.domain.user.application.dto.request.UserRequestDto.NormalLogin;
+import static leets.weeth.domain.user.application.dto.response.UserResponseDto.SocialAuthResponse;
+import static leets.weeth.domain.user.application.dto.response.UserResponseDto.SocialLoginResponse;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserUseCaseImpl implements UserUseCase {
+    private static final String BEARER = "Bearer ";
     private final JwtManageUseCase jwtManageUseCase;
     private final UserSaveService userSaveService;
     private final UserGetService userGetService;
     private final UserUpdateService userUpdateService;
     private final KakaoAuthService kakaoAuthService;
-
     private final UserMapper mapper;
     private final PasswordEncoder passwordEncoder;
 
-    private static final String BEARER = "Bearer ";
+    @Override
+    @Transactional
+    public SocialLoginResponse login(Login dto) {
+        long kakaoId = getKakaoId(dto);
+
+        return login(kakaoId);
+    }
+
+    @Override
+    public SocialAuthResponse authenticate(Login dto) {
+        long kakaoId = getKakaoId(dto);
+
+        return mapper.toSocialAuthResponse(kakaoId);
+    }
 
     @Override
     @Transactional
-    public UserResponseDto.SocialLoginResponse login(UserRequestDto.login dto) {
-        KakaoTokenResponse tokenResponse = kakaoAuthService.getKakaoToken(dto.authCode());
-        KakaoUserInfoResponse userInfo = kakaoAuthService.getUserInfo(tokenResponse.access_token());
+    public SocialLoginResponse integrate(NormalLogin dto) {
+        User user = userGetService.find(dto.email());
 
-        String email = userInfo.kakao_account().email();
-
-        if (existUser(email)) {
-            return login(email);
+        if (!passwordEncoder.matches(dto.passWord(), user.getPassword())) {
+            throw new PasswordMismatchException();
         }
-        return registerUser(email);
-    }
+        user.addKakaoId(dto.kakaoId());
 
-    public boolean existUser(String email) {
-        return !userGetService.check(email);
-    }
+        if (user.isInactive()) {
+            throw new UserInActiveException();
+        }
 
-    private UserResponseDto.SocialLoginResponse registerUser(String email) {
-        User user = User.builder()
-                .email(email)
-                .build();
-        userSaveService.save(user);
+        JwtDto token = jwtManageUseCase.create(user.getId(), user.getEmail(), user.getRole());
 
-        JwtDto dto = jwtManageUseCase.create(user.getId(), email, user.getRole());
-
-        return new UserResponseDto.SocialLoginResponse(user.getId(), REGISTER, dto.accessToken(), dto.refreshToken());
-    }
-
-    private UserResponseDto.SocialLoginResponse login(String email) {
-        User user = userGetService.find(email);
-
-        JwtDto dto = jwtManageUseCase.create(user.getId(), email, user.getRole());
-
-        return new UserResponseDto.SocialLoginResponse(user.getId(), LOGIN, dto.accessToken(), dto.refreshToken());
+        return mapper.toLoginResponse(user, token);
     }
 
     @Override
-    public void apply(UserRequestDto.SignUp dto) {
+    public void apply(SignUp dto) {
         validate(dto);
         userSaveService.save(mapper.from(dto, passwordEncoder));
     }
 
     @Override
     @Transactional
-    public void register(UserRequestDto.Register dto, Long userId) {
-        validate(dto, userId);
-        User user = userGetService.find(userId);
-        userUpdateService.update(user, dto);
+    public void register(Register dto) {
+        validate(dto);
+        userSaveService.save(mapper.from(dto));
     }
 
     @Override
@@ -102,18 +99,40 @@ public class UserUseCaseImpl implements UserUseCase {
         return new JwtDto(token.accessToken(), token.refreshToken());
     }
 
-    private void validate(UserRequestDto.SignUp dto) {
+    private SocialLoginResponse login(long kakaoId) {
+        User user = userGetService.find(kakaoId);
+
+        if (user == null) {
+            return mapper.toIntegrateResponse(kakaoId);
+        }
+
+        if (user.isInactive()) {
+            throw new UserInActiveException();
+        }
+
+        JwtDto token = jwtManageUseCase.create(user.getId(), user.getEmail(), user.getRole());
+        return mapper.toLoginResponse(user, token);
+    }
+
+    private long getKakaoId(Login dto) {
+        KakaoTokenResponse tokenResponse = kakaoAuthService.getKakaoToken(dto.authCode());
+        KakaoUserInfoResponse userInfo = kakaoAuthService.getUserInfo(tokenResponse.access_token());
+
+        return userInfo.id();
+    }
+
+    private void validate(SignUp dto) {
         if (userGetService.validateStudentId(dto.studentId()))
             throw new StudentIdExistsException();
         if (userGetService.validateTel(dto.tel()))
             throw new TelExistsException();
     }
 
-    private void validate(UserRequestDto.Register dto, Long userId) {
-        if (userGetService.validateStudentId(dto.studentId(), userId)) {
+    private void validate(Register dto) {
+        if (userGetService.validateStudentId(dto.studentId())) {
             throw new StudentIdExistsException();
         }
-        if (userGetService.validateTel(dto.tel(), userId)) {
+        if (userGetService.validateTel(dto.tel())) {
             throw new TelExistsException();
         }
     }
