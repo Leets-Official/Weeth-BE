@@ -70,25 +70,25 @@ public class UserController {
     @GetMapping("/all")
     @Operation(summary="동아리 멤버 전체 조회(전체/기수별)")
     public CommonResponse<Map<Integer, List<SummaryResponse>>> findAllUser() {
-        return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(), userManageUseCase.findAllUser());
+        return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(), userUseCase.findAllUser());
     }
     @GetMapping("/details")
     @Operation(summary = "특정 멤버 상세 조회")
     public CommonResponse<UserResponse> findUser(@RequestParam Long userId) {
         return CommonResponse.createSuccess(
-                USER_DETAILS_SUCCESS.getMessage(), userManageUseCase.findUserDetails(userId)
+                USER_DETAILS_SUCCESS.getMessage(), userUseCase.findUserDetails(userId)
         );
     }
     @GetMapping
     @Operation(summary="내 정보 조회")
     public CommonResponse<Response> find(@Parameter(hidden = true) @CurrentUser Long userId) {
-        return CommonResponse.createSuccess(USER_FIND_BY_ID_SUCCESS.getMessage(), userManageUseCase.find(userId));
+        return CommonResponse.createSuccess(USER_FIND_BY_ID_SUCCESS.getMessage(), userUseCase.find(userId));
     }
 
     @PatchMapping
     @Operation(summary="내 정보 수정")
     public CommonResponse<Void> update(@RequestBody @Valid Update dto, @Parameter(hidden = true) @CurrentUser Long userId) {
-        userManageUseCase.update(dto, userId);
+        userUseCase.update(dto, userId);
         return CommonResponse.createSuccess(USER_UPDATE_SUCCESS.getMessage());
     }
 

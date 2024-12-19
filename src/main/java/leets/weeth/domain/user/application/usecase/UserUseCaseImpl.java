@@ -1,6 +1,5 @@
 package leets.weeth.domain.user.application.usecase;
 
-import jakarta.servlet.http.HttpServletRequest;
 import leets.weeth.domain.user.application.dto.request.UserRequestDto;
 import leets.weeth.domain.user.application.dto.response.UserResponseDto;
 import leets.weeth.domain.user.application.exception.StudentIdExistsException;
@@ -21,23 +20,28 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.AbstractMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static leets.weeth.domain.user.domain.entity.enums.LoginStatus.LOGIN;
 import static leets.weeth.domain.user.domain.entity.enums.LoginStatus.REGISTER;
+import static leets.weeth.domain.user.domain.entity.enums.Status.ACTIVE;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserUseCaseImpl implements UserUseCase {
+    private static final String BEARER = "Bearer ";
     private final JwtManageUseCase jwtManageUseCase;
     private final UserSaveService userSaveService;
     private final UserGetService userGetService;
     private final UserUpdateService userUpdateService;
     private final KakaoAuthService kakaoAuthService;
-
     private final UserMapper mapper;
     private final PasswordEncoder passwordEncoder;
-
-    private static final String BEARER = "Bearer ";
 
     @Override
     @Transactional
@@ -77,6 +81,50 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     @Override
+    public Map<Integer, List<UserResponseDto.Response>> findAll() {
+        return userGetService.findAllByStatus(ACTIVE).stream()
+                .flatMap(user -> Stream.concat(
+                        user.getCardinals().stream()
+                                .map(cardinal -> new AbstractMap.SimpleEntry<>(cardinal, mapper.to(user))), // 기수별 Map
+                        Stream.of(new AbstractMap.SimpleEntry<>(0, mapper.to(user)))    // 모든 기수는 cardinal 0에 저장
+                ))
+                .collect(Collectors.groupingBy(Map.Entry::getKey,   // key = 기수, value = 유저 정보
+                        Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
+    }
+
+    @Override
+    public Map<Integer, List<UserResponseDto.SummaryResponse>> findAllUser() {
+        return userGetService.findAllByStatus(ACTIVE).stream()
+                .map(user -> new AbstractMap.SimpleEntry<>(user.getCardinals(), mapper.toSummaryResponse(user)))
+                .flatMap(entry -> Stream.concat(
+                        entry.getKey().stream().map(cardinal -> new AbstractMap.SimpleEntry<>(cardinal, entry.getValue())), // 기수별 Map
+                        Stream.of(new AbstractMap.SimpleEntry<>(0, entry.getValue())) // 모든 기수는 cardinal 0에 저장
+                ))
+                .collect(Collectors.groupingBy(
+                        Map.Entry::getKey, // key = 기수
+                        Collectors.mapping(Map.Entry::getValue, Collectors.toList()) // value = 요약 정보 리스트
+                ));
+    }
+
+    @Override
+    public UserResponseDto.UserResponse findUserDetails(Long userId) {
+        User user = userGetService.find(userId);
+        return mapper.toUserResponse(user);
+    }
+
+    @Override
+    public UserResponseDto.Response find(Long userId) {
+        return mapper.to(userGetService.find(userId));
+    }
+
+    @Override
+    public void update(UserRequestDto.Update dto, Long userId) {
+        validate(dto, userId);
+        User user = userGetService.find(userId);
+        userUpdateService.update(user, dto, passwordEncoder);
+    }
+
+    @Override
     public void apply(UserRequestDto.SignUp dto) {
         validate(dto);
         userSaveService.save(mapper.from(dto, passwordEncoder));
@@ -100,6 +148,14 @@ public class UserUseCaseImpl implements UserUseCase {
 
         log.info("RefreshToken 발급 완료: {}", token);
         return new JwtDto(token.accessToken(), token.refreshToken());
+    }
+
+
+    private void validate(UserRequestDto.Update dto, Long userId) {
+        if (userGetService.validateStudentId(dto.studentId(), userId))
+            throw new StudentIdExistsException();
+        if (userGetService.validateTel(dto.tel(), userId))
+            throw new TelExistsException();
     }
 
     private void validate(UserRequestDto.SignUp dto) {
