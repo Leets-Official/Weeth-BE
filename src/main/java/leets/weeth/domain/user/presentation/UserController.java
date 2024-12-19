@@ -49,13 +49,13 @@ public class UserController {
     }
 
     @PostMapping("/apply")
-    @Operation(summary = "동아리 지원 신청")
+    @Operation(summary = "동아리 지원 신청. 현재 사용하지 않으므로 회원가입 시 social-register api로 요청 바람")
     public CommonResponse<Void> apply(@RequestBody @Valid SignUp dto) {
         userUseCase.apply(dto);
         return CommonResponse.createSuccess(USER_APPLY_SUCCESS.getMessage());
     }
 
-    @PostMapping("/register")
+    @PostMapping("/social-register")
     @Operation(summary = "소셜 회원가입")
     public CommonResponse<Void> register(@RequestBody @Valid Register dto) {
         userUseCase.register(dto);
