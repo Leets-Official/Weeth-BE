@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -50,12 +51,13 @@ public class UserUseCaseImpl implements UserUseCase {
     @Transactional(readOnly = true)
     public SocialLoginResponse login(Login dto) {
         long kakaoId = getKakaoId(dto);
-        User user = userGetService.find(kakaoId);
+        Optional<User> optionalUser = userGetService.find(kakaoId);
 
-        if (user == null) {
+        if (optionalUser.isEmpty()) {
             return mapper.toIntegrateResponse(kakaoId);
         }
 
+        User user = optionalUser.get();
         if (user.isInactive()) {
             throw new UserInActiveException();
         }

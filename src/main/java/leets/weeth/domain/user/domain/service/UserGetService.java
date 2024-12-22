@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,9 +26,8 @@ public class UserGetService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
-    public User find(long kakaoId){
-        return userRepository.findByKakaoId(kakaoId)
-                .orElse(null);
+    public Optional<User> find(long kakaoId){
+        return userRepository.findByKakaoId(kakaoId);
     }
 
     public Boolean check(String email) {
