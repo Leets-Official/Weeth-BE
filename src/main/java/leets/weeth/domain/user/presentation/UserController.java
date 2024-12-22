@@ -34,14 +34,14 @@ public class UserController {
     private final UserManageUseCase userManageUseCase;
     private final UserGetService userGetService;
 
-    @PostMapping("/social-login")
+    @PostMapping("/kakao/login")
     @Operation(summary = "카카오 소셜 로그인 API")
     public CommonResponse<SocialLoginResponse> login(@RequestBody @Valid Login dto) {
         SocialLoginResponse response = userUseCase.login(dto);
         return CommonResponse.createSuccess(SOCIAL_LOGIN_SUCCESS.getMessage(), response);
     }
 
-    @PostMapping("/social-auth")
+    @PostMapping("/kakao/auth")
     @Operation(summary = "카카오 소셜 회원가입 전 요청 API")
     public CommonResponse<UserResponseDto.SocialAuthResponse> beforeRegister(@RequestBody @Valid Login dto) {
         UserResponseDto.SocialAuthResponse response = userUseCase.authenticate(dto);
@@ -55,14 +55,14 @@ public class UserController {
         return CommonResponse.createSuccess(USER_APPLY_SUCCESS.getMessage());
     }
 
-    @PostMapping("/social-register")
+    @PostMapping("/kakao/register")
     @Operation(summary = "소셜 회원가입")
     public CommonResponse<Void> register(@RequestBody @Valid Register dto) {
         userUseCase.register(dto);
         return CommonResponse.createSuccess(USER_APPLY_SUCCESS.getMessage());
     }
 
-    @PatchMapping("/integrate")
+    @PatchMapping("/kakao/link")
     @Operation(summary = "카카오 소셜 로그인 연동")
     public CommonResponse<SocialLoginResponse> integrate(@RequestBody @Valid NormalLogin dto) {
         return CommonResponse.createSuccess(SOCIAL_INTEGRATE_SUCCESS.getMessage(), userUseCase.integrate(dto));
