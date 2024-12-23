@@ -1,5 +1,5 @@
 package leets.weeth.domain.user.domain.entity.enums;
 
 public enum LoginStatus {
-    LOGIN, REGISTER
+    LOGIN, REGISTER, INTEGRATE
 }

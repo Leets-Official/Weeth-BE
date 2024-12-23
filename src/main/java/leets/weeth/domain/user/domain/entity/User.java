@@ -36,6 +36,8 @@ public class User extends BaseEntity {
     @Column(name = "user_id")
     private Long id;
 
+    private Long kakaoId;
+
     private String name;
 
     private String email;
@@ -85,6 +87,10 @@ public class User extends BaseEntity {
         penaltyCount = 0;
     }
 
+    public void addKakaoId(long kakaoId) {
+        this.kakaoId = kakaoId;
+    }
+
     public void leave() {
         this.status = Status.LEFT;
     }
@@ -93,6 +99,9 @@ public class User extends BaseEntity {
         this.cardinals.add(cardinal);
     }
 
+    /*
+    todo 차후 일반 로그인 비활성화시 해당 메서드에서 예외를 날리도록 수정
+     */
     public boolean isInactive() {
         return this.status != Status.ACTIVE;
     }
