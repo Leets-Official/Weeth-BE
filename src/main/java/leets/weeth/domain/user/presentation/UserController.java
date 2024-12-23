@@ -58,7 +58,7 @@ public class UserController {
     @PostMapping("/kakao/register")
     @Operation(summary = "소셜 회원가입")
     public CommonResponse<Void> register(@RequestBody @Valid Register dto) {
-        userUseCase.register(dto);
+        userUseCase.socialRegister(dto);
         return CommonResponse.createSuccess(USER_APPLY_SUCCESS.getMessage());
     }
 

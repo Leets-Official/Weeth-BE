@@ -144,7 +144,7 @@ public class UserUseCaseImpl implements UserUseCase {
 
     @Override
     @Transactional
-    public void register(Register dto) {
+    public void socialRegister(Register dto) {
         validate(dto);
         userSaveService.save(mapper.from(dto));
     }
