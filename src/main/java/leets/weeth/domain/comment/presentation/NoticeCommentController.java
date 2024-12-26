@@ -16,7 +16,7 @@ import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "CommentController", description = "댓글 관련 컨트롤러")
+@Tag(name = "COMMENT-NOTICE", description = "공지사항 댓글 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/notices/{noticeId}/comments")

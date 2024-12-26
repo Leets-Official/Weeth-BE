@@ -21,7 +21,7 @@ import static leets.weeth.domain.schedule.presentation.ResponseMessage.MEETING_D
 import static leets.weeth.domain.schedule.presentation.ResponseMessage.MEETING_SAVE_SUCCESS;
 import static leets.weeth.domain.schedule.presentation.ResponseMessage.MEETING_UPDATE_SUCCESS;
 
-@Tag(name = "MeetingAdminController", description = "정기모임 관련 어드민 컨트롤러")
+@Tag(name = "MEETING ADMIN", description = "[ADMIN] 정기모임 어드민 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/meetings")

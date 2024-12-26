@@ -19,7 +19,7 @@ import static leets.weeth.domain.schedule.application.dto.ScheduleDTO.Response;
 import static leets.weeth.domain.schedule.presentation.ResponseMessage.SCHEDULE_MONTHLY_FIND_SUCCESS;
 import static leets.weeth.domain.schedule.presentation.ResponseMessage.SCHEDULE_YEARLY_FIND_SUCCESS;
 
-@Tag(name = "ScheduleController", description = "일정 관련 컨트롤러")
+@Tag(name = "SCHEDULE", description = "캘린더 조회 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/schedules")

@@ -24,7 +24,7 @@ import static leets.weeth.domain.user.application.dto.response.UserResponseDto.R
 import static leets.weeth.domain.user.application.dto.response.UserResponseDto.SocialLoginResponse;
 import static leets.weeth.domain.user.presentation.ResponseMessage.*;
 
-@Tag(name = "UserController", description = "사용자 관련 컨트롤러")
+@Tag(name = "USER", description = "사용자 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")

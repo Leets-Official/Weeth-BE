@@ -14,7 +14,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
 
 
-@Tag(name = "NoticeController", description = "공지사항 관련 컨트롤러")
+@Tag(name = "NOTICE", description = "공지사항 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/notices")
@@ -23,7 +23,7 @@ public class NoticeController {
     private final NoticeUsecase noticeUsecase;
 
     @GetMapping
-    @Operation(summary="최근 공지사항 조회 및 입력된 개수 만큼 조회")
+    @Operation(summary="공지사항 목록 조회 [무한스크롤]")
     public CommonResponse<Slice<NoticeDTO.ResponseAll>> findNotices(@RequestParam("pageNumber") int pageNumber,
                                                                    @RequestParam("pageSize") int pageSize) {
         return CommonResponse.createSuccess(NOTICE_FIND_ALL_SUCCESS.getMessage(), noticeUsecase.findNotices(pageNumber, pageSize));

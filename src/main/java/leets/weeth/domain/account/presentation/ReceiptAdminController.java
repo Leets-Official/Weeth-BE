@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import static leets.weeth.domain.account.presentation.ResponseMessage.*;
 
-@Tag(name = "ReceiptAdminController", description = "회비 내역 관련 어드민 컨트롤러")
+@Tag(name = "RECEIPT ADMIN", description = "[ADMIN] 회비 어드민 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/receipts")

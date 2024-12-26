@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "penaltyUserController", description = "패널티 관련 컨트롤러")
+@Tag(name = "PENALTY", description = "패널티 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/penalties")
-public class penaltyUserController {
+public class PenaltyUserController {
 
     private final PenaltyUsecase penaltyUsecase;
 

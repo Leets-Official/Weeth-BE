@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "penaltyAdminController", description = "패널티 관련 어드민 컨트롤러")
+@Tag(name = "PENALTY ADMIN", description = "[ADMIN] 패널티 어드민 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/penalties")
-public class penaltyAdminController {
+public class PenaltyAdminController {
 
     private final PenaltyUsecase penaltyUsecase;
 

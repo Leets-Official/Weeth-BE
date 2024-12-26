@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 
-@Tag(name = "AttendanceAdminController", description = "출석 관련 어드민 컨트롤러")
+@Tag(name = "ATTENDANCE ADMIN", description = "[ADMIN] 출석 어드민 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/attendances")

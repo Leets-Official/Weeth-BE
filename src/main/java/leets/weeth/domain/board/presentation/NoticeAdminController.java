@@ -18,7 +18,7 @@ import java.util.List;
 
 import static leets.weeth.domain.board.presentation.ResponseMessage.*;
 
-@Tag(name = "NoticeAdminController", description = "공지사항 관련 어드민 컨트롤러")
+@Tag(name = "NOTICE ADMIN", description = "[ADMIN] 공지사항 어드민 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/notices")

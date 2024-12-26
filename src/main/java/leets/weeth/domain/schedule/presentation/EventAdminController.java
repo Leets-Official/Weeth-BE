@@ -16,7 +16,7 @@ import static leets.weeth.domain.schedule.presentation.ResponseMessage.EVENT_DEL
 import static leets.weeth.domain.schedule.presentation.ResponseMessage.EVENT_SAVE_SUCCESS;
 import static leets.weeth.domain.schedule.presentation.ResponseMessage.EVENT_UPDATE_SUCCESS;
 
-@Tag(name = "EventAdminController", description = "일정 관련 어드민 컨트롤러")
+@Tag(name = "EVENT ADMIN", description = "[ADMIN] 일정 어드민 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/events")

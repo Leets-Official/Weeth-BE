@@ -16,7 +16,7 @@ import static leets.weeth.domain.attendance.presentation.ResponseMessage.ATTENDA
 import static leets.weeth.domain.attendance.presentation.ResponseMessage.ATTENDANCE_FIND_ALL_SUCCESS;
 import static leets.weeth.domain.attendance.presentation.ResponseMessage.ATTENDANCE_FIND_SUCCESS;
 
-@Tag(name = "AttendanceController", description = "출석 관련 컨트롤러")
+@Tag(name = "ATTENDANCE", description = "출석 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/attendances")

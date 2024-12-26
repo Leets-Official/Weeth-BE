@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static leets.weeth.domain.schedule.application.dto.EventDTO.Response;
 import static leets.weeth.domain.schedule.presentation.ResponseMessage.EVENT_FIND_SUCCESS;
 
-@Tag(name = "EventController", description = "일정 관련 컨트롤러")
+@Tag(name = "EVENT", description = "일정 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/events")

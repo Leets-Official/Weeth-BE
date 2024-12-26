@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static leets.weeth.domain.board.presentation.ResponseMessage.*;
 
-@Tag(name = "PostController", description = "게시글 관련 컨트롤러")
+@Tag(name = "BOARD", description = "게시판 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/posts")
@@ -33,7 +33,7 @@ public class PostController {
     }
 
     @GetMapping
-    @Operation(summary="최근 게시글 조회 및 입력된 개수 만큼 조회")
+    @Operation(summary="게시글 목록 조회 [무한스크롤]")
     public CommonResponse<Slice<PostDTO.ResponseAll>> findPosts(@RequestParam("pageNumber") int pageNumber,
                                                                       @RequestParam("pageSize") int pageSize) {
         return CommonResponse.createSuccess(POST_FIND_ALL_SUCCESS.getMessage(), postUsecase.findPosts(pageNumber, pageSize));

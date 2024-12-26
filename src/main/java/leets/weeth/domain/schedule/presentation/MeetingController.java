@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "MeetingController", description = "정기모임 관련 컨트롤러")
+@Tag(name = "MEETING", description = "정기모임 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/meetings")
