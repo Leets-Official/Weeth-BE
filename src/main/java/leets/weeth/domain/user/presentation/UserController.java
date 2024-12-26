@@ -3,6 +3,7 @@ package leets.weeth.domain.user.presentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import leets.weeth.domain.user.application.dto.response.UserResponseDto;
 import leets.weeth.domain.user.application.dto.response.UserResponseDto.SummaryResponse;
@@ -92,6 +93,12 @@ public class UserController {
     @Operation(summary = "내 정보 조회")
     public CommonResponse<Response> find(@Parameter(hidden = true) @CurrentUser Long userId) {
         return CommonResponse.createSuccess(USER_FIND_BY_ID_SUCCESS.getMessage(), userUseCase.find(userId));
+    }
+
+    @GetMapping("/info")
+    @Operation(summary = "전역 내 정보 조회 API")
+    public CommonResponse<UserResponseDto.UserInfo> findMyInfo(@Parameter(hidden = true) @CurrentUser Long userId) {
+        return CommonResponse.createSuccess(USER_FIND_BY_ID_SUCCESS.getMessage(), userUseCase.findUserInfo(userId));
     }
 
     @PatchMapping
