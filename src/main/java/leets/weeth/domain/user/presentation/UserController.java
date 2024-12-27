@@ -3,7 +3,6 @@ package leets.weeth.domain.user.presentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import leets.weeth.domain.user.application.dto.response.UserResponseDto;
 import leets.weeth.domain.user.application.dto.response.UserResponseDto.SummaryResponse;

@@ -60,6 +60,7 @@ public interface UserMapper {
     UserResponse toUserResponse(User user);
 
     UserResponseDto.UserInfo toUserInfoDto(User user);
+
     default String toString(Department department) {
         return department.getValue();
     }

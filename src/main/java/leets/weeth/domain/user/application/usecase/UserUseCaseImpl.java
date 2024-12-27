@@ -164,6 +164,7 @@ public class UserUseCaseImpl implements UserUseCase {
     @Override
     public UserResponseDto.UserInfo findUserInfo(Long userId) {
         User user = userGetService.find(userId);
+
         return mapper.toUserInfoDto(user);
     }
     private long getKakaoId(Login dto) {
