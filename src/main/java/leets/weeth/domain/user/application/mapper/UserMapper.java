@@ -1,6 +1,9 @@
 package leets.weeth.domain.user.application.mapper;
 
 import leets.weeth.domain.user.application.dto.response.UserResponseDto.*;
+import leets.weeth.domain.user.application.dto.response.UserResponseDto;
+import leets.weeth.domain.user.application.dto.response.UserResponseDto.SummaryResponse;
+import leets.weeth.domain.user.application.dto.response.UserResponseDto.UserResponse;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.entity.enums.Department;
 import leets.weeth.global.auth.jwt.application.dto.JwtDto;
@@ -55,6 +58,8 @@ public interface UserMapper {
             // 상세 데이터 매핑
     })
     UserResponse toUserResponse(User user);
+
+    UserResponseDto.UserInfo toUserInfoDto(User user);
 
     default String toString(Department department) {
         return department.getValue();

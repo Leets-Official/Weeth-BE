@@ -161,6 +161,12 @@ public class UserUseCaseImpl implements UserUseCase {
         return new JwtDto(token.accessToken(), token.refreshToken());
     }
 
+    @Override
+    public UserResponseDto.UserInfo findUserInfo(Long userId) {
+        User user = userGetService.find(userId);
+
+        return mapper.toUserInfoDto(user);
+    }
     private long getKakaoId(Login dto) {
         KakaoTokenResponse tokenResponse = kakaoAuthService.getKakaoToken(dto.authCode());
         KakaoUserInfoResponse userInfo = kakaoAuthService.getUserInfo(tokenResponse.access_token());

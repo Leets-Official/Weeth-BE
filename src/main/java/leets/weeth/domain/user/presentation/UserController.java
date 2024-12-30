@@ -94,6 +94,12 @@ public class UserController {
         return CommonResponse.createSuccess(USER_FIND_BY_ID_SUCCESS.getMessage(), userUseCase.find(userId));
     }
 
+    @GetMapping("/info")
+    @Operation(summary = "전역 내 정보 조회 API")
+    public CommonResponse<UserResponseDto.UserInfo> findMyInfo(@Parameter(hidden = true) @CurrentUser Long userId) {
+        return CommonResponse.createSuccess(USER_FIND_BY_ID_SUCCESS.getMessage(), userUseCase.findUserInfo(userId));
+    }
+
     @PatchMapping
     @Operation(summary = "내 정보 수정")
     public CommonResponse<Void> update(@RequestBody @Valid Update dto, @Parameter(hidden = true) @CurrentUser Long userId) {

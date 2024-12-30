@@ -36,7 +36,8 @@ public class UserResponseDto {
             Integer id,
             String name,
             List<Integer> cardinals,
-            Position position
+            Position position,
+            Role role
     ) {
     }
 
@@ -73,6 +74,14 @@ public class UserResponseDto {
 
     public record SocialAuthResponse(
             Long kakaoId
+    ) {
+    }
+
+    public record UserInfo(
+            Long id,
+            String name,
+            List<Integer> cardinals,
+            Role role
     ) {
     }
 }
