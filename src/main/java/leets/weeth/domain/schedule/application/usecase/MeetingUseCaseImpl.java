@@ -4,6 +4,7 @@ import leets.weeth.domain.attendance.domain.entity.Attendance;
 import leets.weeth.domain.attendance.domain.service.AttendanceDeleteService;
 import leets.weeth.domain.attendance.domain.service.AttendanceGetService;
 import leets.weeth.domain.attendance.domain.service.AttendanceSaveService;
+import leets.weeth.domain.attendance.domain.service.AttendanceUpdateService;
 import leets.weeth.domain.schedule.application.mapper.MeetingMapper;
 import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.schedule.domain.service.MeetingDeleteService;
@@ -35,6 +36,7 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
     private final AttendanceGetService attendanceGetService;
     private final AttendanceSaveService attendanceSaveService;
     private final AttendanceDeleteService attendanceDeleteService;
+    private final AttendanceUpdateService attendanceUpdateService;
 
     @Override
     public Response find(Long meetingId) {
@@ -46,8 +48,6 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
     public void save(Save dto, Long userId) {
         User user = userGetService.find(userId);
         List<User> userList = userGetService.findAllByCardinal(dto.cardinal());
-        log.info("dto.cardinal: {}", dto.cardinal());
-        log.info("userList: {}", userList);
 
         Meeting meeting = mapper.from(dto, user);
         meetingSaveService.save(meeting);
@@ -68,19 +68,8 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
     public void delete(Long meetingId) {
         Meeting meeting = meetingGetService.find(meetingId);
         List<Attendance> attendances = attendanceGetService.findAllByMeeting(meeting);
-        List<User> userList = userGetService.findAllByCardinal(meeting.getCardinal());
 
-        for (User user : userList) {
-            for (Attendance attendance : attendances) {
-                if (attendance.getUser().equals(user)) {
-                    if (attendance.getStatus().equals(leets.weeth.domain.attendance.domain.entity.enums.Status.ATTEND)) {
-                        user.removeAttend();
-                    } else {
-                        user.removeAbsent();
-                    }
-                }
-            }
-        }
+        attendanceUpdateService.updateByAttendanceStatus(attendances);
 
         meetingDeleteService.delete(meeting);
         attendanceDeleteService.deleteAll(attendances);
