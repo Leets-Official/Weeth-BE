@@ -16,14 +16,18 @@ public class AttendanceSaveService {
 
     private final AttendanceRepository attendanceRepository;
 
-    @Transactional
-    public void save(User user, List<Meeting> meetings) {
+    public void init(User user, List<Meeting> meetings) {
         if (meetings != null) {
             meetings.forEach(meeting -> {
                 Attendance attendance = attendanceRepository.save(new Attendance(meeting, user));
                 user.add(attendance);
-                meeting.add(attendance);
-        });
+            });
+        }
+    }
+
+    public void saveAll(List<User> userList, Meeting meeting) {
+        for (User user : userList) {
+            attendanceRepository.save(new Attendance(meeting, user));
         }
     }
 }
