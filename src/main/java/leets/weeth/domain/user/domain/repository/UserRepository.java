@@ -20,4 +20,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByTelAndIdIsNot(String tel, Long id);
 
     List<User> findAllByStatusOrderByName(Status status);
+    List<User> findAllByOrderByNameAsc();
 }

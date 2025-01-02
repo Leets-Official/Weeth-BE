@@ -39,7 +39,7 @@ public class UserGetService {
     }
 
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userRepository.findAllByOrderByNameAsc();
     }
 
     public boolean validateStudentId(String studentId) {

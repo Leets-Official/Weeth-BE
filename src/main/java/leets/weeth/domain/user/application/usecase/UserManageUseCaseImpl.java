@@ -6,6 +6,7 @@ import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.schedule.domain.service.MeetingGetService;
 import leets.weeth.domain.user.application.mapper.UserMapper;
 import leets.weeth.domain.user.domain.entity.User;
+import leets.weeth.domain.user.domain.entity.enums.Status;
 import leets.weeth.domain.user.domain.service.UserDeleteService;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.domain.user.domain.service.UserUpdateService;
@@ -14,9 +15,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static leets.weeth.domain.user.application.dto.response.UserResponseDto.AdminResponse;
+import static leets.weeth.domain.user.domain.entity.enums.Status.*;
 
 @Service
 @RequiredArgsConstructor
@@ -35,9 +40,18 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
 
     @Override
     public List<AdminResponse> findAllByAdmin() {
+        // 우선순위 지정
+        Map<Status, Integer> statusPriority = Map.of(
+                ACTIVE, 1,
+                WAITING, 2,
+                LEFT, 3,
+                BANNED, 4
+        );
+
         return userGetService.findAll().stream()
+                .sorted(Comparator.comparingInt(user -> statusPriority.getOrDefault(user.getStatus(), Integer.MAX_VALUE)))
                 .map(mapper::toAdminResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
