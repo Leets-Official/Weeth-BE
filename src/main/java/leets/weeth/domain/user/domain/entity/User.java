@@ -54,6 +54,9 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Department department;
 
+    /*
+    todo 차후 기수가 많아지면 관리가 어려울 수 있음
+     */
     @Convert(converter = CardinalListConverter.class)
     private List<Integer> cardinals;
 
