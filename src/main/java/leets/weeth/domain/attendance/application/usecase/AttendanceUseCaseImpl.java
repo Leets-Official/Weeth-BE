@@ -79,7 +79,7 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
         List<Meeting> meetings = meetingGetService.find(cardinal);
 
         /*
-        todo 차후 리팩토링
+        todo 차후 리팩토링 정기모임 id를 입력받아서 해당 정기모임의 출석을 마감하도록 수정
          */
         Meeting targetMeeting = meetings.stream()
                 .filter(meeting -> meeting.getStart().toLocalDate().isEqual(now)
