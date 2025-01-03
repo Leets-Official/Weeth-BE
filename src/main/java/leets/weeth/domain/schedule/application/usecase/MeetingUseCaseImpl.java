@@ -71,8 +71,8 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
 
         attendanceUpdateService.updateByAttendanceStatus(attendances);
 
+        attendanceDeleteService.deleteAll(meeting);
         meetingDeleteService.delete(meeting);
-        attendanceDeleteService.deleteAll(attendances);
     }
 
     @Override
