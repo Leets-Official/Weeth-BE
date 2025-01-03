@@ -13,6 +13,6 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     List<Attendance> findAllByMeeting(Meeting meeting);
 
     @Modifying
-    @Query("DELETE FROM Attendance a WHERE a IN :attendances")
-    void deleteAll(@Param("attendances") List<Attendance> attendances);
+    @Query("DELETE FROM Attendance a WHERE a.meeting = :meeting")
+    void deleteAllByMeeting(Meeting meeting);
 }
