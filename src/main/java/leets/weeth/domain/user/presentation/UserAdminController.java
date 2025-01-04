@@ -8,7 +8,9 @@ import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static leets.weeth.domain.user.application.dto.response.UserResponseDto.AdminResponse;
 import static leets.weeth.domain.user.presentation.ResponseMessage.*;
@@ -23,8 +25,13 @@ public class UserAdminController {
 
     @GetMapping("/all")
     @Operation(summary="어드민용 회원 조회")
-    public CommonResponse<List<AdminResponse>> findAll() {
-        return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(), userManageUseCase.findAllByAdmin());
+    public CommonResponse<Map<Integer, List<AdminResponse>>> findAll() {
+        // to do : 추후 기수 분리 후 작업 예정
+        List <AdminResponse> usersByCardinal = new ArrayList<>();
+        List<AdminResponse> usersByName = userManageUseCase.findAllByAdmin();
+
+        return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(), Map.of(0, usersByCardinal,
+                1, usersByName));
     }
 
     @PatchMapping
