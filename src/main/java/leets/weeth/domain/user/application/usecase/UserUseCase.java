@@ -38,4 +38,6 @@ public interface UserUseCase {
 
     JwtDto refresh(String refreshToken);
 
+    UserResponseDto.UserInfo findUserInfo(Long userId);
+
 }

@@ -24,7 +24,7 @@ public class UserAdminController {
     private final UserManageUseCase userManageUseCase;
 
     @GetMapping("/all")
-    @Operation(summary="어드민용 회원 조회")
+    @Operation(summary = "어드민용 회원 조회")
     public CommonResponse<Map<Integer, List<AdminResponse>>> findAll() {
         // to do : 추후 기수 분리 후 작업 예정
         List <AdminResponse> usersByCardinal = new ArrayList<>();
