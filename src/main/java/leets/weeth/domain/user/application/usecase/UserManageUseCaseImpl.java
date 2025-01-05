@@ -45,6 +45,7 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
         if(orderBy == null || !EnumSet.allOf(UsersOrderBy.class).contains(orderBy)){
             throw new InvalidUserOrderException();
         }
+
         if(orderBy.equals(NAME_ASCENDING)){
             return userGetService.findAll().stream()
                 .sorted(Comparator.comparingInt((user->(StatusPriority.fromStatus(user.getStatus())).getPriority())))
@@ -52,6 +53,7 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
                 .toList();
         }
         // To do : 추후 기수 분리 후 작업 예정
+
         return null;
     }
 
