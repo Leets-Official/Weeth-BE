@@ -2,6 +2,8 @@ package leets.weeth.domain.attendance.domain.service;
 
 import jakarta.transaction.Transactional;
 import leets.weeth.domain.attendance.domain.entity.Attendance;
+import leets.weeth.domain.attendance.domain.entity.enums.Status;
+import leets.weeth.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,5 +26,16 @@ public class AttendanceUpdateService {
                     attendance.close();
                     attendance.getUser().absent();
                 });
+    }
+
+    public void updateUserAttendanceByStatus(List<Attendance> attendances) {
+        for (Attendance attendance : attendances) {
+            User user = attendance.getUser();
+            if (attendance.getStatus().equals(Status.ATTEND)) {
+                user.removeAttend();
+            } else {
+                user.removeAbsent();
+            }
+        }
     }
 }
