@@ -49,7 +49,7 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
             return userGetService.findAll().stream()
                 .sorted(Comparator.comparingInt((user->(StatusPriority.fromStatus(user.getStatus())).getPriority())))
                 .map(mapper::toAdminResponse)
-                .collect(Collectors.toList());
+                .toList();
         }
         // To do : 추후 기수 분리 후 작업 예정
         return null;
