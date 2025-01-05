@@ -1,6 +1,7 @@
 package leets.weeth.domain.attendance.presentation;
 
 import static leets.weeth.domain.attendance.presentation.ResponseMessage.ATTENDANCE_CLOSE_SUCCESS;
+import static leets.weeth.domain.attendance.presentation.ResponseMessage.ATTENDANCE_UPDATED_ALL_SUCCESS;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -8,6 +9,7 @@ import leets.weeth.domain.attendance.application.usecase.AttendanceUseCase;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,5 +29,11 @@ public class AttendanceAdminController {
     public CommonResponse<Void> close(@RequestParam LocalDate now, @RequestParam Integer cardinal) {
         attendanceUseCase.close(now, cardinal);
         return CommonResponse.createSuccess(ATTENDANCE_CLOSE_SUCCESS.getMessage());
+    }
+    @PatchMapping("/{meetingId}")
+    @Operation(summary = "정기모임 모든 출석 상태 수정")
+    public CommonResponse<Void> updateMeetingStatus(@PathVariable Long meetingId) {
+        attendanceUseCase.updateMeetingStatus(meetingId);
+        return CommonResponse.createSuccess(ATTENDANCE_UPDATED_ALL_SUCCESS.getMessage());
     }
 }
