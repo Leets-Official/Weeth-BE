@@ -28,7 +28,7 @@ public class AttendanceUpdateService {
                 });
     }
 
-    public void updateByAttendanceStatus(List<Attendance> attendances) {
+    public void updateUserAttendanceByStatus(List<Attendance> attendances) {
         for (Attendance attendance : attendances) {
             User user = attendance.getUser();
             if (attendance.getStatus().equals(Status.ATTEND)) {

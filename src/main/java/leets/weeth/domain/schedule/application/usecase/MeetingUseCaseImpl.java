@@ -69,7 +69,7 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
         Meeting meeting = meetingGetService.find(meetingId);
         List<Attendance> attendances = attendanceGetService.findAllByMeeting(meeting);
 
-        attendanceUpdateService.updateByAttendanceStatus(attendances);
+        attendanceUpdateService.updateUserAttendanceByStatus(attendances);
 
         attendanceDeleteService.deleteAll(meeting);
         meetingDeleteService.delete(meeting);
