@@ -1,13 +1,14 @@
 package leets.weeth.domain.user.application.usecase;
 
 import leets.weeth.domain.user.application.dto.response.UserResponseDto;
+import leets.weeth.domain.user.domain.entity.enums.UsersOrderBy;
 
 import java.util.List;
 
 public interface UserManageUseCase {
 
 
-    List<UserResponseDto.AdminResponse> findAllByAdmin();
+    List<UserResponseDto.AdminResponse> findAllByAdmin(UsersOrderBy orderBy);
 
     void accept(Long userId);
 
