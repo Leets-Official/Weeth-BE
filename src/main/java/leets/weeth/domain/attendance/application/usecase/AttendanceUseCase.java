@@ -15,4 +15,6 @@ public interface AttendanceUseCase {
     Detail findAll(Long userId);
 
     void close(LocalDate now, Integer cardinal);
+
+    void updateMeetingStatus(Long meetingId);
 }
