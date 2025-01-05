@@ -4,13 +4,12 @@ import jakarta.persistence.*;
 import leets.weeth.domain.attendance.domain.entity.Attendance;
 import leets.weeth.domain.penalty.domain.entity.Penalty;
 import leets.weeth.domain.user.application.converter.CardinalListConverter;
-import leets.weeth.domain.user.application.dto.request.UserRequestDto;
+import leets.weeth.domain.user.application.exception.CardinalNotFoundException;
 import leets.weeth.domain.user.domain.entity.enums.Department;
 import leets.weeth.domain.user.domain.entity.enums.Position;
 import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.domain.user.domain.entity.enums.Status;
 import leets.weeth.global.common.entity.BaseEntity;
-import leets.weeth.domain.user.application.exception.CardinalNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import static leets.weeth.domain.user.application.dto.request.UserRequestDto.*;
+import static leets.weeth.domain.user.application.dto.request.UserRequestDto.Register;
+import static leets.weeth.domain.user.application.dto.request.UserRequestDto.Update;
 
 @Entity
 @Getter
@@ -54,6 +54,9 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Department department;
 
+    /*
+    todo 차후 기수가 많아지면 관리가 어려울 수 있음
+     */
     @Convert(converter = CardinalListConverter.class)
     private List<Integer> cardinals;
 
@@ -114,6 +117,7 @@ public class User extends BaseEntity {
         this.tel = dto.tel();
         this.department = Department.to(dto.department());
     }
+
     public void update(Register dto) {
         this.name = dto.name();
         this.studentId = dto.studentId();
@@ -122,6 +126,7 @@ public class User extends BaseEntity {
         this.cardinals = List.of(dto.cardinal());
         this.position = Position.valueOf(dto.position());
     }
+
     public void accept() {
         this.status = Status.ACTIVE;
     }
@@ -146,7 +151,7 @@ public class User extends BaseEntity {
         this.attendances.add(attendance);
     }
 
-    public void addPenalty(Penalty penalty){
+    public void addPenalty(Penalty penalty) {
         this.penalties.add(penalty);
     }
 
@@ -169,13 +174,31 @@ public class User extends BaseEntity {
         calculateRate();
     }
 
+    public void removeAttend() {
+        if(attendanceCount > 0) {
+            attendanceCount--;
+            calculateRate();
+        }
+    }
+
     public void absent() {
         absenceCount++;
         calculateRate();
     }
 
+    public void removeAbsent() {
+        if(absenceCount > 0) {
+            absenceCount--;
+            calculateRate();
+        }
+    }
+
     private void calculateRate() {
-        attendanceRate = (attendanceCount * 100) / (attendanceCount + absenceCount);
+        if (attendanceCount + absenceCount > 0) {
+            attendanceRate = (attendanceCount * 100) / (attendanceCount + absenceCount);
+        } else {
+            attendanceRate = 0;
+        }
     }
 
     public void incrementPenaltyCount() {

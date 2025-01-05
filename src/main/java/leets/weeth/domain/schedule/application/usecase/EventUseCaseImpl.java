@@ -10,6 +10,7 @@ import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static leets.weeth.domain.schedule.application.dto.EventDTO.*;
 
@@ -30,12 +31,14 @@ public class EventUseCaseImpl implements EventUseCase {
     }
 
     @Override
+    @Transactional
     public void save(Save dto, Long userId) {
         User user = userGetService.find(userId);
         eventSaveService.save(mapper.from(dto, user));
     }
 
     @Override
+    @Transactional
     public void update(Long eventId, Update dto, Long userId) {
         User user = userGetService.find(userId);
         Event event = eventGetService.find(eventId);
@@ -43,6 +46,7 @@ public class EventUseCaseImpl implements EventUseCase {
     }
 
     @Override
+    @Transactional
     public void delete(Long eventId) {
         Event event = eventGetService.find(eventId);
         eventDeleteService.delete(event);

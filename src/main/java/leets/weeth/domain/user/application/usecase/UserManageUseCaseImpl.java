@@ -65,7 +65,7 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
         if (user.isInactive()) {
             userUpdateService.accept(user);
             List<Meeting> meetings = meetingGetService.find(user.getCardinals().get(0));
-            attendanceSaveService.save(user, meetings);
+            attendanceSaveService.init(user, meetings);
         }
     }
 
@@ -100,7 +100,7 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
             if (user.isCurrent(cardinal)) {
                 user.initAttendance();
                 List<Meeting> meetings = meetingGetService.find(cardinal);
-                attendanceSaveService.save(user, meetings);
+                attendanceSaveService.init(user, meetings);
             }
 
             userUpdateService.applyOB(user, cardinal);
