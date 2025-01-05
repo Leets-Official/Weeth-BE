@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum ResponseMessage {
     //AttendanceAdminController 관련
     ATTENDANCE_CLOSE_SUCCESS("출석이 성공적으로 마감되었습니다."),
+    ATTENDANCE_UPDATED_ALL_SUCCESS("정기모임의 모든 출석 상태가 성공적으로 수정되었습니다."),
 
     //AttendanceController 관련
     ATTENDANCE_CHECKIN_SUCCESS("출석이 성공적으로 처리되었습니다."),
