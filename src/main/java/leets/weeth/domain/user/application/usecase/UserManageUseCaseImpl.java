@@ -4,8 +4,11 @@ import jakarta.transaction.Transactional;
 import leets.weeth.domain.attendance.domain.service.AttendanceSaveService;
 import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.schedule.domain.service.MeetingGetService;
+import leets.weeth.domain.user.application.exception.InvalidUserOrderException;
 import leets.weeth.domain.user.application.mapper.UserMapper;
 import leets.weeth.domain.user.domain.entity.User;
+import leets.weeth.domain.user.domain.entity.enums.StatusPriority;
+import leets.weeth.domain.user.domain.entity.enums.UsersOrderBy;
 import leets.weeth.domain.user.domain.service.UserDeleteService;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.domain.user.domain.service.UserUpdateService;
@@ -14,9 +17,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static leets.weeth.domain.user.application.dto.response.UserResponseDto.AdminResponse;
+import static leets.weeth.domain.user.domain.entity.enums.UsersOrderBy.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,10 +41,20 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public List<AdminResponse> findAllByAdmin() {
-        return userGetService.findAll().stream()
+    public List<AdminResponse> findAllByAdmin(UsersOrderBy orderBy) {
+        if(orderBy == null || !EnumSet.allOf(UsersOrderBy.class).contains(orderBy)){
+            throw new InvalidUserOrderException();
+        }
+
+        if(orderBy.equals(NAME_ASCENDING)){
+            return userGetService.findAll().stream()
+                .sorted(Comparator.comparingInt((user->(StatusPriority.fromStatus(user.getStatus())).getPriority())))
                 .map(mapper::toAdminResponse)
                 .toList();
+        }
+        // To do : 추후 기수 분리 후 작업 예정
+
+        return null;
     }
 
     @Override

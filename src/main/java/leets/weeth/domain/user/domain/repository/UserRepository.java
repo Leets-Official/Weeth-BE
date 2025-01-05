@@ -22,6 +22,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByTelAndIdIsNot(String tel, Long id);
 
     List<User> findAllByStatusOrderByName(Status status);
+    List<User> findAllByOrderByNameAsc();
 
     @Query(value = "SELECT * FROM users u WHERE JSON_CONTAINS(u.cardinals, CAST(:cardinal AS JSON), '$')", nativeQuery = true)
     List<User> findByCardinal(@Param("cardinal") int cardinal);
