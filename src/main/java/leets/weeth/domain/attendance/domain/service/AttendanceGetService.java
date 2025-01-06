@@ -1,5 +1,6 @@
 package leets.weeth.domain.attendance.domain.service;
 
+import leets.weeth.domain.attendance.application.exception.AttendanceNotFoundException;
 import leets.weeth.domain.attendance.domain.entity.Attendance;
 import leets.weeth.domain.attendance.domain.repository.AttendanceRepository;
 import leets.weeth.domain.schedule.domain.entity.Meeting;
@@ -16,5 +17,9 @@ public class AttendanceGetService {
 
     public List<Attendance> findAllByMeeting(Meeting meeting) {
         return attendanceRepository.findAllByMeeting(meeting);
+    }
+    public Attendance findAttendanceId(Long attendanceId) {
+        return attendanceRepository.findById(attendanceId)
+                .orElseThrow(AttendanceNotFoundException::new);
     }
 }
