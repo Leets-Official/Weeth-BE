@@ -42,14 +42,14 @@ public class UserController {
     }
 
     @PostMapping("/kakao/auth")
-    @Operation(summary = "카카오 소셜 회원가입 전 요청 API")
+    @Operation(summary = "카카오 소셜 회원가입 전 요청 API (미사용 API)")
     public CommonResponse<UserResponseDto.SocialAuthResponse> beforeRegister(@RequestBody @Valid Login dto) {
         UserResponseDto.SocialAuthResponse response = userUseCase.authenticate(dto);
         return CommonResponse.createSuccess(SOCIAL_AUTH_SUCCESS.getMessage(), response);
     }
 
     @PostMapping("/apply")
-    @Operation(summary = "동아리 지원 신청. 현재 사용하지 않으므로 회원가입 시 social-register api로 요청 바람")
+    @Operation(summary = "동아리 지원 신청. 현재 사용하지 않으므로 회원가입 시 /kakao/register api로 요청 바람")
     public CommonResponse<Void> apply(@RequestBody @Valid SignUp dto) {
         userUseCase.apply(dto);
         return CommonResponse.createSuccess(USER_APPLY_SUCCESS.getMessage());
