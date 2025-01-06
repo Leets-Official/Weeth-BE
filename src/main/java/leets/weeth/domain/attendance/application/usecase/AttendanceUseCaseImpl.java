@@ -73,7 +73,13 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
 
         return mapper.toDetailDto(user, responses);
     }
+    @Override
+    public AttendanceDTO.AttendanceInfo findAttendance(Long attendanceId) {
 
+        Attendance attendance = attendanceGetService.findAttendanceId(attendanceId);
+
+        return mapper.toAttendanceInfoDto(attendance);
+    }
     @Override
     public void close(LocalDate now, Integer cardinal) {
         List<Meeting> meetings = meetingGetService.find(cardinal);
