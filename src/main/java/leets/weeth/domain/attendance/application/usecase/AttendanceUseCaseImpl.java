@@ -93,11 +93,9 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
     }
     @Override
     @Transactional
-    public void updateMeetingStatus(Long meetingId) {
-        Meeting meeting = meetingGetService.find(meetingId);
+    public void updateAttendanceStatus(Long attendanceId) {
+        Attendance attendance = attendanceGetService.findAttendanceId(attendanceId);
 
-        List<Attendance> attendances = attendanceGetService.findAllByMeeting(meeting);
-
-        attendanceUpdateService.updateUserAttendanceByStatus(attendances);
+        attendanceUpdateService.updateUserAttendanceByStatus(attendance);
     }
 }
