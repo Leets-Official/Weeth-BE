@@ -16,5 +16,5 @@ public interface AttendanceUseCase {
 
     void close(LocalDate now, Integer cardinal);
 
-    void updateMeetingStatus(Long meetingId);
+    void updateAttendanceStatus(Long attendanceId);
 }
