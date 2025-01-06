@@ -38,4 +38,7 @@ public class AttendanceUpdateService {
             }
         }
     }
+    public void updateUserAttendanceByStatus(Attendance attendance) {
+        updateUserAttendanceByStatus(List.of(attendance));
+    }
 }
