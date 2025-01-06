@@ -1,5 +1,6 @@
 package leets.weeth.domain.attendance.application.usecase;
 
+import leets.weeth.domain.attendance.application.dto.AttendanceDTO.AttendanceInfo;
 import leets.weeth.domain.attendance.application.exception.AttendanceCodeMismatchException;
 
 import java.time.LocalDate;
@@ -13,6 +14,8 @@ public interface AttendanceUseCase {
     Main find(Long userId);
 
     Detail findAll(Long userId);
+
+    AttendanceInfo findAttendance(Long attendanceId);
 
     void close(LocalDate now, Integer cardinal);
 
