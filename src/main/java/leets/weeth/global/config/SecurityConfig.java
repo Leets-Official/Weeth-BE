@@ -73,7 +73,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
-                                        .requestMatchers("/api/v1/users/kakao/login", "api/v1/users/kakao/register", "api/v1/users/kakao/link", "api/v1/users/kakao/auth", "/api/v1/users/apply", "/api/v1/users/email", "/api/v1/users/refresh").permitAll()
+                                        .requestMatchers("/api/v1/users/kakao/login", "api/v1/users/kakao/register", "api/v1/users/kakao/link", "/api/v1/users/apply", "/api/v1/users/email", "/api/v1/users/refresh").permitAll()
                                         .requestMatchers("/health-check").permitAll()
                                         .requestMatchers("/admin", "/admin/login", "/admin/account", "/admin/meeting", "/admin/member", "/admin/penalty",
                                                 "/js/**", "/img/**", "/scss/**", "/vendor/**").permitAll()
