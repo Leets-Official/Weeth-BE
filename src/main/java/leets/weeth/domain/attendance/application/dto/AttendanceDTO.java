@@ -36,4 +36,13 @@ public class AttendanceDTO {
     public record CheckIn(
             Integer code
     ) {}
+    public record AttendanceInfo(
+            Long id,
+            Status status,
+            Integer weekNumber,
+            String name,
+            String position,
+            String department,
+            String studentId
+    ) {}
 }
