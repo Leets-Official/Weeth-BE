@@ -8,6 +8,7 @@ import leets.weeth.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,14 +17,20 @@ public class AttendanceSaveService {
 
     private final AttendanceRepository attendanceRepository;
 
-    @Transactional
-    public void save(User user, List<Meeting> meetings) {
+    public void init(User user, List<Meeting> meetings) {
         if (meetings != null) {
             meetings.forEach(meeting -> {
                 Attendance attendance = attendanceRepository.save(new Attendance(meeting, user));
                 user.add(attendance);
-                meeting.add(attendance);
-        });
+            });
         }
+    }
+
+    public void saveAll(List<User> userList, Meeting meeting) {
+        List<Attendance> attendances = userList.stream()
+                .map(user -> new Attendance(meeting, user))
+                .toList();
+
+        attendanceRepository.saveAll(attendances);
     }
 }

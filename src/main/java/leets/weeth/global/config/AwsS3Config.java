@@ -23,14 +23,17 @@ public class AwsS3Config {
     @Value("${cloud.aws.region.static}")
     private String region;
 
-    @Bean
-    public S3Client s3Client() {
-        AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, accessSecret);
-        return S3Client.builder()
-                .region(Region.of(region))
-                .credentialsProvider(StaticCredentialsProvider.create(credentials))
-                .build();
-    }
+    /*
+    미사용 빈
+     */
+//    @Bean
+//    public S3Client s3Client() {
+//        AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, accessSecret);
+//        return S3Client.builder()
+//                .region(Region.of(region))
+//                .credentialsProvider(StaticCredentialsProvider.create(credentials))
+//                .build();
+//    }
 
     @Bean
     public S3Presigner s3Presigner() {

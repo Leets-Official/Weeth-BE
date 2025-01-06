@@ -38,8 +38,12 @@ public class UserGetService {
         return userRepository.findAllByStatusOrderByName(status);
     }
 
+    public List<User> findAllByCardinal(int cardinal) {
+        return userRepository.findByCardinal(cardinal);
+    }
+
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userRepository.findAllByOrderByNameAsc();
     }
 
     public boolean validateStudentId(String studentId) {

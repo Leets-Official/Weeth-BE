@@ -3,6 +3,7 @@ package leets.weeth.domain.user.presentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import leets.weeth.domain.user.application.usecase.UserManageUseCase;
+import leets.weeth.domain.user.domain.entity.enums.UsersOrderBy;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,8 @@ public class UserAdminController {
 
     @GetMapping("/all")
     @Operation(summary = "어드민용 회원 조회")
-    public CommonResponse<List<AdminResponse>> findAll() {
-        return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(), userManageUseCase.findAllByAdmin());
+    public CommonResponse<List<AdminResponse>> findAll(@RequestParam UsersOrderBy orderBy) {
+        return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(), userManageUseCase.findAllByAdmin(orderBy));
     }
 
     @PatchMapping

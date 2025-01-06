@@ -13,8 +13,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+/*
+미사용 클래스
+ */
 @Slf4j
-@Service
 @RequiredArgsConstructor
 public class S3Service {
 
