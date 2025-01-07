@@ -102,6 +102,11 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
     public void updateAttendanceStatus(Long attendanceId) {
         Attendance attendance = attendanceGetService.findAttendanceId(attendanceId);
 
+        if (attendance.getStatus() == Status.ATTEND) {
+            attendance.close();
+        } else {
+            attendance.attend();
+        }
         attendanceUpdateService.updateUserAttendanceByStatus(attendance);
     }
 }
