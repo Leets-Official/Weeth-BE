@@ -45,4 +45,8 @@ public class AttendanceDTO {
             String department,
             String studentId
     ) {}
+    public record UpdateStatus(
+            Long attendanceId,
+            String status
+    ) {}
 }
