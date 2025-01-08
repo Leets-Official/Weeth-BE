@@ -74,11 +74,14 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
         return mapper.toDetailDto(user, responses);
     }
     @Override
-    public AttendanceDTO.AttendanceInfo findAttendance(Long attendanceId) {
+    public List<AttendanceDTO.AttendanceInfo> findAllAttendanceByMeeting(Long meetingId) {
+        Meeting meeting = meetingGetService.find(meetingId);
 
-        Attendance attendance = attendanceGetService.findAttendanceId(attendanceId);
+        List<Attendance> attendances = meetingGetService.getAttendancesByMeeting(meeting);
 
-        return mapper.toAttendanceInfoDto(attendance);
+        return attendances.stream()
+                .map(mapper::toAttendanceInfoDto)
+                .toList();
     }
     @Override
     public void close(LocalDate now, Integer cardinal) {
@@ -99,14 +102,18 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
     }
     @Override
     @Transactional
-    public void updateAttendanceStatus(Long attendanceId) {
-        Attendance attendance = attendanceGetService.findAttendanceId(attendanceId);
+    public void updateAttendanceStatus(List<AttendanceDTO.UpdateStatus> attendanceUpdates) {
+        attendanceUpdates.forEach(update -> {
+            Attendance attendance = attendanceGetService.findAttendanceId(update.attendanceId());
+            User user = attendance.getUser();
 
-        if (attendance.getStatus() == Status.ATTEND) {
-            attendance.close();
-        } else {
-            attendance.attend();
-        }
-        attendanceUpdateService.updateUserAttendanceByStatus(attendance);
+            if (attendance.getStatus() == Status.ATTEND) {
+                attendance.close();
+                user.removeAttend();
+            } else {
+                attendance.attend();
+                user.removeAbsent();
+            }
+        });
     }
 }
