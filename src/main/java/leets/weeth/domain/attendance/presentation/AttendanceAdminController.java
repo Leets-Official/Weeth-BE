@@ -43,7 +43,7 @@ public class AttendanceAdminController {
     }
 
     @PatchMapping("/status")
-    @Operation(summary = "모든 인원 정기모임 출석 상태 수정")
+    @Operation(summary = "모든 인원 정기모임 개별 출석 상태 수정")
     public CommonResponse<Void> updateAttendanceStatus(@RequestBody List<AttendanceDTO.UpdateStatus> attendanceUpdates) {
         attendanceUseCase.updateAttendanceStatus(attendanceUpdates);
         return CommonResponse.createSuccess(ATTENDANCE_UPDATED_SUCCESS.getMessage());
