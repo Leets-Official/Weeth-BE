@@ -32,4 +32,16 @@ public interface AttendanceMapper {
             @Mapping(target = "end", source = "attendance.meeting.end"),
             @Mapping(target = "location", source = "attendance.meeting.location"),
     })    AttendanceDTO.Response toResponseDto(Attendance attendance);
+
+    @Mappings({
+            @Mapping(target = "id", source = "attendance.id"),
+            @Mapping(target = "status", source = "attendance.status"),
+            @Mapping(target = "weekNumber", source = "attendance.meeting.weekNumber"),
+            @Mapping(target = "name", source = "attendance.user.name"),
+            @Mapping(target = "position", source = "attendance.user.position"),
+            @Mapping(target = "department", source = "attendance.user.department"),
+            @Mapping(target = "studentId", source = "attendance.user.studentId")
+    })
+    AttendanceDTO.AttendanceInfo toAttendanceInfoDto(Attendance attendance);
+
 }

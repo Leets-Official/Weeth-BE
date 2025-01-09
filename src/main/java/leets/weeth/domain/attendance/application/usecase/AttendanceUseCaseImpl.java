@@ -73,7 +73,16 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
 
         return mapper.toDetailDto(user, responses);
     }
+    @Override
+    public List<AttendanceDTO.AttendanceInfo> findAllAttendanceByMeeting(Long meetingId) {
+        Meeting meeting = meetingGetService.find(meetingId);
 
+        List<Attendance> attendances = attendanceGetService.findAllByMeeting(meeting);
+
+        return attendances.stream()
+                .map(mapper::toAttendanceInfoDto)
+                .toList();
+    }
     @Override
     public void close(LocalDate now, Integer cardinal) {
         List<Meeting> meetings = meetingGetService.find(cardinal);
@@ -90,5 +99,21 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
         List<Attendance> attendanceList = attendanceGetService.findAllByMeeting(targetMeeting);
 
         attendanceUpdateService.close(attendanceList);
+    }
+    @Override
+    @Transactional
+    public void updateAttendanceStatus(List<AttendanceDTO.UpdateStatus> attendanceUpdates) {
+        attendanceUpdates.forEach(update -> {
+            Attendance attendance = attendanceGetService.findByAttendanceId(update.attendanceId());
+            User user = attendance.getUser();
+
+            if (attendance.getStatus() == Status.ATTEND) {
+                attendance.close();
+                user.removeAttend();
+            } else {
+                attendance.attend();
+                user.removeAbsent();
+            }
+        });
     }
 }
