@@ -1,7 +1,5 @@
 package leets.weeth.domain.schedule.domain.service;
 
-import leets.weeth.domain.attendance.domain.entity.Attendance;
-import leets.weeth.domain.attendance.domain.repository.AttendanceRepository;
 import leets.weeth.domain.schedule.application.dto.ScheduleDTO;
 import leets.weeth.domain.schedule.application.mapper.ScheduleMapper;
 import leets.weeth.domain.schedule.domain.entity.Meeting;
@@ -18,7 +16,6 @@ import java.util.List;
 public class MeetingGetService {
 
     private final MeetingRepository meetingRepository;
-    private final AttendanceRepository attendanceRepository;
     private final ScheduleMapper mapper;
 
     public Meeting find(Long meetingId) {
@@ -39,6 +36,4 @@ public class MeetingGetService {
     public List<Meeting> findAll() {
         return meetingRepository.findAll();
     }
-
-    public List<Attendance> getAttendancesByMeeting(Meeting meeting) {return attendanceRepository.findAllByMeeting(meeting);}
 }
