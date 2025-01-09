@@ -18,7 +18,7 @@ public class AttendanceGetService {
     public List<Attendance> findAllByMeeting(Meeting meeting) {
         return attendanceRepository.findAllByMeeting(meeting);
     }
-    public Attendance findAttendanceId(Long attendanceId) {
+    public Attendance findByAttendanceId(Long attendanceId) {
         return attendanceRepository.findById(attendanceId)
                 .orElseThrow(AttendanceNotFoundException::new);
     }
