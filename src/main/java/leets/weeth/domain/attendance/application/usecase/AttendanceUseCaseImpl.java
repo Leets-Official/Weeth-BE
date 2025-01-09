@@ -77,7 +77,7 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
     public List<AttendanceDTO.AttendanceInfo> findAllAttendanceByMeeting(Long meetingId) {
         Meeting meeting = meetingGetService.find(meetingId);
 
-        List<Attendance> attendances = meetingGetService.getAttendancesByMeeting(meeting);
+        List<Attendance> attendances = attendanceGetService.findAllByMeeting(meeting);
 
         return attendances.stream()
                 .map(mapper::toAttendanceInfoDto)
@@ -104,7 +104,7 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
     @Transactional
     public void updateAttendanceStatus(List<AttendanceDTO.UpdateStatus> attendanceUpdates) {
         attendanceUpdates.forEach(update -> {
-            Attendance attendance = attendanceGetService.findAttendanceId(update.attendanceId());
+            Attendance attendance = attendanceGetService.findByAttendanceId(update.attendanceId());
             User user = attendance.getUser();
 
             if (attendance.getStatus() == Status.ATTEND) {
