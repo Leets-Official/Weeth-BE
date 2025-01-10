@@ -24,7 +24,11 @@ public enum ResponseMessage {
     SOCIAL_REGISTER_SUCCESS("소셜 회원가입에 성공했습니다."),
     SOCIAL_AUTH_SUCCESS("소셜 인증에 성공했습니다."),
     SOCIAL_INTEGRATE_SUCCESS("소셜 로그인 연동에 성공했습니다."),
-    JWT_REFRESH_SUCCESS("토큰 재발급에 성공했습니다.");
+    JWT_REFRESH_SUCCESS("토큰 재발급에 성공했습니다."),
+
+    // CardinalController 관련
+    CARDINAL_FIND_ALL_SUCCESS("전체 기수 조회에 성공했습니다."),
+    CARDINAL_SAVE_SUCCESS("기수 저장에 성공했습니다.");
 
     private final String message;
 }
