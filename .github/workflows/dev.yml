@@ -101,6 +101,19 @@ jobs:
               AFTER_NAME=$BLUE_NAME
               BEFORE_PORT=$GREEN_PORT
               AFTER_PORT=$BLUE_PORT
+            
+            else
+              echo "** 초기 상태: BLUE 컨테이너 실행 준비"
+            
+              # Docker 이미지 pull
+              sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+            
+              sudo docker run --name $BLUE_NAME -d -p $BLUE_PORT:$BLUE_PORT \
+                --env-file ./weeth-dev.env -e TZ=Asia/Seoul ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+              BEFORE_NAME=$GREEN_NAME
+              AFTER_NAME=$BLUE_NAME
+              BEFORE_PORT=$GREEN_PORT
+              AFTER_PORT=$BLUE_PORT
             fi
             
             # 컨테이너 실행 후 대기
