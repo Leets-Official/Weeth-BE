@@ -1,5 +1,6 @@
 package leets.weeth.domain.user.domain.repository;
 
+import leets.weeth.domain.user.domain.entity.Cardinal;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.entity.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,6 +25,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByStatusOrderByName(Status status);
     List<User> findAllByOrderByNameAsc();
 
-    @Query(value = "SELECT * FROM users u WHERE JSON_CONTAINS(u.cardinals, CAST(:cardinal AS JSON), '$')", nativeQuery = true)
-    List<User> findByCardinal(@Param("cardinal") int cardinal);
+    @Query("SELECT uc.user FROM UserCardinal uc WHERE uc.cardinal = :cardinal AND uc.user.status = :status")
+    List<User> findAllByCardinalAndStatus(@Param("cardinal") Cardinal cardinal, @Param("status") Status status);
 }
