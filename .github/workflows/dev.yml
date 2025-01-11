@@ -107,10 +107,18 @@ jobs:
             
             # Health-Check 수행
             echo "** Health-Check 수행 중: ${AFTER_PORT} 포트 확인"
-            for i in {1..10}; do
-              curl -sf "http://localhost:${AFTER_PORT}/actuator/health" && HEALTHY=true && break || HEALTHY=false
-              echo "** Health-Check 실패, 재시도 중... (${i}/10)"
-              sleep 5
+            for i in {1..5}; do
+              RESPONSE=$(curl -sf "http://localhost:${AFTER_PORT}/health-check" || echo "fail")
+              
+              if [[ "$RESPONSE" == "" ]]; then
+                echo "** Health-Check 성공: 서버가 정상적으로 작동 중입니다."
+                HEALTHY=true
+                break
+              else
+                echo "** Health-Check 실패, 재시도 중... (${i}/5)"
+                HEALTHY=false
+                sleep 5
+              fi
             done
             
             # Health-Check 결과 확인
