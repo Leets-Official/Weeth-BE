@@ -64,7 +64,7 @@ jobs:
           key: ${{ secrets.DEV_EC2_SECRET_PEM }}
           envs: GITHUB_SHA
           script: |
-            docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+            sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
             # Blue-Green Deployment 포트 및 컨테이너 이름 설정
             BLUE_PORT=8080
             GREEN_PORT=8081
