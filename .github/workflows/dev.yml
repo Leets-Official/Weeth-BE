@@ -103,6 +103,10 @@ jobs:
               AFTER_PORT=$BLUE_PORT
             fi
             
+            # 컨테이너 실행 후 대기
+            echo "** 컨테이너 초기화 중... 30초 대기"
+            sleep 20
+            
             # Health-Check 수행
             for i in {1..5}; do
               echo "** Health-Check 요청: curl -i -s http://localhost:${AFTER_PORT}/health-check"
