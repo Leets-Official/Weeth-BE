@@ -109,9 +109,9 @@ jobs:
             echo "** ${AFTER_NAME} 컨테이너 실행 완료 (포트: ${AFTER_PORT})"
             sudo docker ps -a
             
-            # 컨테이너 실행 후 대기 시간 추가 (15초)
-            echo "** 컨테이너 초기화 중... 15초 대기"
-            sleep 15
+            # 컨테이너 실행 후 대기
+            echo "** 컨테이너 초기화 중... 30초 대기"
+            sleep 30
             
             # Health-Check 수행
             echo "** Health-Check 수행 중: ${AFTER_PORT} 포트 확인"
@@ -142,7 +142,6 @@ jobs:
             else
               echo "** Health-Check 실패: ${AFTER_NAME} 컨테이너 제거"
               sudo docker stop $AFTER_NAME || true
-              sudo docker rm $AFTER_NAME || true
               echo "** 이전 컨테이너(${BEFORE_NAME})를 유지합니다"
             fi
           
