@@ -109,7 +109,8 @@ jobs:
               sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
             
               sudo docker run --name $BLUE_NAME -d -p $BLUE_PORT:$BLUE_PORT \
-                --env-file ./weeth-dev.env -e TZ=Asia/Seoul ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+                --env-file ./weeth-dev.env -e TZ=Asia/Seoul -e SERVER_PORT=$BLUE_PORT  \
+                ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
               BEFORE_NAME=$GREEN_NAME
               AFTER_NAME=$BLUE_NAME
               BEFORE_PORT=$GREEN_PORT
