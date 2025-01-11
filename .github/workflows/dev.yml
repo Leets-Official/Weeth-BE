@@ -105,14 +105,29 @@ jobs:
               AFTER_PORT=$BLUE_PORT
             fi
             
-            #실행 완료 포트 확인
-            echo "** ${AFTER_NAME} 컨테이너 실행 완료 (포트: ${AFTER_PORT})"
+            # Health-Check 수행
+            echo "** Health-Check 수행 중: ${AFTER_PORT} 포트 확인"
+            for i in {1..10}; do
+              curl -sf "http://localhost:${AFTER_PORT}/actuator/health" && HEALTHY=true && break || HEALTHY=false
+              echo "** Health-Check 실패, 재시도 중... (${i}/10)"
+              sleep 5
+            done
             
-            # 이전 컨테이너 중지 및 삭제
-            echo "** 이전 컨테이너(${BEFORE_NAME}) 종료 및 삭제"
-            sudo docker stop $BEFORE_NAME || true
-            sudo docker rm $BEFORE_NAME || true
-            
+            # Health-Check 결과 확인
+            if [ "$HEALTHY" = true ]; then
+              echo "** Health-Check 성공: ${AFTER_NAME} 컨테이너 정상 작동"
+              
+              # 이전 컨테이너 중지 및 삭제
+              echo "** 이전 컨테이너(${BEFORE_NAME}) 종료 및 삭제"
+              sudo docker stop $BEFORE_NAME || true
+              sudo docker rm $BEFORE_NAME || true
+            else
+              echo "** Health-Check 실패: ${AFTER_NAME} 컨테이너 제거"
+              sudo docker stop $AFTER_NAME || true
+              sudo docker rm $AFTER_NAME || true
+              echo "** 이전 컨테이너(${BEFORE_NAME})를 유지합니다"
+            fi
+          
             # 사용하지 않는 이미지 정리
             echo "** 사용하지 않는 Docker 이미지 정리"
             sudo docker image prune -a -f
