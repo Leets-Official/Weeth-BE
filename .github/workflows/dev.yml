@@ -62,10 +62,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.DEV_EC2_SECRET_PEM }}
           envs: GITHUB_SHA
-          script: |
-            # Docker 이미지 pull
-            sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
-            
+          script: |  
             # Blue-Green Deployment 포트 및 컨테이너 이름 설정
             BLUE_PORT=8080
             GREEN_PORT=8081
@@ -79,6 +76,10 @@ jobs:
             # 실행 중인 컨테이너에 따라 blue/green 컨테이너 실행
             if [ -n "$IS_BLUE_ON" ]; then
               echo "** ${GREEN_PORT} 포트에서 GREEN 컨테이너 실행 준비"
+            
+              # Docker 이미지 pull
+              sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+            
               sudo docker run --name $GREEN_NAME -d -p $GREEN_PORT:$GREEN_PORT \
                 --env-file ./weeth-dev.env -e TZ=Asia/Seoul ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
               BEFORE_NAME=$BLUE_NAME
@@ -88,6 +89,10 @@ jobs:
             
             elif [ -n "$IS_GREEN_ON" ]; then
               echo "** ${BLUE_PORT} 포트에서 BLUE 컨테이너 실행 준비"
+              
+              # Docker 이미지 pull
+              sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+              
               sudo docker run --name $BLUE_NAME -d -p $BLUE_PORT:$BLUE_PORT \
                 --env-file ./weeth-dev.env -e TZ=Asia/Seoul ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
               BEFORE_NAME=$GREEN_NAME
@@ -97,6 +102,10 @@ jobs:
             
             else
               echo "** 초기 상태: BLUE 컨테이너 실행 준비"
+              
+              # Docker 이미지 pull
+              sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+              
               sudo docker run --name $BLUE_NAME -d -p $BLUE_PORT:$BLUE_PORT \
                 --env-file ./weeth-dev.env -e TZ=Asia/Seoul ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
               BEFORE_NAME=$GREEN_NAME
