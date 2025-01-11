@@ -24,9 +24,7 @@ public interface UserUseCase {
 
     UserResponseDto.Response find(Long userId);
 
-    Map<Integer, List<UserResponseDto.Response>> findAll();
-
-    Map<Integer, List<UserResponseDto.SummaryResponse>> findAllUser();
+    List<UserResponseDto.SummaryResponse> findAllUser();
 
     UserResponseDto.UserResponse findUserDetails(Long userId);
 
