@@ -105,12 +105,21 @@ jobs:
               AFTER_PORT=$BLUE_PORT
             fi
             
+            # 실행 완료 포트 확인
+            echo "** ${AFTER_NAME} 컨테이너 실행 완료 (포트: ${AFTER_PORT})"
+            sudo docker ps -a
+            
+            # 컨테이너 실행 후 대기 시간 추가 (15초)
+            echo "** 컨테이너 초기화 중... 15초 대기"
+            sleep 15
+            
             # Health-Check 수행
             echo "** Health-Check 수행 중: ${AFTER_PORT} 포트 확인"
             for i in {1..5}; do
+              echo "** Health-Check 요청: curl -i -s http://localhost:${AFTER_PORT}/health-check"
               RESPONSE=$(curl -i -s "http://localhost:${AFTER_PORT}/health-check" | grep "HTTP/1.1 200" || echo "fail")
-              echo "** Health-Check 응답: $RESPONSE"
               
+              echo "** Health-Check 응답: $RESPONSE"
               if [[ "$RESPONSE" == *"HTTP/1.1 200"* ]]; then
                 echo "** Health-Check 성공: 서버가 정상적으로 작동 중입니다."
                 HEALTHY=true
