@@ -108,9 +108,10 @@ jobs:
             # Health-Check 수행
             echo "** Health-Check 수행 중: ${AFTER_PORT} 포트 확인"
             for i in {1..5}; do
-              RESPONSE=$(curl -sf "http://localhost:${AFTER_PORT}/health-check" || echo "fail")
+              RESPONSE=$(curl -i -s "http://localhost:${AFTER_PORT}/health-check" | grep "HTTP/1.1 200" || echo "fail")
+              echo "** Health-Check 응답: $RESPONSE"
               
-              if [[ "$RESPONSE" == "" ]]; then
+              if [[ "$RESPONSE" == *"HTTP/1.1 200"* ]]; then
                 echo "** Health-Check 성공: 서버가 정상적으로 작동 중입니다."
                 HEALTHY=true
                 break
@@ -120,7 +121,7 @@ jobs:
                 sleep 5
               fi
             done
-            
+
             # Health-Check 결과 확인
             if [ "$HEALTHY" = true ]; then
               echo "** Health-Check 성공: ${AFTER_NAME} 컨테이너 정상 작동"
