@@ -1,5 +1,6 @@
 package leets.weeth.domain.user.domain.service;
 
+import leets.weeth.domain.user.domain.entity.Cardinal;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.entity.enums.Status;
 import leets.weeth.domain.user.domain.repository.UserRepository;
@@ -38,12 +39,12 @@ public class UserGetService {
         return userRepository.findAllByStatusOrderByName(status);
     }
 
-    public List<User> findAllByCardinal(int cardinal) {
-        return userRepository.findByCardinal(cardinal);
-    }
-
     public List<User> findAll() {
         return userRepository.findAllByOrderByNameAsc();
+    }
+
+    public List<User> findAllByCardinal(Cardinal cardinal) {
+        return userRepository.findAllByCardinalAndStatus(cardinal, Status.ACTIVE);
     }
 
     public boolean validateStudentId(String studentId) {
