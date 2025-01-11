@@ -123,7 +123,6 @@ jobs:
             
             # Health-Check 수행
             for i in {1..5}; do
-              echo "** Health-Check 요청: curl -i -s http://localhost:${AFTER_PORT}/health-check"
               RESPONSE=$(curl -i -s "http://localhost:${AFTER_PORT}/health-check" | grep "HTTP/1.1 200" || echo "fail")
               
               echo "** Health-Check 응답: $RESPONSE"
@@ -141,7 +140,22 @@ jobs:
             # Health-Check 결과 확인
             if [ "$HEALTHY" = true ]; then
               echo "** Health-Check 성공: ${AFTER_NAME} 컨테이너 정상 작동"
-              
+            
+              # 리버스 프록시 설정 업데이트
+              echo "** 리버스 프록시 설정 업데이트"
+              sudo tee /etc/caddy/Caddyfile <<EOF
+              {
+                  admin 0.0.0.0:2020
+              }
+              3.38.193.157.nip.io {
+                  reverse_proxy localhost:${AFTER_PORT}
+              }
+              EOF
+            
+              # Caddy 재시작
+              echo "** Caddy 서비스 재시작"
+              sudo systemctl reload caddy
+            
               # 이전 컨테이너 중지 및 삭제
               echo "** 이전 컨테이너(${BEFORE_NAME}) 종료 및 삭제"
               sudo docker stop $BEFORE_NAME || true
