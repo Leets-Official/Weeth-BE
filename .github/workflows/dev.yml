@@ -81,7 +81,8 @@ jobs:
               sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
             
               sudo docker run --name $GREEN_NAME -d -p $GREEN_PORT:$GREEN_PORT \
-                --env-file ./weeth-dev.env -e TZ=Asia/Seoul ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+                --env-file ./weeth-dev.env -e TZ=Asia/Seoul -e SERVER_PORT=$GREEN_PORT \
+                ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
               BEFORE_NAME=$BLUE_NAME
               AFTER_NAME=$GREEN_NAME
               BEFORE_PORT=$BLUE_PORT
@@ -94,20 +95,8 @@ jobs:
               sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
               
               sudo docker run --name $BLUE_NAME -d -p $BLUE_PORT:$BLUE_PORT \
-                --env-file ./weeth-dev.env -e TZ=Asia/Seoul ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
-              BEFORE_NAME=$GREEN_NAME
-              AFTER_NAME=$BLUE_NAME
-              BEFORE_PORT=$GREEN_PORT
-              AFTER_PORT=$BLUE_PORT
-            
-            else
-              echo "** 초기 상태: BLUE 컨테이너 실행 준비"
-              
-              # Docker 이미지 pull
-              sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
-              
-              sudo docker run --name $BLUE_NAME -d -p $BLUE_PORT:$BLUE_PORT \
-                --env-file ./weeth-dev.env -e TZ=Asia/Seoul ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+                --env-file ./weeth-dev.env -e TZ=Asia/Seoul -e SERVER_PORT=$BLUE_PORT \
+                ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
               BEFORE_NAME=$GREEN_NAME
               AFTER_NAME=$BLUE_NAME
               BEFORE_PORT=$GREEN_PORT
@@ -115,7 +104,6 @@ jobs:
             fi
             
             # 실행 완료 포트 확인
-            echo "** ${AFTER_NAME} 컨테이너 실행 완료 (포트: ${AFTER_PORT})"
             sudo docker ps -a
             
             # 컨테이너 실행 후 대기
@@ -123,7 +111,6 @@ jobs:
             sleep 30
             
             # Health-Check 수행
-            echo "** Health-Check 수행 중: ${AFTER_PORT} 포트 확인"
             for i in {1..5}; do
               echo "** Health-Check 요청: curl -i -s http://localhost:${AFTER_PORT}/health-check"
               RESPONSE=$(curl -i -s "http://localhost:${AFTER_PORT}/health-check" | grep "HTTP/1.1 200" || echo "fail")
