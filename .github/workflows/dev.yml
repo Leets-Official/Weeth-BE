@@ -117,8 +117,8 @@ jobs:
             fi
             
             # 컨테이너 실행 후 대기
-            echo "** 컨테이너 초기화 중... 20초 대기"
-            sleep 20
+            echo "** 컨테이너 초기화 중... 30초 대기"
+            sleep 30
             
             # Health-Check 수행
             for i in {1..5}; do
