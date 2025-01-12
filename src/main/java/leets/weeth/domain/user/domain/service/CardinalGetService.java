@@ -1,6 +1,7 @@
 package leets.weeth.domain.user.domain.service;
 
 import leets.weeth.domain.user.application.exception.CardinalNotFoundException;
+import leets.weeth.domain.user.application.exception.DuplicateCardinalException;
 import leets.weeth.domain.user.domain.entity.Cardinal;
 import leets.weeth.domain.user.domain.repository.CardinalRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,8 @@ public class CardinalGetService {
     }
 
     public void validateCardinal(Integer cardinal) {
-        cardinalRepository.findByCardinalNumber(cardinal)
-                .orElseThrow(CardinalNotFoundException::new);
+        if (cardinalRepository.findByCardinalNumber(cardinal).isPresent()) {
+            throw new DuplicateCardinalException();
+        }
     }
 }

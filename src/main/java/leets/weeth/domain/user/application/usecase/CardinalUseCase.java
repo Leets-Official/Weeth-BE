@@ -24,6 +24,8 @@ public class CardinalUseCase {
 
     @Transactional
     public void save(CardinalSaveRequest dto) {
+        cardinalGetService.validateCardinal(dto.cardinalNumber());
+
         cardinalSaveService.save(cardinalMapper.from(dto));
     }
 

@@ -8,6 +8,6 @@ public record CardinalResponse(
         Integer year,
         Integer semester,
         LocalDateTime createdAt,
-        LocalDateTime modified_at
+        LocalDateTime modifiedAt
 ) {
 }
