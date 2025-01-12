@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ResponseMessage {
     // UserAdminController 관련
-    USER_FIND_ALL_SUCCESS("관리자가 모든 회원 정보를 성공적으로 조회했습니다."),
+    USER_FIND_ALL_SUCCESS("모든 회원 정보를 성공적으로 조회했습니다."),
     USER_DETAILS_SUCCESS("특정 회원의 상세 정보를 성공적으로 조회했습니다."),
     USER_ACCEPT_SUCCESS("회원 가입 승인이 성공적으로 처리되었습니다."),
     USER_BAN_SUCCESS("회원이 성공적으로 차단되었습니다."),
