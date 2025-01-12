@@ -3,6 +3,7 @@ package leets.weeth.domain.user.application.usecase;
 import leets.weeth.domain.user.application.dto.request.UserRequestDto;
 import leets.weeth.domain.user.application.dto.response.UserResponseDto;
 import leets.weeth.global.auth.jwt.application.dto.JwtDto;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ public interface UserUseCase {
 
     UserResponseDto.Response find(Long userId);
 
-    List<UserResponseDto.SummaryResponse> findAllUser();
+    Slice<SummaryResponse> findAllUser(int pageNumber, int pageSize);
 
     UserResponseDto.UserResponse findUserDetails(Long userId);
 
