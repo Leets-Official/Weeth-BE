@@ -105,9 +105,9 @@ public class UserUseCaseImpl implements UserUseCase {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Slice<User> users = userGetService.findAll(pageable);
 
-        List<UserCardinal> sliceUserCardinals = userCardinalGetService.findAll(users.getContent());
+        List<UserCardinal> allUserCardinals = userCardinalGetService.findAll(users.getContent());
 
-        Map<Long, List<UserCardinal>> userCardinalMap = sliceUserCardinals.stream()
+        Map<Long, List<UserCardinal>> userCardinalMap = allUserCardinals.stream()
                 .collect(Collectors.groupingBy(userCardinal -> userCardinal.getUser().getId()));
 
         return users.map(user -> {

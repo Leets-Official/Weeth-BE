@@ -35,9 +35,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT uc.user FROM UserCardinal uc WHERE uc.cardinal = :cardinal AND uc.user.status = :status")
     List<User> findAllByCardinalAndStatus(@Param("cardinal") Cardinal cardinal, @Param("status") Status status);
 
-    @Query("SELECT uc.user FROM UserCardinal uc " +
-            "JOIN uc.cardinal c " +
-            "WHERE uc.user.status = :status " +
-            "ORDER BY c.cardinalNumber DESC, uc.user.name ASC")
+    /*
+    todo 차후 리팩토링
+     */
+    @Query("""
+                SELECT u FROM User u
+                JOIN UserCardinal uc ON uc.user.id = u.id
+                JOIN Cardinal c ON c.id = uc.cardinal.id
+                WHERE u.status = :status
+                AND c.cardinalNumber = (
+                    SELECT MAX(subC.cardinalNumber)
+                    FROM Cardinal subC
+                    JOIN UserCardinal subUc ON subUc.cardinal.id = subC.id
+                    WHERE subUc.user.id = u.id
+                )
+                ORDER BY u.name ASC
+            """)
     Slice<User> findAllByStatusOrderedByCardinalAndName(@Param("status") Status status, Pageable pageable);
 }
