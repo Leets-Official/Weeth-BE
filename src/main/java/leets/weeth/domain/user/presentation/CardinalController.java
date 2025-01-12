@@ -18,7 +18,7 @@ import static leets.weeth.domain.user.presentation.ResponseMessage.CARDINAL_SAVE
 @Tag(name = "CARDINAL")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/cardinals")
+@RequestMapping("/api/v1/admin/cardinals")
 public class CardinalController {
 
     private final CardinalUseCase cardinalUseCase;
