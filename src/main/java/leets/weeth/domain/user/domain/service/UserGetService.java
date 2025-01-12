@@ -6,6 +6,8 @@ import leets.weeth.domain.user.domain.entity.enums.Status;
 import leets.weeth.domain.user.domain.repository.UserRepository;
 import leets.weeth.domain.user.application.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,6 +47,10 @@ public class UserGetService {
 
     public List<User> findAllByCardinal(Cardinal cardinal) {
         return userRepository.findAllByCardinalAndStatus(cardinal, Status.ACTIVE);
+    }
+
+    public Slice<User> findAll(Pageable pageable) {
+        return userRepository.findAllByStatusOrderedByCardinalAndName(Status.ACTIVE, pageable);
     }
 
     public boolean validateStudentId(String studentId) {
