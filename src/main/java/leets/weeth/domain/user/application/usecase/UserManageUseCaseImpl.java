@@ -51,7 +51,10 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
         if (orderBy.equals(NAME_ASCENDING)) {
             return userGetService.findAll().stream()
                     .sorted(Comparator.comparingInt((user -> (StatusPriority.fromStatus(user.getStatus())).getPriority())))
-                    .map(mapper::toAdminResponse)
+                    .map(user -> {
+                        List<UserCardinal> userCardinals = userCardinalGetService.getUserCardinals(user);
+                        return mapper.toAdminResponse(user, userCardinals);
+                    })
                     .toList();
         }
         // To do : 추후 기수 분리 후 작업 예정
