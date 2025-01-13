@@ -139,6 +139,7 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     @Override
+    @Transactional
     public void apply(SignUp dto) {
         validate(dto);
 
