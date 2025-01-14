@@ -25,6 +25,8 @@ public interface PostMapper {
 
     @Mappings({
             @Mapping(target = "name", source = "post.user.name"),
+            @Mapping(target = "position", source = "post.user.position"),
+            @Mapping(target = "role", source = "post.user.role"),
             @Mapping(target = "time", source = "post.modifiedAt"),
             @Mapping(target = "hasFile", expression = "java(fileExists)")
     })
@@ -33,6 +35,8 @@ public interface PostMapper {
 
     @Mappings({
             @Mapping(target = "name", source = "post.user.name"),
+            @Mapping(target = "position", source = "post.user.position"),
+            @Mapping(target = "role", source = "post.user.role"),
             @Mapping(target = "comments", expression = "java(filterParentComments(post.getComments()))"),
             @Mapping(target = "time", source = "post.modifiedAt")
     })

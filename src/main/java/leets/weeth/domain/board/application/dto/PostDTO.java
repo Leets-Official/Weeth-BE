@@ -6,6 +6,8 @@ import leets.weeth.domain.comment.application.dto.CommentDTO;
 import leets.weeth.domain.file.application.dto.request.FileSaveRequest;
 import leets.weeth.domain.file.application.dto.request.FileUpdateRequest;
 import leets.weeth.domain.file.application.dto.response.FileResponse;
+import leets.weeth.domain.user.domain.entity.enums.Position;
+import leets.weeth.domain.user.domain.entity.enums.Role;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -31,6 +33,8 @@ public class PostDTO {
     public record Response(
             Long id,
             String name,
+            Position position,
+            Role role,
             String title,
             String content,
             LocalDateTime time,//modifiedAt
@@ -43,6 +47,8 @@ public class PostDTO {
     public record ResponseAll(
             Long id,
             String name,
+            Position position,
+            Role role,
             String title,
             String content,
             LocalDateTime time,//modifiedAt
