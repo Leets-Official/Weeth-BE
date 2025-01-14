@@ -8,6 +8,8 @@ import leets.weeth.domain.board.domain.service.PostDeleteService;
 import leets.weeth.domain.board.domain.service.PostFindService;
 import leets.weeth.domain.board.domain.service.PostSaveService;
 import leets.weeth.domain.board.domain.service.PostUpdateService;
+import leets.weeth.domain.comment.application.dto.CommentDTO;
+import leets.weeth.domain.comment.domain.entity.Comment;
 import leets.weeth.domain.file.application.dto.response.FileResponse;
 import leets.weeth.domain.file.application.mapper.FileMapper;
 import leets.weeth.domain.file.domain.entity.File;
@@ -23,7 +25,9 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +68,8 @@ public class PostUseCaseImpl implements PostUsecase {
                 .map(fileMapper::toFileResponse)
                 .toList();
 
-        return mapper.toPostDto(post, response);
+
+        return mapper.toPostDto(post, response, filterParentComments(post.getComments()));
     }
 
     @Override
@@ -118,6 +123,40 @@ public class PostUseCaseImpl implements PostUsecase {
 
     public boolean checkFileExistsByPost(Long postId){
         return !fileGetService.findAllByPost(postId).isEmpty();
+    }
+
+    private List<CommentDTO.Response> filterParentComments(List<Comment> comments) {
+        if (comments == null || comments.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // 부모 댓글만 필터링하고, 각 부모 댓글에 대해 자식 댓글을 매핑
+        return comments.stream()
+            .filter(comment -> comment.getParent() == null) // 부모 댓글만 필터링
+            .map(this::mapCommentWithChildren) // 자식 댓글 포함하여 매핑
+            .toList();
+    }
+
+    private CommentDTO.Response mapCommentWithChildren(Comment comment) {
+        if (comment == null) {
+            return null;
+        }
+
+        // 기본 댓글 정보 매핑
+        CommentDTO.Response.ResponseBuilder response = CommentDTO.Response.builder();
+
+        response.name(comment.getUser().getName());
+        response.time(comment.getModifiedAt());
+        response.id(comment.getId());
+        response.content(comment.getContent());
+
+        // 자식 댓글들을 재귀적으로 매핑하여 children 필드에 설정
+        List<CommentDTO.Response> childrenResponses = comment.getChildren().stream()
+            .map(this::mapCommentWithChildren) // 자식 댓글도 동일하게 처리
+            .collect(Collectors.toList());
+        response.children(childrenResponses);
+
+        return response.build();
     }
 
 }
