@@ -12,6 +12,7 @@ public class AttendanceDTO {
     public record Main(
             Integer attendanceRate,
             String title,
+            Status status,
             LocalDateTime start,
             LocalDateTime end,
             String location
