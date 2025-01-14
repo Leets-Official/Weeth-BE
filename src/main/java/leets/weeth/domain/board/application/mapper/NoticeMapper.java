@@ -25,6 +25,8 @@ public interface NoticeMapper {
 
     @Mappings({
             @Mapping(target = "name", source = "notice.user.name"),
+            @Mapping(target = "position", source = "notice.user.position"),
+            @Mapping(target = "role", source = "notice.user.role"),
             @Mapping(target = "time", source = "notice.modifiedAt"),
             @Mapping(target = "hasFile", expression = "java(fileExists)")
     })
@@ -32,6 +34,8 @@ public interface NoticeMapper {
 
     @Mappings({
             @Mapping(target = "name", source = "notice.user.name"),
+            @Mapping(target = "position", source = "notice.user.position"),
+            @Mapping(target = "role", source = "notice.user.role"),
             @Mapping(target = "comments", expression = "java(filterParentComments(notice.getComments()))"),
             @Mapping(target = "time", source = "notice.modifiedAt")
     })
