@@ -121,7 +121,7 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
         return notice;
     }
 
-    public boolean checkFileExistsByNotice(Long noticeId){
+    private boolean checkFileExistsByNotice(Long noticeId){
         return !fileGetService.findAllByNotice(noticeId).isEmpty();
     }
 
