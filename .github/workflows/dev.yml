@@ -63,18 +63,114 @@ jobs:
           username: ubuntu
           key: ${{ secrets.DEV_EC2_SECRET_PEM }}
           envs: GITHUB_SHA
-          script: |
-            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=running")
-            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
-              sudo docker stop $EXISTING_CONTAINER_ID
-              sudo docker rm $EXISTING_CONTAINER_ID
+          script: |  
+            # Blue-Green Deployment 포트 및 컨테이너 이름 설정
+            BLUE_PORT=8080
+            GREEN_PORT=8081
+            BLUE_NAME="blue"
+            GREEN_NAME="green"
+            
+            # 현재 실행 중인 컨테이너 확인
+            IS_BLUE_ON=$(sudo docker ps --filter "name=$BLUE_NAME" --filter "status=running" -q)
+            IS_GREEN_ON=$(sudo docker ps --filter "name=$GREEN_NAME" --filter "status=running" -q)
+            
+            # 실행 중인 컨테이너에 따라 blue/green 컨테이너 실행
+            if [ -n "$IS_BLUE_ON" ]; then
+              echo "** ${GREEN_PORT} 포트에서 GREEN 컨테이너 실행 준비"
+            
+              # Docker 이미지 pull
+              sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+            
+              sudo docker run --name $GREEN_NAME -d -p $GREEN_PORT:$GREEN_PORT \
+                --env-file ./weeth-dev.env -e TZ=Asia/Seoul -e SERVER_PORT=$GREEN_PORT \
+                ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+              BEFORE_NAME=$BLUE_NAME
+              AFTER_NAME=$GREEN_NAME
+              BEFORE_PORT=$BLUE_PORT
+              AFTER_PORT=$GREEN_PORT
+            
+            elif [ -n "$IS_GREEN_ON" ]; then
+              echo "** ${BLUE_PORT} 포트에서 BLUE 컨테이너 실행 준비"
+              
+              # Docker 이미지 pull
+              sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+              
+              sudo docker run --name $BLUE_NAME -d -p $BLUE_PORT:$BLUE_PORT \
+                --env-file ./weeth-dev.env -e TZ=Asia/Seoul -e SERVER_PORT=$BLUE_PORT \
+                ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+              BEFORE_NAME=$GREEN_NAME
+              AFTER_NAME=$BLUE_NAME
+              BEFORE_PORT=$GREEN_PORT
+              AFTER_PORT=$BLUE_PORT
+            
+            else
+              echo "** 초기 상태: BLUE 컨테이너 실행 준비"
+            
+              # Docker 이미지 pull
+              sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+            
+              sudo docker run --name $BLUE_NAME -d -p $BLUE_PORT:$BLUE_PORT \
+                --env-file ./weeth-dev.env -e TZ=Asia/Seoul -e SERVER_PORT=$BLUE_PORT  \
+                ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+              BEFORE_NAME=$GREEN_NAME
+              AFTER_NAME=$BLUE_NAME
+              BEFORE_PORT=$GREEN_PORT
+              AFTER_PORT=$BLUE_PORT
             fi
             
-            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "status=exited")
-            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
-              sudo docker rm $EXISTING_CONTAINER_ID
+            # 컨테이너 실행 후 대기
+            echo "** 컨테이너 초기화 중... 30초 대기"
+            sleep 30
+            
+            # Health-Check 수행
+            for i in {1..5}; do
+              RESPONSE=$(curl -i -s "http://localhost:${AFTER_PORT}/health-check" | grep "HTTP/1.1 200" || echo "fail")
+              
+              echo "** Health-Check 응답: $RESPONSE"
+              if [[ "$RESPONSE" == *"HTTP/1.1 200"* ]]; then
+                echo "** Health-Check 성공: 서버가 정상적으로 작동 중입니다."
+                HEALTHY=true
+                break
+              else
+                echo "** Health-Check 실패, 재시도 중... (${i}/5)"
+                HEALTHY=false
+                sleep 5
+              fi
+            done
+            
+            # 리버스 프록시 설정 업데이트
+            REVERSE_PROXY_CONFIG=$(cat <<EOF
+            {
+              admin 0.0.0.0:2020
+            }
+            3.38.193.157.nip.io {
+              reverse_proxy localhost:${AFTER_PORT}
+            }
+            EOF
+            )
+            
+            # Health-Check 결과 확인
+            if [ "$HEALTHY" = true ]; then
+              echo "** Health-Check 성공: ${AFTER_NAME} 컨테이너 정상 작동"
+              
+              # 리버스 프록시 설정 업데이트
+              echo "$REVERSE_PROXY_CONFIG" | sudo tee /etc/caddy/Caddyfile
+            
+              # Caddy 재시작
+              echo "** Caddy 서비스 재시작"
+              sudo systemctl reload caddy
+            
+              # 이전 컨테이너 중지 및 삭제
+              echo "** 이전 컨테이너(${BEFORE_NAME}) 종료 및 삭제"
+              sudo docker stop $BEFORE_NAME || true
+              sudo docker rm $BEFORE_NAME || true
+            else
+              echo "** Health-Check 실패: ${AFTER_NAME} 컨테이너 제거"
+              sudo docker stop $AFTER_NAME || true
+              sudo docker rm $AFTER_NAME || true
+              echo "** 이전 컨테이너(${BEFORE_NAME})를 유지합니다"
             fi
-
-            sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
-            sudo docker run --name spring -d -p 8080:8080 --env-file ./weeth-dev.env -e TZ=Asia/Seoul ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+          
+            # 사용하지 않는 이미지 정리
+            echo "** 사용하지 않는 Docker 이미지 정리"
             sudo docker image prune -a -f
