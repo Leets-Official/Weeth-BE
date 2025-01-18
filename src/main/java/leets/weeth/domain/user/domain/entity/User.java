@@ -2,9 +2,6 @@ package leets.weeth.domain.user.domain.entity;
 
 import jakarta.persistence.*;
 import leets.weeth.domain.attendance.domain.entity.Attendance;
-import leets.weeth.domain.penalty.domain.entity.Penalty;
-import leets.weeth.domain.user.application.converter.CardinalListConverter;
-import leets.weeth.domain.user.application.exception.CardinalNotFoundException;
 import leets.weeth.domain.user.domain.entity.enums.Department;
 import leets.weeth.domain.user.domain.entity.enums.Position;
 import leets.weeth.domain.user.domain.entity.enums.Role;
@@ -20,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import static leets.weeth.domain.user.application.dto.request.UserRequestDto.Register;
 import static leets.weeth.domain.user.application.dto.request.UserRequestDto.Update;
 
 @Entity
@@ -54,12 +50,6 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Department department;
 
-    /*
-    todo 차후 기수가 많아지면 관리가 어려울 수 있음
-     */
-    @Convert(converter = CardinalListConverter.class)
-    private List<Integer> cardinals;
-
     @Enumerated(EnumType.STRING)
     private Status status;
 
@@ -76,9 +66,6 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Attendance> attendances = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Penalty> penalties = new ArrayList<>();
 
     @PrePersist
     public void init() {
@@ -98,10 +85,6 @@ public class User extends BaseEntity {
         this.status = Status.LEFT;
     }
 
-    public void applyOB(Integer cardinal) {
-        this.cardinals.add(cardinal);
-    }
-
     /*
     todo 차후 일반 로그인 비활성화시 해당 메서드에서 예외를 날리도록 수정
      */
@@ -118,15 +101,6 @@ public class User extends BaseEntity {
         this.department = Department.to(dto.department());
     }
 
-    public void update(Register dto) {
-        this.name = dto.name();
-        this.studentId = dto.studentId();
-        this.tel = dto.tel();
-        this.department = Department.to(dto.department());
-        this.cardinals = List.of(dto.cardinal());
-        this.position = Position.valueOf(dto.position());
-    }
-
     public void accept() {
         this.status = Status.ACTIVE;
     }
@@ -139,20 +113,12 @@ public class User extends BaseEntity {
         this.role = Role.valueOf(role);
     }
 
-    public boolean notContains(Integer cardinal) {
-        return !this.cardinals.contains(cardinal);
-    }
-
     public void reset(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(studentId);
     }
 
     public void add(Attendance attendance) {
         this.attendances.add(attendance);
-    }
-
-    public void addPenalty(Penalty penalty) {
-        this.penalties.add(penalty);
     }
 
     public void initAttendance() {
@@ -162,20 +128,13 @@ public class User extends BaseEntity {
         this.attendanceRate = 0;
     }
 
-    public boolean isCurrent(Integer cardinal) {
-        Integer max = this.cardinals.stream().max(Integer::compareTo)
-                .orElseThrow(CardinalNotFoundException::new);
-
-        return max < cardinal;
-    }
-
     public void attend() {
         attendanceCount++;
         calculateRate();
     }
 
     public void removeAttend() {
-        if(attendanceCount > 0) {
+        if (attendanceCount > 0) {
             attendanceCount--;
             calculateRate();
         }
@@ -187,7 +146,7 @@ public class User extends BaseEntity {
     }
 
     public void removeAbsent() {
-        if(absenceCount > 0) {
+        if (absenceCount > 0) {
             absenceCount--;
             calculateRate();
         }

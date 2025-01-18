@@ -63,6 +63,9 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
         return mapper.toMainDto(user, todayMeeting);
     }
 
+    /*
+    todo 출석 끝난 후 다음 기수 진행 시 다음 기수의 출석 정보만 나오는지 확인 필요
+     */
     @Override
     public AttendanceDTO.Detail findAll(Long userId) {
         User user = userGetService.find(userId);

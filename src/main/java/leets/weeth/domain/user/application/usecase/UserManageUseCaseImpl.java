@@ -6,12 +6,12 @@ import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.schedule.domain.service.MeetingGetService;
 import leets.weeth.domain.user.application.exception.InvalidUserOrderException;
 import leets.weeth.domain.user.application.mapper.UserMapper;
+import leets.weeth.domain.user.domain.entity.Cardinal;
 import leets.weeth.domain.user.domain.entity.User;
+import leets.weeth.domain.user.domain.entity.UserCardinal;
 import leets.weeth.domain.user.domain.entity.enums.StatusPriority;
 import leets.weeth.domain.user.domain.entity.enums.UsersOrderBy;
-import leets.weeth.domain.user.domain.service.UserDeleteService;
-import leets.weeth.domain.user.domain.service.UserGetService;
-import leets.weeth.domain.user.domain.service.UserUpdateService;
+import leets.weeth.domain.user.domain.service.*;
 import leets.weeth.global.auth.jwt.service.JwtRedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,10 +20,9 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static leets.weeth.domain.user.application.dto.response.UserResponseDto.AdminResponse;
-import static leets.weeth.domain.user.domain.entity.enums.UsersOrderBy.*;
+import static leets.weeth.domain.user.domain.entity.enums.UsersOrderBy.NAME_ASCENDING;
 
 @Service
 @RequiredArgsConstructor
@@ -36,21 +35,27 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
     private final AttendanceSaveService attendanceSaveService;
     private final MeetingGetService meetingGetService;
     private final JwtRedisService jwtRedisService;
+    private final CardinalGetService cardinalGetService;
+    private final UserCardinalSaveService userCardinalSaveService;
+    private final UserCardinalGetService userCardinalGetService;
 
     private final UserMapper mapper;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<AdminResponse> findAllByAdmin(UsersOrderBy orderBy) {
-        if(orderBy == null || !EnumSet.allOf(UsersOrderBy.class).contains(orderBy)){
+        if (orderBy == null || !EnumSet.allOf(UsersOrderBy.class).contains(orderBy)) {
             throw new InvalidUserOrderException();
         }
 
-        if(orderBy.equals(NAME_ASCENDING)){
+        if (orderBy.equals(NAME_ASCENDING)) {
             return userGetService.findAll().stream()
-                .sorted(Comparator.comparingInt((user->(StatusPriority.fromStatus(user.getStatus())).getPriority())))
-                .map(mapper::toAdminResponse)
-                .toList();
+                    .sorted(Comparator.comparingInt((user -> (StatusPriority.fromStatus(user.getStatus())).getPriority())))
+                    .map(user -> {
+                        List<UserCardinal> userCardinals = userCardinalGetService.getUserCardinals(user);
+                        return mapper.toAdminResponse(user, userCardinals);
+                    })
+                    .toList();
         }
         // To do : 추후 기수 분리 후 작업 예정
 
@@ -62,9 +67,11 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
     public void accept(Long userId) {
         User user = userGetService.find(userId);
 
+        Integer cardinal = userCardinalGetService.getCurrentCardinal(user).getCardinalNumber();
+
         if (user.isInactive()) {
             userUpdateService.accept(user);
-            List<Meeting> meetings = meetingGetService.find(user.getCardinals().get(0));
+            List<Meeting> meetings = meetingGetService.find(cardinal);
             attendanceSaveService.init(user, meetings);
         }
     }
@@ -95,15 +102,17 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
     @Transactional
     public void applyOB(Long userId, Integer cardinal) {
         User user = userGetService.find(userId);
+        Cardinal nextCardinal = cardinalGetService.find(cardinal);
 
-        if (user.notContains(cardinal)) {
-            if (user.isCurrent(cardinal)) {
+        if (userCardinalGetService.notContains(user, nextCardinal)) {
+            if (userCardinalGetService.isCurrent(user, nextCardinal)) {
                 user.initAttendance();
                 List<Meeting> meetings = meetingGetService.find(cardinal);
                 attendanceSaveService.init(user, meetings);
             }
+            UserCardinal userCardinal = new UserCardinal(user, nextCardinal);
 
-            userUpdateService.applyOB(user, cardinal);
+            userCardinalSaveService.save(userCardinal);
         }
     }
 

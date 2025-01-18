@@ -1,10 +1,13 @@
 package leets.weeth.domain.user.domain.service;
 
+import leets.weeth.domain.user.domain.entity.Cardinal;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.entity.enums.Status;
 import leets.weeth.domain.user.domain.repository.UserRepository;
 import leets.weeth.domain.user.application.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,12 +41,16 @@ public class UserGetService {
         return userRepository.findAllByStatusOrderByName(status);
     }
 
-    public List<User> findAllByCardinal(int cardinal) {
-        return userRepository.findByCardinal(cardinal);
-    }
-
     public List<User> findAll() {
         return userRepository.findAllByOrderByNameAsc();
+    }
+
+    public List<User> findAllByCardinal(Cardinal cardinal) {
+        return userRepository.findAllByCardinalAndStatus(cardinal, Status.ACTIVE);
+    }
+
+    public Slice<User> findAll(Pageable pageable) {
+        return userRepository.findAllByStatusOrderedByCardinalAndName(Status.ACTIVE, pageable);
     }
 
     public boolean validateStudentId(String studentId) {
