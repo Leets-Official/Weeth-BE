@@ -36,7 +36,9 @@ public interface CommentMapper {
     })
     Comment fromCommentDto(CommentDTO.Save dto, Notice notice, User user, Comment parent);
 
-    @Mapping(target = "name", source = "user.name")
+    @Mapping(target = "name", source = "comment.user.name")
+    @Mapping(target = "position", source = "comment.user.position")
+    @Mapping(target = "role", source = "comment.user.role")
     @Mapping(target = "time", source = "modifiedAt")
     CommentDTO.Response toCommentDto(Comment comment);
 }
