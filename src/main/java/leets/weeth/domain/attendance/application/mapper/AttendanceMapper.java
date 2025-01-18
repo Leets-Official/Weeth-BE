@@ -13,6 +13,7 @@ public interface AttendanceMapper {
     @Mappings({
             @Mapping(target = "attendanceRate", source = "user.attendanceRate"),
             @Mapping(target = "title", source = "attendance.meeting.title"),
+            @Mapping(target = "status", source = "attendance.status"),
             @Mapping(target = "start", source = "attendance.meeting.start"),
             @Mapping(target = "end", source = "attendance.meeting.end"),
             @Mapping(target = "location", source = "attendance.meeting.location"),
