@@ -14,6 +14,7 @@ import leets.weeth.global.auth.annotation.CurrentUser;
 import leets.weeth.global.auth.jwt.application.dto.JwtDto;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -76,8 +77,9 @@ public class UserController {
 
     @GetMapping("/all")
     @Operation(summary = "동아리 멤버 전체 조회(전체/기수별)")
-    public CommonResponse<Map<Integer, List<SummaryResponse>>> findAllUser() {
-        return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(), userUseCase.findAllUser());
+    public CommonResponse<Slice<SummaryResponse>> findAllUser(@RequestParam("pageNumber") int pageNumber,
+                                                              @RequestParam("pageSize") int pageSize) {
+        return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(), userUseCase.findAllUser(pageNumber, pageSize));
     }
 
     @GetMapping("/details")

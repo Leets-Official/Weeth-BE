@@ -11,7 +11,10 @@ import leets.weeth.domain.schedule.domain.service.MeetingDeleteService;
 import leets.weeth.domain.schedule.domain.service.MeetingGetService;
 import leets.weeth.domain.schedule.domain.service.MeetingSaveService;
 import leets.weeth.domain.schedule.domain.service.MeetingUpdateService;
+import leets.weeth.domain.user.domain.entity.Cardinal;
 import leets.weeth.domain.user.domain.entity.User;
+import leets.weeth.domain.user.domain.service.CardinalGetService;
+import leets.weeth.domain.user.domain.service.UserCardinalGetService;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +40,7 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
     private final AttendanceSaveService attendanceSaveService;
     private final AttendanceDeleteService attendanceDeleteService;
     private final AttendanceUpdateService attendanceUpdateService;
+    private final CardinalGetService cardinalGetService;
 
     @Override
     public Response find(Long meetingId) {
@@ -47,7 +51,9 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
     @Transactional
     public void save(Save dto, Long userId) {
         User user = userGetService.find(userId);
-        List<User> userList = userGetService.findAllByCardinal(dto.cardinal());
+        Cardinal cardinal = cardinalGetService.find(dto.cardinal());
+
+        List<User> userList = userGetService.findAllByCardinal(cardinal);
 
         Meeting meeting = mapper.from(dto, user);
         meetingSaveService.save(meeting);
