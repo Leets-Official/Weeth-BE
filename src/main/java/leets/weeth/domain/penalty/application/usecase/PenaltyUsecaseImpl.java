@@ -37,7 +37,6 @@ public class PenaltyUsecaseImpl implements PenaltyUsecase{
 
         penaltySaveService.save(penalty);
 
-        user.addPenalty(penalty);
         user.incrementPenaltyCount();
     }
 

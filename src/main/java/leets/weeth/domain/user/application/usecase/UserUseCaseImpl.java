@@ -1,15 +1,17 @@
 package leets.weeth.domain.user.application.usecase;
 
+import leets.weeth.domain.user.application.dto.response.UserCardinalDto;
 import leets.weeth.domain.user.application.dto.response.UserResponseDto;
 import leets.weeth.domain.user.application.exception.PasswordMismatchException;
 import leets.weeth.domain.user.application.exception.StudentIdExistsException;
 import leets.weeth.domain.user.application.exception.TelExistsException;
 import leets.weeth.domain.user.application.exception.UserInActiveException;
+import leets.weeth.domain.user.application.mapper.CardinalMapper;
 import leets.weeth.domain.user.application.mapper.UserMapper;
+import leets.weeth.domain.user.domain.entity.Cardinal;
 import leets.weeth.domain.user.domain.entity.User;
-import leets.weeth.domain.user.domain.service.UserGetService;
-import leets.weeth.domain.user.domain.service.UserSaveService;
-import leets.weeth.domain.user.domain.service.UserUpdateService;
+import leets.weeth.domain.user.domain.entity.UserCardinal;
+import leets.weeth.domain.user.domain.service.*;
 import leets.weeth.global.auth.jwt.application.dto.JwtDto;
 import leets.weeth.global.auth.jwt.application.usecase.JwtManageUseCase;
 import leets.weeth.global.auth.kakao.KakaoAuthService;
@@ -17,21 +19,22 @@ import leets.weeth.global.auth.kakao.dto.KakaoTokenResponse;
 import leets.weeth.global.auth.kakao.dto.KakaoUserInfoResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static leets.weeth.domain.user.application.dto.request.UserRequestDto.*;
 import static leets.weeth.domain.user.application.dto.response.UserResponseDto.SocialAuthResponse;
 import static leets.weeth.domain.user.application.dto.response.UserResponseDto.SocialLoginResponse;
-import static leets.weeth.domain.user.domain.entity.enums.Status.ACTIVE;
 
 @Slf4j
 @Service
@@ -43,8 +46,12 @@ public class UserUseCaseImpl implements UserUseCase {
     private final UserGetService userGetService;
     private final UserUpdateService userUpdateService;
     private final KakaoAuthService kakaoAuthService;
+    private final CardinalGetService cardinalGetService;
+    private final UserCardinalSaveService userCardinalSaveService;
+    private final UserCardinalGetService userCardinalGetService;
 
     private final UserMapper mapper;
+    private final CardinalMapper cardinalMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -93,40 +100,35 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     @Override
-    public Map<Integer, List<UserResponseDto.Response>> findAll() {
-        return userGetService.findAllByStatus(ACTIVE).stream()
-                .flatMap(user -> Stream.concat(
-                        user.getCardinals().stream()
-                                .map(cardinal -> new AbstractMap.SimpleEntry<>(cardinal, mapper.to(user))), // 기수별 Map
-                        Stream.of(new AbstractMap.SimpleEntry<>(0, mapper.to(user)))    // 모든 기수는 cardinal 0에 저장
-                ))
-                .collect(Collectors.groupingBy(Map.Entry::getKey,   // key = 기수, value = 유저 정보
-                        Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
-    }
+    public Slice<UserResponseDto.SummaryResponse> findAllUser(int pageNumber, int pageSize) {
 
-    @Override
-    public Map<Integer, List<UserResponseDto.SummaryResponse>> findAllUser() {
-        return userGetService.findAllByStatus(ACTIVE).stream()
-                .map(user -> new AbstractMap.SimpleEntry<>(user.getCardinals(), mapper.toSummaryResponse(user)))
-                .flatMap(entry -> Stream.concat(
-                        entry.getKey().stream().map(cardinal -> new AbstractMap.SimpleEntry<>(cardinal, entry.getValue())), // 기수별 Map
-                        Stream.of(new AbstractMap.SimpleEntry<>(0, entry.getValue())) // 모든 기수는 cardinal 0에 저장
-                ))
-                .collect(Collectors.groupingBy(
-                        Map.Entry::getKey, // key = 기수
-                        Collectors.mapping(Map.Entry::getValue, Collectors.toList()) // value = 요약 정보 리스트
-                ));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Slice<User> users = userGetService.findAll(pageable);
+
+        List<UserCardinal> allUserCardinals = userCardinalGetService.findAll(users.getContent());
+
+        Map<Long, List<UserCardinal>> userCardinalMap = allUserCardinals.stream()
+                .collect(Collectors.groupingBy(userCardinal -> userCardinal.getUser().getId()));
+
+        return users.map(user -> {
+            List<UserCardinal> userCardinals = userCardinalMap.getOrDefault(user.getId(), Collections.emptyList());
+
+            return mapper.toSummaryResponse(user, userCardinals);
+        });
     }
 
     @Override
     public UserResponseDto.UserResponse findUserDetails(Long userId) {
-        User user = userGetService.find(userId);
-        return mapper.toUserResponse(user);
+        UserCardinalDto dto = getUserCardinalDto(userId);
+
+        return mapper.toUserResponse(dto.user(), dto.cardinals());
     }
 
     @Override
     public UserResponseDto.Response find(Long userId) {
-        return mapper.to(userGetService.find(userId));
+        UserCardinalDto dto = getUserCardinalDto(userId);
+
+        return mapper.to(dto.user(), dto.cardinals());
     }
 
     @Override
@@ -137,16 +139,30 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     @Override
+    @Transactional
     public void apply(SignUp dto) {
         validate(dto);
-        userSaveService.save(mapper.from(dto, passwordEncoder));
+
+        Cardinal cardinal = cardinalGetService.find(dto.cardinal());
+        User user = mapper.from(dto, passwordEncoder);
+        UserCardinal userCardinal = new UserCardinal(user, cardinal);
+
+        userSaveService.save(user);
+        userCardinalSaveService.save(userCardinal);
     }
 
     @Override
     @Transactional
     public void socialRegister(Register dto) {
         validate(dto);
-        userSaveService.save(mapper.from(dto));
+
+        Cardinal cardinal = cardinalGetService.find(dto.cardinal());
+
+        User user = mapper.from(dto);
+        UserCardinal userCardinal = new UserCardinal(user, cardinal);
+
+        userSaveService.save(user);
+        userCardinalSaveService.save(userCardinal);
     }
 
     @Override
@@ -163,10 +179,11 @@ public class UserUseCaseImpl implements UserUseCase {
 
     @Override
     public UserResponseDto.UserInfo findUserInfo(Long userId) {
-        User user = userGetService.find(userId);
+        UserCardinalDto dto = getUserCardinalDto(userId);
 
-        return mapper.toUserInfoDto(user);
+        return mapper.toUserInfoDto(dto.user(), dto.cardinals());
     }
+
     private long getKakaoId(Login dto) {
         KakaoTokenResponse tokenResponse = kakaoAuthService.getKakaoToken(dto.authCode());
         KakaoUserInfoResponse userInfo = kakaoAuthService.getUserInfo(tokenResponse.access_token());
@@ -195,5 +212,12 @@ public class UserUseCaseImpl implements UserUseCase {
         if (userGetService.validateTel(dto.tel())) {
             throw new TelExistsException();
         }
+    }
+
+    private UserCardinalDto getUserCardinalDto(Long userId) {
+        User user = userGetService.find(userId);
+        List<UserCardinal> userCardinals = userCardinalGetService.getUserCardinals(user);
+
+        return cardinalMapper.toUserCardinalDto(user, userCardinals);
     }
 }
