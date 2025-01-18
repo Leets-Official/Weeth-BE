@@ -11,26 +11,32 @@ import java.util.List;
 public class ReceiptDTO {
 
     public record Response(
-        Long id,
-        String description,
-        Integer amount,
-        LocalDate date,
-        List<FileResponse> fileUrls
-    ) {}
+            Long id,
+            String description,
+            String source,
+            Integer amount,
+            LocalDate date,
+            List<FileResponse> fileUrls
+    ) {
+    }
 
     public record Save(
             String description,
+            String source,
             @NotNull Integer amount,
             @NotNull LocalDate date,
             @NotNull Integer cardinal,
             @Valid List<@NotNull FileSaveRequest> files
-    ) {}
+    ) {
+    }
 
     public record Update(
             String description,
+            String source,
             @NotNull Integer amount,
             @NotNull LocalDate date,
             @NotNull Integer cardinal,
             @Valid List<@NotNull FileSaveRequest> files
-    ) {}
+    ) {
+    }
 }

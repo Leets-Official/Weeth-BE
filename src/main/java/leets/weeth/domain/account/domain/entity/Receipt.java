@@ -27,6 +27,8 @@ public class Receipt extends BaseEntity {
 
     private String description;
 
+    private String source;
+
     private Integer amount;
 
     private LocalDate date;
@@ -37,6 +39,7 @@ public class Receipt extends BaseEntity {
 
     public void update(ReceiptDTO.Update dto){
         this.description = dto.description();
+        this.source = dto.source();
         this.amount = dto.amount();
         this.date = dto.date();
     }
