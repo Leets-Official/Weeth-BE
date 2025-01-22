@@ -22,7 +22,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import static leets.weeth.domain.user.application.dto.response.UserResponseDto.AdminResponse;
-import static leets.weeth.domain.user.domain.entity.enums.UsersOrderBy.NAME_ASCENDING;
+import static leets.weeth.domain.user.domain.entity.enums.UsersOrderBy.*;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +57,20 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
                     })
                     .toList();
         }
-        // To do : 추후 기수 분리 후 작업 예정
+        if (orderBy.equals(CARDINAL_DESCENDING)){
+            return userGetService.findAll().stream()
+                .sorted(Comparator.comparingInt((user -> (StatusPriority.fromStatus(user.getStatus())).getPriority())))
+                .map(user -> {
+                    List<UserCardinal> userCardinals = userCardinalGetService.getUserCardinals(user);
+                    return mapper.toAdminResponse(user, userCardinals);
+                })
+                .sorted((adminResponse1, adminResponse2) -> {
+                    Integer maxCardinal1 = adminResponse1.cardinals().stream().max(Integer::compareTo).orElse(0);
+                    Integer maxCardinal2 = adminResponse2.cardinals().stream().max(Integer::compareTo).orElse(0);
+                    return maxCardinal2.compareTo(maxCardinal1);
+                })
+                .toList();
+        }
 
         return null;
     }
