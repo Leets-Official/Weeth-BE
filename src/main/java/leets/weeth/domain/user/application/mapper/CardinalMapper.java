@@ -19,5 +19,5 @@ public interface CardinalMapper {
 
     CardinalResponse to(Cardinal cardinal);
 
-    UserCardinalDto toUserCardinalDto(User user, List<UserCardinal> userCardinals);
+    UserCardinalDto toUserCardinalDto(User user, List<UserCardinal> cardinals);
 }
