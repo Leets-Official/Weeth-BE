@@ -78,8 +78,9 @@ public class UserController {
     @GetMapping("/all")
     @Operation(summary = "동아리 멤버 전체 조회(전체/기수별)")
     public CommonResponse<Slice<SummaryResponse>> findAllUser(@RequestParam("pageNumber") int pageNumber,
-                                                              @RequestParam("pageSize") int pageSize) {
-        return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(), userUseCase.findAllUser(pageNumber, pageSize));
+                                                              @RequestParam("pageSize") int pageSize,
+                                                              @RequestParam(required = false) Integer cardinal) {
+        return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(), userUseCase.findAllUser(pageNumber, pageSize, cardinal));
     }
 
     @GetMapping("/details")
