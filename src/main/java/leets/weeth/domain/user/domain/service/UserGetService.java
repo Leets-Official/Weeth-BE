@@ -53,6 +53,10 @@ public class UserGetService {
         return userRepository.findAllByStatusOrderedByCardinalAndName(Status.ACTIVE, pageable);
     }
 
+    public Slice<User> findAll(Pageable pageable, Cardinal cardinal) {
+        return userRepository.findAllByCardinalOrderByNameAsc(Status.ACTIVE, cardinal, pageable);
+    }
+
     public boolean validateStudentId(String studentId) {
         return userRepository.existsByStudentId(studentId);
     }
