@@ -33,6 +33,10 @@ public class UserGetService {
         return userRepository.findByKakaoId(kakaoId);
     }
 
+    public List<User> search(String keyword) {
+        return userRepository.findAllByNameContainingAndStatus(keyword, Status.ACTIVE);
+    }
+
     public Boolean check(String email) {
         return !userRepository.existsByEmail(email);
     }
