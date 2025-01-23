@@ -100,10 +100,18 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     @Override
-    public Slice<UserResponseDto.SummaryResponse> findAllUser(int pageNumber, int pageSize) {
+    public Slice<UserResponseDto.SummaryResponse> findAllUser(int pageNumber, int pageSize, Integer cardinal) {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Slice<User> users = userGetService.findAll(pageable);
+        Slice<User> users;
+
+        if (cardinal == null) {
+            users = userGetService.findAll(pageable);
+
+        } else {
+            Cardinal inputCardinal = cardinalGetService.find(cardinal);
+            users = userGetService.findAll(pageable, inputCardinal);
+        }
 
         List<UserCardinal> allUserCardinals = userCardinalGetService.findAll(users.getContent());
 

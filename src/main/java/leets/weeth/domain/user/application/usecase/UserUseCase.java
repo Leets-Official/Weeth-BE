@@ -25,7 +25,7 @@ public interface UserUseCase {
 
     UserResponseDto.Response find(Long userId);
 
-    Slice<SummaryResponse> findAllUser(int pageNumber, int pageSize);
+    Slice<SummaryResponse> findAllUser(int pageNumber, int pageSize, Integer cardinal);
 
     UserResponseDto.UserResponse findUserDetails(Long userId);
 
