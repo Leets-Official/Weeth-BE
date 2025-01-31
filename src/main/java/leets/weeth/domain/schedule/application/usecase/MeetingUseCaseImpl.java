@@ -14,6 +14,7 @@ import leets.weeth.domain.schedule.domain.service.MeetingSaveService;
 import leets.weeth.domain.schedule.domain.service.MeetingUpdateService;
 import leets.weeth.domain.user.domain.entity.Cardinal;
 import leets.weeth.domain.user.domain.entity.User;
+import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.domain.user.domain.service.CardinalGetService;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
@@ -43,8 +44,15 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
     private final CardinalGetService cardinalGetService;
 
     @Override
-    public Response find(Long meetingId) {
-        return mapper.to(meetingGetService.find(meetingId));
+    public Response find(Long userId, Long meetingId) {
+        User user = userGetService.find(userId);
+        Meeting meeting = meetingGetService.find(meetingId);
+
+        if (Role.ADMIN == user.getRole()) {
+            return mapper.toAdminResponse(meeting)  ;
+        }
+
+        return mapper.to(meeting);
     }
 
     @Override

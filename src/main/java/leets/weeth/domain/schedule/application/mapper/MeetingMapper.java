@@ -1,5 +1,6 @@
 package leets.weeth.domain.schedule.application.mapper;
 
+import leets.weeth.domain.schedule.application.dto.MeetingDTO;
 import leets.weeth.domain.schedule.application.dto.ScheduleDTO;
 import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.user.domain.entity.User;
@@ -12,9 +13,12 @@ import static leets.weeth.domain.schedule.application.dto.MeetingDTO.Response;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MeetingMapper {
 
-    @Mapping(target = "requiredItem", expression = "java(\"노트북\")")
     @Mapping(target = "name", source = "user.name")
+    @Mapping(target = "code", ignore = true)
     Response to(Meeting meeting);
+
+    @Mapping(target = "name", source = "user.name")
+    MeetingDTO.Response toAdminResponse(Meeting meeting);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),

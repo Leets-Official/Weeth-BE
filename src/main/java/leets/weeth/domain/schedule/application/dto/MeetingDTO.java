@@ -1,9 +1,12 @@
 package leets.weeth.domain.schedule.application.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.time.LocalDateTime;
 
 public class MeetingDTO {
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public record Response(
             Long id,
             String title,
@@ -11,6 +14,7 @@ public class MeetingDTO {
             String location,
             String requiredItem,
             String name,
+            Integer code,
             LocalDateTime start,
             LocalDateTime end,
             LocalDateTime createdAt,

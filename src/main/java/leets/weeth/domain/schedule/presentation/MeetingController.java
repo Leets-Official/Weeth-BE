@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import leets.weeth.domain.schedule.application.dto.MeetingDTO;
 import leets.weeth.domain.schedule.application.usecase.MeetingUseCase;
+import leets.weeth.global.auth.annotation.CurrentUser;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,8 @@ public class MeetingController {
 
     @GetMapping("/{meetingId}")
     @Operation(summary="정기모임 상세 조회")
-    public CommonResponse<MeetingDTO.Response> find(@PathVariable Long meetingId) {
-        return CommonResponse.createSuccess(MEETING_FIND_SUCCESS.getMessage(),meetingUseCase.find(meetingId));
+    public CommonResponse<MeetingDTO.Response> find(@CurrentUser Long userId,
+                                                    @PathVariable Long meetingId) {
+        return CommonResponse.createSuccess(MEETING_FIND_SUCCESS.getMessage(),meetingUseCase.find(userId, meetingId));
     }
 }
