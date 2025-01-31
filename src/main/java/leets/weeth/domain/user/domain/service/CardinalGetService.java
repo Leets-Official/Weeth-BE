@@ -20,6 +20,11 @@ public class CardinalGetService {
                 .orElseThrow(CardinalNotFoundException::new);
     }
 
+    public Cardinal find(Integer year, Integer semester) {
+        return cardinalRepository.findByYearAndSemester(year, semester)
+                .orElseThrow(CardinalNotFoundException::new);
+    }
+
     public List<Cardinal> findAll() {
         return cardinalRepository.findAll();
     }
