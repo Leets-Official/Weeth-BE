@@ -5,6 +5,7 @@ import leets.weeth.domain.attendance.domain.service.AttendanceDeleteService;
 import leets.weeth.domain.attendance.domain.service.AttendanceGetService;
 import leets.weeth.domain.attendance.domain.service.AttendanceSaveService;
 import leets.weeth.domain.attendance.domain.service.AttendanceUpdateService;
+import leets.weeth.domain.schedule.application.dto.ScheduleDTO;
 import leets.weeth.domain.schedule.application.mapper.MeetingMapper;
 import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.schedule.domain.service.MeetingDeleteService;
@@ -14,7 +15,6 @@ import leets.weeth.domain.schedule.domain.service.MeetingUpdateService;
 import leets.weeth.domain.user.domain.entity.Cardinal;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.CardinalGetService;
-import leets.weeth.domain.user.domain.service.UserCardinalGetService;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static leets.weeth.domain.schedule.application.dto.MeetingDTO.*;
+import static leets.weeth.domain.schedule.application.dto.MeetingDTO.Response;
 
 @Slf4j
 @Service
@@ -49,7 +49,7 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
 
     @Override
     @Transactional
-    public void save(Save dto, Long userId) {
+    public void save(ScheduleDTO.Save dto, Long userId) {
         User user = userGetService.find(userId);
         Cardinal cardinal = cardinalGetService.find(dto.cardinal());
 
@@ -63,7 +63,7 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
 
     @Override
     @Transactional
-    public void update(Update dto, Long userId, Long meetingId) {
+    public void update(ScheduleDTO.Update dto, Long userId, Long meetingId) {
         Meeting meeting = meetingGetService.find(meetingId);
         User user = userGetService.find(userId);
         meetingUpdateService.update(dto, user, meeting);
@@ -79,19 +79,5 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
 
         attendanceDeleteService.deleteAll(meeting);
         meetingDeleteService.delete(meeting);
-    }
-
-    @Override
-    public List<ResponseAll> findAll(Integer cardinal) {
-        return meetingGetService.find(cardinal).stream()
-                .map(mapper::toAll)
-                .toList();
-    }
-
-    @Override
-    public List<ResponseAll> findAll() {
-        return meetingGetService.findAll().stream()
-                .map(mapper::toAll)
-                .toList();
     }
 }
