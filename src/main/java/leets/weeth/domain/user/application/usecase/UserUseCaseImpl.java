@@ -217,7 +217,6 @@ public class UserUseCaseImpl implements UserUseCase {
     private UserCardinalDto getUserCardinalDto(Long userId) {
         User user = userGetService.find(userId);
         List<UserCardinal> userCardinals = userCardinalGetService.getUserCardinals(user);
-        log.info("cardinal{}", userCardinals.get(0).getCardinal().getCardinalNumber());
 
         return cardinalMapper.toUserCardinalDto(user, userCardinals);
     }
