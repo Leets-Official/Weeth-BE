@@ -11,4 +11,6 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     List<Meeting> findByStartLessThanEqualAndEndGreaterThanEqualOrderByStartAsc(LocalDateTime start, LocalDateTime end);
 
     List<Meeting> findAllByCardinalOrderByStartAsc(int cardinal);
+
+    List<Meeting> findAllByCardinal(int cardinal);
 }
