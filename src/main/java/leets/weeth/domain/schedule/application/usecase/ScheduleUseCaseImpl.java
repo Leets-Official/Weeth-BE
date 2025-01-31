@@ -2,6 +2,8 @@ package leets.weeth.domain.schedule.application.usecase;
 
 import leets.weeth.domain.schedule.domain.service.EventGetService;
 import leets.weeth.domain.schedule.domain.service.MeetingGetService;
+import leets.weeth.domain.user.domain.entity.Cardinal;
+import leets.weeth.domain.user.domain.service.CardinalGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ public class ScheduleUseCaseImpl implements ScheduleUseCase {
 
     private final EventGetService eventGetService;
     private final MeetingGetService meetingGetService;
+    private final CardinalGetService cardinalGetService;
 
     @Override
     public List<Response> findByMonthly(LocalDateTime start, LocalDateTime end) {
@@ -32,9 +35,11 @@ public class ScheduleUseCaseImpl implements ScheduleUseCase {
     }
 
     @Override
-    public Map<Integer, List<Response>> findByYearly(LocalDateTime start, LocalDateTime end) {
-        List<Response> events = eventGetService.find(start, end);
-        List<Response> meetings = meetingGetService.find(start, end);
+    public Map<Integer, List<Response>> findByYearly(Integer year, Integer semester) {
+        Cardinal cardinal = cardinalGetService.find(year, semester);
+
+        List<Response> events = eventGetService.find(cardinal.getCardinalNumber());
+        List<Response> meetings = meetingGetService.findByCardinal(cardinal.getCardinalNumber());
 
         return Stream.of(events, meetings)
                 .flatMap(Collection::stream)    // 병합
