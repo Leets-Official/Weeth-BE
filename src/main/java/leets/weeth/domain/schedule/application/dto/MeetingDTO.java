@@ -9,10 +9,10 @@ public class MeetingDTO {
             String title,
             String content,
             String location,
+            String requiredItem,
+            String name,
             LocalDateTime start,
             LocalDateTime end,
-            String name,
-            String requiredItem,
             LocalDateTime createdAt,
             LocalDateTime modifiedAt
     ) {}
