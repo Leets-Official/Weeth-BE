@@ -44,5 +44,5 @@ public interface CommentMapper {
     @Mapping(target = "role", source = "comment.user.role")
     @Mapping(target = "time", source = "comment.modifiedAt")
     @Mapping(target = "children", source = "children")
-    CommentDTO.Response toCommentDtoWithChildren(Comment comment, List<CommentDTO.Response> children);
+    CommentDTO.Response toCommentDto(Comment comment, List<CommentDTO.Response> children);
 }

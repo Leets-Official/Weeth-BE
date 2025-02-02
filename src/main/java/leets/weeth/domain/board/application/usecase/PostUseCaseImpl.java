@@ -146,7 +146,7 @@ public class PostUseCaseImpl implements PostUsecase {
                 .map(child -> mapToDtoWithChildren(child, commentMap))
                 .collect(Collectors.toList());
 
-        return commentMapper.toCommentDtoWithChildren(comment, children);
+        return commentMapper.toCommentDto(comment, children);
     }
 
 }
