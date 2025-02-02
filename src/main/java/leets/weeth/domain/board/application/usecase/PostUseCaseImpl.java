@@ -9,6 +9,7 @@ import leets.weeth.domain.board.domain.service.PostFindService;
 import leets.weeth.domain.board.domain.service.PostSaveService;
 import leets.weeth.domain.board.domain.service.PostUpdateService;
 import leets.weeth.domain.comment.application.dto.CommentDTO;
+import leets.weeth.domain.comment.application.mapper.CommentMapper;
 import leets.weeth.domain.comment.domain.entity.Comment;
 import leets.weeth.domain.file.application.dto.response.FileResponse;
 import leets.weeth.domain.file.application.mapper.FileMapper;
@@ -16,17 +17,20 @@ import leets.weeth.domain.file.domain.entity.File;
 import leets.weeth.domain.file.domain.service.FileDeleteService;
 import leets.weeth.domain.file.domain.service.FileGetService;
 import leets.weeth.domain.file.domain.service.FileSaveService;
-import leets.weeth.domain.file.domain.service.FileUpdateService;
 import leets.weeth.domain.user.application.exception.UserNotMatchException;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,11 +46,11 @@ public class PostUseCaseImpl implements PostUsecase {
 
     private final FileSaveService fileSaveService;
     private final FileGetService fileGetService;
-    private final FileUpdateService fileUpdateService;
     private final FileDeleteService fileDeleteService;
 
     private final PostMapper mapper;
     private final FileMapper fileMapper;
+    private final CommentMapper commentMapper;
 
     @Override
     @Transactional
@@ -126,37 +130,23 @@ public class PostUseCaseImpl implements PostUsecase {
     }
 
     private List<CommentDTO.Response> filterParentComments(List<Comment> comments) {
-        if (comments == null || comments.isEmpty()) {
-            return Collections.emptyList();
-        }
+        Map<Long, List<Comment>> commentMap = comments.stream()
+                .filter(comment -> comment.getParent() != null)
+                .collect(Collectors.groupingBy(comment -> comment.getParent().getId()));
 
-        // 부모 댓글만 필터링하고, 각 부모 댓글에 대해 자식 댓글을 매핑
         return comments.stream()
-            .filter(comment -> comment.getParent() == null) // 부모 댓글만 필터링
-            .map(this::mapCommentWithChildren) // 자식 댓글 포함하여 매핑
-            .toList();
+                .filter(comment -> comment.getParent() == null) // 부모 댓글만 가져오기
+                .map(parent -> mapToDtoWithChildren(parent, commentMap))
+                .toList();
     }
 
-    private CommentDTO.Response mapCommentWithChildren(Comment comment) {
-        if (comment == null) {
-            return null;
-        }
+    private CommentDTO.Response mapToDtoWithChildren(Comment comment, Map<Long, List<Comment>> commentMap) {
+        List<CommentDTO.Response> children = commentMap.getOrDefault(comment.getId(), Collections.emptyList())
+                .stream()
+                .map(child -> mapToDtoWithChildren(child, commentMap))
+                .collect(Collectors.toList());
 
-        // 기본 댓글 정보 매핑
-        CommentDTO.Response.ResponseBuilder response = CommentDTO.Response.builder();
-
-        response.name(comment.getUser().getName());
-        response.time(comment.getModifiedAt());
-        response.id(comment.getId());
-        response.content(comment.getContent());
-
-        // 자식 댓글들을 재귀적으로 매핑하여 children 필드에 설정
-        List<CommentDTO.Response> childrenResponses = comment.getChildren().stream()
-            .map(this::mapCommentWithChildren) // 자식 댓글도 동일하게 처리
-            .collect(Collectors.toList());
-        response.children(childrenResponses);
-
-        return response.build();
+        return commentMapper.toCommentDtoWithChildren(comment, children);
     }
 
 }
