@@ -18,6 +18,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByKakaoId(long kakaoId);
 
+    List<User>findAllByNameContainingAndStatus(String name, Status status);
+
     boolean existsByEmail(String email);
 
     boolean existsByStudentId(String studentId);
@@ -39,17 +41,22 @@ public interface UserRepository extends JpaRepository<User, Long> {
     todo 차후 리팩토링
      */
     @Query("""
-                SELECT u FROM User u
-                JOIN UserCardinal uc ON uc.user.id = u.id
-                JOIN Cardinal c ON c.id = uc.cardinal.id
+                SELECT u
+                FROM User u
+                JOIN UserCardinal uc ON u.id = uc.user.id
+                JOIN uc.cardinal c
                 WHERE u.status = :status
-                AND c.cardinalNumber = (
-                    SELECT MAX(subC.cardinalNumber)
-                    FROM Cardinal subC
-                    JOIN UserCardinal subUc ON subUc.cardinal.id = subC.id
-                    WHERE subUc.user.id = u.id
-                )
-                ORDER BY u.name ASC
+                GROUP BY u.id
+                ORDER BY MAX(c.cardinalNumber) DESC, u.name ASC
             """)
     Slice<User> findAllByStatusOrderedByCardinalAndName(@Param("status") Status status, Pageable pageable);
+
+    @Query("""
+                SELECT u FROM User u
+                JOIN UserCardinal uc ON uc.user.id = u.id
+                WHERE u.status = :status
+                AND uc.cardinal = :cardinal
+                ORDER BY u.name ASC
+            """)
+    Slice<User> findAllByCardinalOrderByNameAsc(@Param("status") Status status, @Param("cardinal") Cardinal cardinal, Pageable pageable);
 }

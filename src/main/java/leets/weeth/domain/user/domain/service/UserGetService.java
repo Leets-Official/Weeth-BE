@@ -33,6 +33,10 @@ public class UserGetService {
         return userRepository.findByKakaoId(kakaoId);
     }
 
+    public List<User> search(String keyword) {
+        return userRepository.findAllByNameContainingAndStatus(keyword, Status.ACTIVE);
+    }
+
     public Boolean check(String email) {
         return !userRepository.existsByEmail(email);
     }
@@ -51,6 +55,10 @@ public class UserGetService {
 
     public Slice<User> findAll(Pageable pageable) {
         return userRepository.findAllByStatusOrderedByCardinalAndName(Status.ACTIVE, pageable);
+    }
+
+    public Slice<User> findAll(Pageable pageable, Cardinal cardinal) {
+        return userRepository.findAllByCardinalOrderByNameAsc(Status.ACTIVE, cardinal, pageable);
     }
 
     public boolean validateStudentId(String studentId) {

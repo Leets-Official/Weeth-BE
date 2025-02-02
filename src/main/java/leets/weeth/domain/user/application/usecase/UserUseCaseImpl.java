@@ -1,7 +1,6 @@
 package leets.weeth.domain.user.application.usecase;
 
 import leets.weeth.domain.user.application.dto.response.UserCardinalDto;
-import leets.weeth.domain.user.application.dto.response.UserResponseDto;
 import leets.weeth.domain.user.application.exception.PasswordMismatchException;
 import leets.weeth.domain.user.application.exception.StudentIdExistsException;
 import leets.weeth.domain.user.application.exception.TelExistsException;
@@ -33,8 +32,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static leets.weeth.domain.user.application.dto.request.UserRequestDto.*;
-import static leets.weeth.domain.user.application.dto.response.UserResponseDto.SocialAuthResponse;
-import static leets.weeth.domain.user.application.dto.response.UserResponseDto.SocialLoginResponse;
+import static leets.weeth.domain.user.application.dto.response.UserResponseDto.*;
 
 @Slf4j
 @Service
@@ -100,10 +98,18 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     @Override
-    public Slice<UserResponseDto.SummaryResponse> findAllUser(int pageNumber, int pageSize) {
+    public Slice<SummaryResponse> findAllUser(int pageNumber, int pageSize, Integer cardinal) {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Slice<User> users = userGetService.findAll(pageable);
+        Slice<User> users;
+
+        if (cardinal == null) {
+            users = userGetService.findAll(pageable);
+
+        } else {
+            Cardinal inputCardinal = cardinalGetService.find(cardinal);
+            users = userGetService.findAll(pageable, inputCardinal);
+        }
 
         List<UserCardinal> allUserCardinals = userCardinalGetService.findAll(users.getContent());
 
@@ -118,14 +124,14 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     @Override
-    public UserResponseDto.UserResponse findUserDetails(Long userId) {
+    public UserResponse findUserDetails(Long userId) {
         UserCardinalDto dto = getUserCardinalDto(userId);
 
         return mapper.toUserResponse(dto.user(), dto.cardinals());
     }
 
     @Override
-    public UserResponseDto.Response find(Long userId) {
+    public Response find(Long userId) {
         UserCardinalDto dto = getUserCardinalDto(userId);
 
         return mapper.to(dto.user(), dto.cardinals());
@@ -178,10 +184,22 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     @Override
-    public UserResponseDto.UserInfo findUserInfo(Long userId) {
+    public UserInfo findUserInfo(Long userId) {
         UserCardinalDto dto = getUserCardinalDto(userId);
 
         return mapper.toUserInfoDto(dto.user(), dto.cardinals());
+    }
+
+    @Override
+    public List<SummaryResponse> searchUser(String keyword) {
+        List<User> users = userGetService.search(keyword);
+
+        return users.stream()
+                .map(user -> {
+                    List<UserCardinal> userCardinals = userCardinalGetService.getUserCardinals(user);
+                    return mapper.toSummaryResponse(user, userCardinals);
+                })
+                .toList();
     }
 
     private long getKakaoId(Login dto) {

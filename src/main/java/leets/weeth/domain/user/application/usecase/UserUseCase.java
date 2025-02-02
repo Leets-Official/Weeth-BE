@@ -6,11 +6,7 @@ import leets.weeth.global.auth.jwt.application.dto.JwtDto;
 import org.springframework.data.domain.Slice;
 
 import java.util.List;
-import java.util.Map;
 
-import static leets.weeth.domain.user.application.dto.request.UserRequestDto.Register;
-import static leets.weeth.domain.user.application.dto.request.UserRequestDto.SignUp;
-import static leets.weeth.domain.user.application.dto.response.UserResponseDto.SocialLoginResponse;
 import static leets.weeth.domain.user.application.dto.request.UserRequestDto.*;
 import static leets.weeth.domain.user.application.dto.response.UserResponseDto.*;
 
@@ -25,7 +21,7 @@ public interface UserUseCase {
 
     UserResponseDto.Response find(Long userId);
 
-    Slice<SummaryResponse> findAllUser(int pageNumber, int pageSize);
+    Slice<SummaryResponse> findAllUser(int pageNumber, int pageSize, Integer cardinal);
 
     UserResponseDto.UserResponse findUserDetails(Long userId);
 
@@ -38,5 +34,7 @@ public interface UserUseCase {
     JwtDto refresh(String refreshToken);
 
     UserResponseDto.UserInfo findUserInfo(Long userId);
+
+    List<SummaryResponse> searchUser(String keyword);
 
 }
