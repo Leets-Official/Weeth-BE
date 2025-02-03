@@ -22,7 +22,7 @@ public class UserCardinalGetService {
     }
 
     public List<UserCardinal> findAll() {
-        return userCardinalRepository.findAll();
+        return userCardinalRepository.findAllByOrderByUser_NameAsc();
     }
 
     public List<UserCardinal> findAll(List<User> users) {

@@ -20,9 +20,12 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static leets.weeth.domain.user.application.dto.response.UserResponseDto.AdminResponse;
 import static leets.weeth.domain.user.domain.entity.enums.UsersOrderBy.*;
+import java.util.LinkedHashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -57,17 +60,24 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
                     })
                     .toList();
         }
-        if (orderBy.equals(CARDINAL_DESCENDING)){
-            return userGetService.findAll().stream()
-                .sorted(Comparator.comparingInt((user -> (StatusPriority.fromStatus(user.getStatus())).getPriority())))
-                .map(user -> {
-                    List<UserCardinal> userCardinals = userCardinalGetService.getUserCardinals(user);
-                    return mapper.toAdminResponse(user, userCardinals);
-                })
-                .sorted((adminResponse1, adminResponse2) -> {
-                    Integer maxCardinal1 = adminResponse1.cardinals().stream().max(Integer::compareTo).orElse(0);
-                    Integer maxCardinal2 = adminResponse2.cardinals().stream().max(Integer::compareTo).orElse(0);
-                    return maxCardinal2.compareTo(maxCardinal1);
+
+        if(orderBy.equals(CARDINAL_DESCENDING)){
+
+            Map<User, List<UserCardinal>> userCardinalMap = userCardinalGetService.findAll()
+                .stream()
+                .collect(Collectors.groupingBy(UserCardinal::getUser, LinkedHashMap::new, Collectors.toList()));
+
+            return userCardinalMap.entrySet()
+                .stream()
+                .sorted(Comparator
+                    .comparingInt(((Map.Entry<User, List<UserCardinal>> entry) -> (StatusPriority.fromStatus(entry.getKey().getStatus())).getPriority()))
+                    .thenComparing(entry -> entry.getValue().stream()
+                        .map(uc -> uc.getCardinal().getCardinalNumber())
+                        .max(Integer::compare)
+                        .orElse(-1), Comparator.reverseOrder()))
+                .map(entry -> {
+                    List<UserCardinal> userCardinals = userCardinalGetService.getUserCardinals(entry.getKey());
+                    return mapper.toAdminResponse(entry.getKey(), userCardinals);
                 })
                 .toList();
         }
