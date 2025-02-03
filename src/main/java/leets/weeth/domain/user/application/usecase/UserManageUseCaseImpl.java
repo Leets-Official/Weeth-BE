@@ -51,21 +51,23 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
             throw new InvalidUserOrderException();
         }
 
+        Map<User, List<UserCardinal>> userCardinalMap = userCardinalGetService.findAll()
+            .stream()
+            .collect(Collectors.groupingBy(UserCardinal::getUser, LinkedHashMap::new, Collectors.toList()));
+
         if (orderBy.equals(NAME_ASCENDING)) {
-            return userGetService.findAll().stream()
-                    .sorted(Comparator.comparingInt((user -> (StatusPriority.fromStatus(user.getStatus())).getPriority())))
-                    .map(user -> {
-                        List<UserCardinal> userCardinals = userCardinalGetService.getUserCardinals(user);
-                        return mapper.toAdminResponse(user, userCardinals);
-                    })
-                    .toList();
+            return userCardinalMap.entrySet()
+                .stream()
+                .sorted(Comparator
+                    .comparingInt(((Map.Entry<User, List<UserCardinal>> entry) -> (StatusPriority.fromStatus(entry.getKey().getStatus())).getPriority())))
+                .map(entry -> {
+                    List<UserCardinal> userCardinals = userCardinalGetService.getUserCardinals(entry.getKey());
+                    return mapper.toAdminResponse(entry.getKey(), userCardinals);
+                })
+                .toList();
         }
 
         if(orderBy.equals(CARDINAL_DESCENDING)){
-
-            Map<User, List<UserCardinal>> userCardinalMap = userCardinalGetService.findAll()
-                .stream()
-                .collect(Collectors.groupingBy(UserCardinal::getUser, LinkedHashMap::new, Collectors.toList()));
 
             return userCardinalMap.entrySet()
                 .stream()
