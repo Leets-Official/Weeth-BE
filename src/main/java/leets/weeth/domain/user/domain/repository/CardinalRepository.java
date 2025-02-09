@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface CardinalRepository extends JpaRepository<Cardinal, Long> {
 
     Optional<Cardinal> findByCardinalNumber(Integer cardinal);
+
+    Cardinal findTopByOrderByCardinalNumberDesc();
 }
