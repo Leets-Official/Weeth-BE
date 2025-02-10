@@ -36,8 +36,8 @@ public class ScheduleController {
 
     @GetMapping("/yearly")
     @Operation(summary="연도별 일정 조회")
-    public CommonResponse<Map<Integer, List<Response>>> findByYearly(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-                                                                     @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
-        return CommonResponse.createSuccess(SCHEDULE_YEARLY_FIND_SUCCESS.getMessage(),scheduleUseCase.findByYearly(start, end));
+    public CommonResponse<Map<Integer, List<Response>>> findByYearly(@RequestParam Integer year,
+                                                                     @RequestParam Integer semester) {
+        return CommonResponse.createSuccess(SCHEDULE_YEARLY_FIND_SUCCESS.getMessage(),scheduleUseCase.findByYearly(year, semester));
     }
 }

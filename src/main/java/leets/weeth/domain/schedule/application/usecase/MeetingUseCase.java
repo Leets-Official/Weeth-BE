@@ -1,20 +1,16 @@
 package leets.weeth.domain.schedule.application.usecase;
 
-import java.util.List;
+import leets.weeth.domain.schedule.application.dto.ScheduleDTO;
 
-import static leets.weeth.domain.schedule.application.dto.MeetingDTO.*;
+import static leets.weeth.domain.schedule.application.dto.MeetingDTO.Response;
 
 public interface MeetingUseCase {
 
-    Response find(Long eventId);
+    Response find(Long userId, Long eventId);
 
-    void save(Save dto, Long userId);
+    void save(ScheduleDTO.Save dto, Long userId);
 
-    void update(Update dto, Long userId, Long meetingId);
+    void update(ScheduleDTO.Update dto, Long userId, Long meetingId);
 
     void delete(Long meetingId);
-
-    List<ResponseAll> findAll(Integer cardinal);
-
-    List<ResponseAll> findAll();
 }

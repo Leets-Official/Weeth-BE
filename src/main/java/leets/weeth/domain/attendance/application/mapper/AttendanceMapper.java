@@ -27,7 +27,6 @@ public interface AttendanceMapper {
     AttendanceDTO.Detail toDetailDto(User user, List<AttendanceDTO.Response> attendances);
 
     @Mappings({
-            @Mapping(target = "weekNumber", source = "attendance.meeting.weekNumber"),
             @Mapping(target = "title", source = "attendance.meeting.title"),
             @Mapping(target = "start", source = "attendance.meeting.start"),
             @Mapping(target = "end", source = "attendance.meeting.end"),
@@ -37,7 +36,6 @@ public interface AttendanceMapper {
     @Mappings({
             @Mapping(target = "id", source = "attendance.id"),
             @Mapping(target = "status", source = "attendance.status"),
-            @Mapping(target = "weekNumber", source = "attendance.meeting.weekNumber"),
             @Mapping(target = "name", source = "attendance.user.name"),
             @Mapping(target = "position", source = "attendance.user.position"),
             @Mapping(target = "department", source = "attendance.user.department"),
