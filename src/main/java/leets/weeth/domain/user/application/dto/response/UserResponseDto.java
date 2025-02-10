@@ -68,7 +68,8 @@ public class UserResponseDto {
             String studentId,
             String department,
             List<Integer> cardinals,
-            Position position
+            Position position,
+            Role role
     ) {
     }
 
