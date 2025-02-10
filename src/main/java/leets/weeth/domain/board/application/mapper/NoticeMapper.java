@@ -4,15 +4,11 @@ import leets.weeth.domain.board.application.dto.NoticeDTO;
 import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.comment.application.dto.CommentDTO;
 import leets.weeth.domain.comment.application.mapper.CommentMapper;
-import leets.weeth.domain.comment.domain.entity.Comment;
 import leets.weeth.domain.file.application.dto.response.FileResponse;
-import leets.weeth.domain.file.domain.service.FileGetService;
 import leets.weeth.domain.user.domain.entity.User;
 import org.mapstruct.*;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = CommentMapper.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface NoticeMapper {
@@ -36,7 +32,8 @@ public interface NoticeMapper {
             @Mapping(target = "name", source = "notice.user.name"),
             @Mapping(target = "position", source = "notice.user.position"),
             @Mapping(target = "role", source = "notice.user.role"),
-            @Mapping(target = "time", source = "notice.modifiedAt")
+            @Mapping(target = "time", source = "notice.modifiedAt"),
+            @Mapping(target = "comments", source = "comments")
     })
     NoticeDTO.Response toNoticeDto(Notice notice, List<FileResponse> fileUrls, List<CommentDTO.Response> comments);
 
