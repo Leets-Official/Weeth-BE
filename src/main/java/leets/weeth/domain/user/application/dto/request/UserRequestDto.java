@@ -38,7 +38,6 @@ public class UserRequestDto {
     public record Update(
             @NotBlank String name,
             @Email @NotBlank String email,
-            @NotBlank String password,
             @NotBlank String studentId,
             @NotBlank String tel,
             @NotNull String department
@@ -46,7 +45,7 @@ public class UserRequestDto {
     }
 
     public record NormalLogin(
-            @NotBlank String email,
+            @Email @NotBlank String email,
             @NotBlank String passWord,
             @NotNull Long kakaoId
     ) {
