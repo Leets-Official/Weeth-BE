@@ -20,7 +20,7 @@ public class AttendanceScheduler {
     private final AttendanceGetService attendanceGetService;
     private final AttendanceUpdateService attendanceUpdateService;
 
-    @Scheduled(cron = "0 0 22 * * THU")
+    @Scheduled(cron = "0 0 22 * * THU", zone = "Asia/Seoul")
     public void autoCloseAttendance() {
         LocalDate today = LocalDate.now();
         Cardinal currentCardinal = cardinalRepository.findTopByOrderByCardinalNumberDesc();
