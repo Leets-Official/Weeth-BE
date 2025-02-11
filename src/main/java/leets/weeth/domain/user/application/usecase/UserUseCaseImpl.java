@@ -141,7 +141,7 @@ public class UserUseCaseImpl implements UserUseCase {
     public void update(Update dto, Long userId) {
         validate(dto, userId);
         User user = userGetService.find(userId);
-        userUpdateService.update(user, dto, passwordEncoder);
+        userUpdateService.update(user, dto);
     }
 
     @Override
