@@ -27,6 +27,7 @@ public class UserRequestDto {
             @NotNull Long kakaoId,
             @NotBlank String name,
             @NotBlank String studentId,
+            @NotBlank String email,
             @NotNull String department,
             @NotBlank String tel,
             @NotNull Integer cardinal,
