@@ -21,4 +21,10 @@ public class MeetingDTO {
             LocalDateTime modifiedAt
     ) {}
 
+    public record Info(
+            Long id,
+            String title,
+            LocalDateTime start
+    ) {}
+
 }

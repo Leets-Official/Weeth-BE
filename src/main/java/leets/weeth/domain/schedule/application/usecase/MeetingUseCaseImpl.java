@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static leets.weeth.domain.schedule.application.dto.MeetingDTO.Info;
 import static leets.weeth.domain.schedule.application.dto.MeetingDTO.Response;
 
 @Slf4j
@@ -53,6 +54,15 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
         }
 
         return mapper.to(meeting);
+    }
+
+    @Override
+    public List<Info> find(Integer cardinal) {
+        List<Meeting> meetings = meetingGetService.find(cardinal);
+
+        return meetings.stream()
+                .map(mapper::toInfo)
+                .toList();
     }
 
     @Override
