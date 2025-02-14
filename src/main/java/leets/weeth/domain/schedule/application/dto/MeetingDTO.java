@@ -14,6 +14,7 @@ public class MeetingDTO {
             String location,
             String requiredItem,
             String name,
+            Integer cardinal,
             Integer code,
             LocalDateTime start,
             LocalDateTime end,

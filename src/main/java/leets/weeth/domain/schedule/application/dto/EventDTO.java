@@ -11,6 +11,7 @@ public class EventDTO {
             String location,
             String requiredItem,
             String name,
+            Integer cardinal,
             LocalDateTime start,
             LocalDateTime end,
             LocalDateTime createdAt,
