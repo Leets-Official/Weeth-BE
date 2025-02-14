@@ -92,10 +92,9 @@ public class User extends BaseEntity {
         return this.status != Status.ACTIVE;
     }
 
-    public void update(Update dto, PasswordEncoder passwordEncoder) {
+    public void update(Update dto) {
         this.name = dto.name();
         this.email = dto.email();
-        this.password = passwordEncoder.encode(dto.password());
         this.studentId = dto.studentId();
         this.tel = dto.tel();
         this.department = Department.to(dto.department());
