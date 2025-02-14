@@ -36,4 +36,10 @@ public class MeetingGetService {
     public List<Meeting> findAll() {
         return meetingRepository.findAll();
     }
+
+    public List<ScheduleDTO.Response> findByCardinal(Integer cardinal) {
+        return meetingRepository.findAllByCardinal(cardinal).stream()
+                .map(meeting -> mapper.toScheduleDTO(meeting, true))
+                .toList();
+    }
 }

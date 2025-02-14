@@ -7,8 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ResponseMessage {
     // EventAdminController 관련
-    EVENT_SAVE_SUCCESS("일정이 성공적으로 생성되었습니다."),
-    EVENT_UPDATE_SUCCESS("일정이 성공적으로 수정되었습니다."),
+    EVENT_SAVE_SUCCESS("일정/정기모임이 성공적으로 생성되었습니다."),
+    EVENT_UPDATE_SUCCESS("일정/정기모임이 성공적으로 수정되었습니다."),
     EVENT_DELETE_SUCCESS("일정이 성공적으로 삭제되었습니다."),
     // EventController 관련
     EVENT_FIND_SUCCESS("일정이 성공적으로 조회되었습니다."),

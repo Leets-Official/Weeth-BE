@@ -28,8 +28,6 @@ public class AttendanceDTO {
     public record Response(
             Long id,
             Status status,
-            Integer weekNumber,
-
             String title,
             LocalDateTime start,
             LocalDateTime end,
@@ -43,7 +41,6 @@ public class AttendanceDTO {
     public record AttendanceInfo(
             Long id,
             Status status,
-            Integer weekNumber,
             String name,
             String position,
             String department,

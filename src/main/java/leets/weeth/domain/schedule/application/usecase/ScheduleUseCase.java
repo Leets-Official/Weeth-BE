@@ -10,6 +10,6 @@ public interface ScheduleUseCase {
 
     List<Response> findByMonthly(LocalDateTime start, LocalDateTime end);
 
-    Map<Integer, List<Response>> findByYearly(LocalDateTime start, LocalDateTime end);
+    Map<Integer, List<Response>> findByYearly(Integer year, Integer semester);
 
 }

@@ -1,15 +1,12 @@
 package leets.weeth.domain.user.domain.service;
 
 import jakarta.transaction.Transactional;
-import leets.weeth.domain.user.application.dto.request.UserRequestDto;
-import leets.weeth.domain.user.domain.entity.Cardinal;
 import leets.weeth.domain.user.domain.entity.User;
-import leets.weeth.domain.user.domain.entity.UserCardinal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static leets.weeth.domain.user.application.dto.request.UserRequestDto.*;
+import static leets.weeth.domain.user.application.dto.request.UserRequestDto.Update;
 
 
 @Service
@@ -17,8 +14,8 @@ import static leets.weeth.domain.user.application.dto.request.UserRequestDto.*;
 @RequiredArgsConstructor
 public class UserUpdateService {
 
-    public void update(User user, Update dto, PasswordEncoder passwordEncoder) {
-        user.update(dto, passwordEncoder);
+    public void update(User user, Update dto) {
+        user.update(dto);
     }
 
     public void accept(User user) {

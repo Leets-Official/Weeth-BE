@@ -28,4 +28,10 @@ public class EventGetService {
                 .map(event -> mapper.toScheduleDTO(event, false))
                 .toList();
     }
+
+    public List<ScheduleDTO.Response> find(Integer cardinal) {
+        return eventRepository.findAllByCardinal(cardinal).stream()
+                .map(event -> mapper.toScheduleDTO(event, false))
+                .toList();
+    }
 }

@@ -14,4 +14,6 @@ public interface UserCardinalRepository extends JpaRepository<UserCardinal, Long
 
     @Query("SELECT uc FROM UserCardinal uc WHERE uc.user IN :users")
     List<UserCardinal> findAllByUsers(List<User> users);
+
+	List<UserCardinal> findAllByOrderByUser_NameAsc();
 }
