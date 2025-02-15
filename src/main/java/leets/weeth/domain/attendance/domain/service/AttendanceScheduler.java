@@ -1,5 +1,6 @@
 package leets.weeth.domain.attendance.domain.service;
 
+import jakarta.transaction.Transactional;
 import java.util.List;
 import leets.weeth.domain.attendance.domain.entity.Attendance;
 import leets.weeth.domain.schedule.domain.entity.Meeting;
@@ -16,6 +17,7 @@ public class AttendanceScheduler {
     private final AttendanceGetService attendanceGetService;
     private final AttendanceUpdateService attendanceUpdateService;
 
+    @Transactional
     @Scheduled(cron = "0 0 22 * * THU", zone = "Asia/Seoul")
     public void autoCloseAttendance() {
         List<Meeting> meetings = meetingGetService.findAllOpenMeetingsBeforeNow();
