@@ -41,6 +41,14 @@ public class PenaltyUsecaseImpl implements PenaltyUsecase{
     }
 
     @Override
+    @Transactional
+    public void update(PenaltyDTO.Update dto) {
+        Penalty penalty = penaltyFindService.find(dto.penaltyId());
+
+        penalty.update(dto.penaltyDescription());
+    }
+
+    @Override
     public List<PenaltyDTO.Response> find() {
         List<Penalty> penalties = penaltyFindService.findAll();
 
@@ -62,6 +70,7 @@ public class PenaltyUsecaseImpl implements PenaltyUsecase{
     }
 
     @Override
+    @Transactional
     public void delete(Long penaltyId) {
         Penalty penalty = penaltyFindService.find(penaltyId);
         penalty.getUser().decrementPenaltyCount();

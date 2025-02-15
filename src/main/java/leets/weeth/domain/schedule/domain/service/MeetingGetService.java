@@ -34,8 +34,12 @@ public class MeetingGetService {
         return meetingRepository.findAllByCardinalOrderByStartAsc(cardinal);
     }
 
+    public List<Meeting> findMeetingByCardinal(Integer cardinal) {
+        return meetingRepository.findAllByCardinalOrderByStartDesc(cardinal);
+    }
+
     public List<Meeting> findAll() {
-        return meetingRepository.findAll();
+        return meetingRepository.findAllByOrderByStartDesc();
     }
 
     public List<ScheduleDTO.Response> findByCardinal(Integer cardinal) {
