@@ -58,7 +58,15 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
 
     @Override
     public List<Info> find(Integer cardinal) {
-        List<Meeting> meetings = meetingGetService.find(cardinal);
+        List<Meeting> meetings;
+
+        if (cardinal == null) {
+            meetings = meetingGetService.findAll();
+
+        } else {
+            meetings = meetingGetService.findMeetingByCardinal(cardinal);
+
+        }
 
         return meetings.stream()
                 .map(mapper::toInfo)
