@@ -70,6 +70,7 @@ public class PenaltyUsecaseImpl implements PenaltyUsecase{
     }
 
     @Override
+    @Transactional
     public void delete(Long penaltyId) {
         Penalty penalty = penaltyFindService.find(penaltyId);
         penalty.getUser().decrementPenaltyCount();
