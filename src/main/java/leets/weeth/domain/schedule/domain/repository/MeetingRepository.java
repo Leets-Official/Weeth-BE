@@ -18,4 +18,6 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     List<Meeting> findAllByCardinal(int cardinal);
 
     List<Meeting> findAllByMeetingStatusAndEndBeforeOrderByEndAsc(MeetingStatus status, LocalDateTime end);
+
+    List<Meeting> findAllByOrderByStartDesc();
 }
