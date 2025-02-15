@@ -3,6 +3,9 @@ package leets.weeth.domain.user.application.dto.request;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import leets.weeth.domain.user.domain.entity.enums.Role;
+
+import java.util.List;
 
 public class UserRequestDto {
 
@@ -48,6 +51,23 @@ public class UserRequestDto {
             @Email @NotBlank String email,
             @NotBlank String passWord,
             @NotNull Long kakaoId
+    ) {
+    }
+
+    public record UserRoleUpdate(
+            @NotNull Long userId,
+            @NotNull Role role
+    ) {
+    }
+
+    public record UserApplyOB(
+            @NotNull Long userId,
+            @NotNull Integer cardinal
+    ) {
+    }
+
+    public record UserId(
+            @NotNull List<Long> userId
     ) {
     }
 

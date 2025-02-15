@@ -5,20 +5,22 @@ import leets.weeth.domain.user.domain.entity.enums.UsersOrderBy;
 
 import java.util.List;
 
+import static leets.weeth.domain.user.application.dto.request.UserRequestDto.*;
+
 public interface UserManageUseCase {
 
 
     List<UserResponseDto.AdminResponse> findAllByAdmin(UsersOrderBy orderBy);
 
-    void accept(Long userId);
+    void accept(UserId userIds);
 
-    void update(Long userId, String role);
+    void update(List<UserRoleUpdate> request);
 
     void leave(Long userId);
 
-    void ban(Long userId);
+    void ban(UserId userIds);
 
-    void applyOB(Long userId, Integer cardinal);
+    void applyOB(List<UserApplyOB> request);
 
-    void reset(Long userId);
+    void reset(UserId userId);
 }

@@ -49,6 +49,10 @@ public class UserGetService {
         return userRepository.findAllByOrderByNameAsc();
     }
 
+    public List<User> findAll(List<Long> userId) {
+        return userRepository.findAllById(userId);
+    }
+
     public List<User> findAllByCardinal(Cardinal cardinal) {
         return userRepository.findAllByCardinalAndStatus(cardinal, Status.ACTIVE);
     }

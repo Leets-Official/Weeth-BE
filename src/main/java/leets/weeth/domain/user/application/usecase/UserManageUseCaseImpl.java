@@ -17,15 +17,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static leets.weeth.domain.user.application.dto.request.UserRequestDto.*;
 import static leets.weeth.domain.user.application.dto.response.UserResponseDto.AdminResponse;
-import static leets.weeth.domain.user.domain.entity.enums.UsersOrderBy.*;
-import java.util.LinkedHashMap;
+import static leets.weeth.domain.user.domain.entity.enums.UsersOrderBy.CARDINAL_DESCENDING;
+import static leets.weeth.domain.user.domain.entity.enums.UsersOrderBy.NAME_ASCENDING;
 
 @Service
 @RequiredArgsConstructor
@@ -52,36 +50,36 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
         }
 
         Map<User, List<UserCardinal>> userCardinalMap = userCardinalGetService.findAll()
-            .stream()
-            .collect(Collectors.groupingBy(UserCardinal::getUser, LinkedHashMap::new, Collectors.toList()));
+                .stream()
+                .collect(Collectors.groupingBy(UserCardinal::getUser, LinkedHashMap::new, Collectors.toList()));
 
         if (orderBy.equals(NAME_ASCENDING)) {
             return userCardinalMap.entrySet()
-                .stream()
-                .sorted(Comparator
-                    .comparingInt(((Map.Entry<User, List<UserCardinal>> entry) -> (StatusPriority.fromStatus(entry.getKey().getStatus())).getPriority())))
-                .map(entry -> {
-                    List<UserCardinal> userCardinals = userCardinalGetService.getUserCardinals(entry.getKey());
-                    return mapper.toAdminResponse(entry.getKey(), userCardinals);
-                })
-                .toList();
+                    .stream()
+                    .sorted(Comparator
+                            .comparingInt(((Map.Entry<User, List<UserCardinal>> entry) -> (StatusPriority.fromStatus(entry.getKey().getStatus())).getPriority())))
+                    .map(entry -> {
+                        List<UserCardinal> userCardinals = userCardinalGetService.getUserCardinals(entry.getKey());
+                        return mapper.toAdminResponse(entry.getKey(), userCardinals);
+                    })
+                    .toList();
         }
 
-        if(orderBy.equals(CARDINAL_DESCENDING)){
+        if (orderBy.equals(CARDINAL_DESCENDING)) {
 
             return userCardinalMap.entrySet()
-                .stream()
-                .sorted(Comparator
-                    .comparingInt(((Map.Entry<User, List<UserCardinal>> entry) -> (StatusPriority.fromStatus(entry.getKey().getStatus())).getPriority()))
-                    .thenComparing(entry -> entry.getValue().stream()
-                        .map(uc -> uc.getCardinal().getCardinalNumber())
-                        .max(Integer::compare)
-                        .orElse(-1), Comparator.reverseOrder()))
-                .map(entry -> {
-                    List<UserCardinal> userCardinals = userCardinalGetService.getUserCardinals(entry.getKey());
-                    return mapper.toAdminResponse(entry.getKey(), userCardinals);
-                })
-                .toList();
+                    .stream()
+                    .sorted(Comparator
+                            .comparingInt(((Map.Entry<User, List<UserCardinal>> entry) -> (StatusPriority.fromStatus(entry.getKey().getStatus())).getPriority()))
+                            .thenComparing(entry -> entry.getValue().stream()
+                                    .map(uc -> uc.getCardinal().getCardinalNumber())
+                                    .max(Integer::compare)
+                                    .orElse(-1), Comparator.reverseOrder()))
+                    .map(entry -> {
+                        List<UserCardinal> userCardinals = userCardinalGetService.getUserCardinals(entry.getKey());
+                        return mapper.toAdminResponse(entry.getKey(), userCardinals);
+                    })
+                    .toList();
         }
 
         return null;
@@ -89,23 +87,29 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
 
     @Override
     @Transactional
-    public void accept(Long userId) {
-        User user = userGetService.find(userId);
+    public void accept(UserId userIds) {
+        List<User> users = userGetService.findAll(userIds.userId());
 
-        Integer cardinal = userCardinalGetService.getCurrentCardinal(user).getCardinalNumber();
+        users.forEach(user -> {
+            Integer cardinal = userCardinalGetService.getCurrentCardinal(user).getCardinalNumber();
 
-        if (user.isInactive()) {
-            userUpdateService.accept(user);
-            List<Meeting> meetings = meetingGetService.find(cardinal);
-            attendanceSaveService.init(user, meetings);
-        }
+            if (user.isInactive()) {
+                userUpdateService.accept(user);
+                List<Meeting> meetings = meetingGetService.find(cardinal);
+                attendanceSaveService.init(user, meetings);
+            }
+        });
     }
 
     @Override
-    public void update(Long userId, String role) {
-        User user = userGetService.find(userId);
-        userUpdateService.update(user, role);
-        jwtRedisService.updateRole(user.getId(), role);
+    @Transactional
+    public void update(List<UserRoleUpdate> requests) {
+        requests.forEach(request -> {
+            User user = userGetService.find(request.userId());
+
+            userUpdateService.update(user, request.role().name());
+            jwtRedisService.updateRole(user.getId(), request.role().name());
+        });
     }
 
     @Override
@@ -117,34 +121,42 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
     }
 
     @Override
-    public void ban(Long userId) {
-        User user = userGetService.find(userId);
-        jwtRedisService.delete(user.getId());
-        userDeleteService.ban(user);
+    public void ban(UserId userIds) {
+        List<User> users = userGetService.findAll(userIds.userId());
+
+        users.forEach(user -> {
+            jwtRedisService.delete(user.getId());
+            userDeleteService.ban(user);
+        });
     }
 
     @Override
     @Transactional
-    public void applyOB(Long userId, Integer cardinal) {
-        User user = userGetService.find(userId);
-        Cardinal nextCardinal = cardinalGetService.find(cardinal);
+    public void applyOB(List<UserApplyOB> requests) {
+        requests.forEach(request -> {
+            User user = userGetService.find(request.userId());
+            Cardinal nextCardinal = cardinalGetService.find(request.cardinal());
 
-        if (userCardinalGetService.notContains(user, nextCardinal)) {
-            if (userCardinalGetService.isCurrent(user, nextCardinal)) {
-                user.initAttendance();
-                List<Meeting> meetings = meetingGetService.find(cardinal);
-                attendanceSaveService.init(user, meetings);
+            if (userCardinalGetService.notContains(user, nextCardinal)) {
+                if (userCardinalGetService.isCurrent(user, nextCardinal)) {
+                    user.initAttendance();
+                    List<Meeting> meetings = meetingGetService.find(request.cardinal());
+                    attendanceSaveService.init(user, meetings);
+                }
+                UserCardinal userCardinal = new UserCardinal(user, nextCardinal);
+
+                userCardinalSaveService.save(userCardinal);
             }
-            UserCardinal userCardinal = new UserCardinal(user, nextCardinal);
-
-            userCardinalSaveService.save(userCardinal);
-        }
+        });
     }
 
     @Override
-    public void reset(Long userId) {
-        User user = userGetService.find(userId);
-        userUpdateService.reset(user, passwordEncoder);
+    @Transactional
+    public void reset(UserId userId) {
+
+        List<User> users = userGetService.findAll(userId.userId());
+
+        users.forEach(user -> userUpdateService.reset(user, passwordEncoder));
     }
 
 }
