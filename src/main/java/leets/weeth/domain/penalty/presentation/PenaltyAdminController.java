@@ -27,6 +27,13 @@ public class PenaltyAdminController {
         return CommonResponse.createSuccess(PENALTY_ASSIGN_SUCCESS.getMessage());
     }
 
+    @PatchMapping
+    @Operation(summary = "패널티 수정")
+    public CommonResponse<String> update(@RequestBody PenaltyDTO.Update dto){
+        penaltyUsecase.update(dto);
+        return CommonResponse.createSuccess(PENALTY_UPDATE_SUCCESS.getMessage());
+    }
+
     @GetMapping
     @Operation(summary="전체 패널티 조회")
     public CommonResponse<List<PenaltyDTO.Response>> findAll(){
