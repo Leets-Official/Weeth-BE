@@ -23,6 +23,7 @@ public class MeetingDTO {
 
     public record Info(
             Long id,
+            Integer cardinal,
             String title,
             LocalDateTime start
     ) {}
