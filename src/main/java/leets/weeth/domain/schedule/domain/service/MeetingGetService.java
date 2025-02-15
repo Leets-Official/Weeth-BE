@@ -3,6 +3,7 @@ package leets.weeth.domain.schedule.domain.service;
 import leets.weeth.domain.schedule.application.dto.ScheduleDTO;
 import leets.weeth.domain.schedule.application.mapper.ScheduleMapper;
 import leets.weeth.domain.schedule.domain.entity.Meeting;
+import leets.weeth.domain.schedule.domain.entity.enums.MeetingStatus;
 import leets.weeth.domain.schedule.domain.repository.MeetingRepository;
 import leets.weeth.domain.schedule.application.exception.MeetingNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -41,5 +42,9 @@ public class MeetingGetService {
         return meetingRepository.findAllByCardinal(cardinal).stream()
                 .map(meeting -> mapper.toScheduleDTO(meeting, true))
                 .toList();
+    }
+
+    public List<Meeting> findAllOpenMeetingsBeforeNow() {
+        return meetingRepository.findAllByMeetingStatusAndEndBeforeOrderByEndAsc(MeetingStatus.OPEN, LocalDateTime.now());
     }
 }
