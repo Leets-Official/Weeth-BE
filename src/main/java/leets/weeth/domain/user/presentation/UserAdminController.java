@@ -58,7 +58,7 @@ public class UserAdminController {
 
     @PatchMapping("/reset")
     @Operation(summary = "회원 비밀번호 초기화")
-    public CommonResponse<Void> resetPassword(@RequestParam Long userId) {
+    public CommonResponse<Void> resetPassword(@RequestBody UserId userId) {
         userManageUseCase.reset(userId);
         return CommonResponse.createSuccess(USER_PASSWORD_RESET_SUCCESS.getMessage());
     }

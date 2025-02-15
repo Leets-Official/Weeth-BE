@@ -151,9 +151,12 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
     }
 
     @Override
-    public void reset(Long userId) {
-        User user = userGetService.find(userId);
-        userUpdateService.reset(user, passwordEncoder);
+    @Transactional
+    public void reset(UserId userId) {
+
+        List<User> users = userGetService.findAll(userId.userId());
+
+        users.forEach(user -> userUpdateService.reset(user, passwordEncoder));
     }
 
 }

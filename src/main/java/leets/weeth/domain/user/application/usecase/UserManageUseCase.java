@@ -22,5 +22,5 @@ public interface UserManageUseCase {
 
     void applyOB(List<UserApplyOB> request);
 
-    void reset(Long userId);
+    void reset(UserId userId);
 }
