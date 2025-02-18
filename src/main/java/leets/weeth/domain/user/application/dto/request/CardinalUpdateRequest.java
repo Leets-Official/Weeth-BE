@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotNull;
 
 public record CardinalUpdateRequest(
         @NotNull Long id,
-        @NotNull Integer cardinalNumber,
         @NotNull Integer year,
         @NotNull Integer semester,
         boolean inProgress
