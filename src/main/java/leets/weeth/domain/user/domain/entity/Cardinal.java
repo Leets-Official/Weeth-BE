@@ -1,6 +1,7 @@
 package leets.weeth.domain.user.domain.entity;
 
 import jakarta.persistence.*;
+import leets.weeth.domain.user.application.dto.request.CardinalUpdateRequest;
 import leets.weeth.global.common.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,4 +25,10 @@ public class Cardinal extends BaseEntity {
     private Integer year;
 
     private Integer semester;
+
+    public void update(CardinalUpdateRequest dto) {
+        this.year = dto.year();
+        this.semester = dto.semester();
+    }
+
 }

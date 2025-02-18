@@ -1,7 +1,7 @@
 package leets.weeth.domain.user.application.usecase;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import leets.weeth.domain.user.application.dto.request.CardinalSaveRequest;
+import leets.weeth.domain.user.application.dto.request.CardinalUpdateRequest;
 import leets.weeth.domain.user.application.dto.response.CardinalResponse;
 import leets.weeth.domain.user.application.mapper.CardinalMapper;
 import leets.weeth.domain.user.domain.entity.Cardinal;
@@ -27,6 +27,13 @@ public class CardinalUseCase {
         cardinalGetService.validateCardinal(dto.cardinalNumber());
 
         cardinalSaveService.save(cardinalMapper.from(dto));
+    }
+
+    @Transactional
+    public void update(CardinalUpdateRequest dto) {
+        Cardinal cardinal = cardinalGetService.find(dto.cardinalNumber());
+
+        cardinal.update(dto);
     }
 
     public List<CardinalResponse> findAll() {
