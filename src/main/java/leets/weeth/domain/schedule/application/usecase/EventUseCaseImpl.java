@@ -37,7 +37,7 @@ public class EventUseCaseImpl implements EventUseCase {
     @Transactional
     public void save(ScheduleDTO.Save dto, Long userId) {
         User user = userGetService.find(userId);
-        cardinalGetService.find(dto.cardinal());
+        cardinalGetService.findByUserSide(dto.cardinal());
 
         eventSaveService.save(mapper.from(dto, user));
     }

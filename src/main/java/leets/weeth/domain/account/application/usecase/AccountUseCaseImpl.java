@@ -12,8 +12,10 @@ import leets.weeth.domain.account.domain.service.AccountSaveService;
 import leets.weeth.domain.file.application.dto.response.FileResponse;
 import leets.weeth.domain.file.application.mapper.FileMapper;
 import leets.weeth.domain.file.domain.service.FileGetService;
+import leets.weeth.domain.user.domain.service.CardinalGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class AccountUseCaseImpl implements AccountUseCase {
     private final AccountGetService accountGetService;
     private final AccountSaveService accountSaveService;
     private final FileGetService fileGetService;
+    private final CardinalGetService cardinalGetService;
     private final AccountMapper accountMapper;
     private final ReceiptMapper receiptMapper;
     private final FileMapper fileMapper;
@@ -40,8 +43,11 @@ public class AccountUseCaseImpl implements AccountUseCase {
     }
 
     @Override
+    @Transactional
     public void save(AccountDTO.Save dto) {
         validate(dto);
+        cardinalGetService.findByAdminSide(dto.cardinal());
+
         accountSaveService.save(accountMapper.from(dto));
     }
 

@@ -35,7 +35,7 @@ public class CardinalUseCase {
 
     @Transactional
     public void update(CardinalUpdateRequest dto) {
-        Cardinal cardinal = cardinalGetService.find(dto.cardinalNumber());
+        Cardinal cardinal = cardinalGetService.findByAdminSide(dto.cardinalNumber());
 
         cardinal.update(dto);
 

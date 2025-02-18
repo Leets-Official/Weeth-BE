@@ -16,7 +16,12 @@ public class CardinalGetService {
 
     private final CardinalRepository cardinalRepository;
 
-    public Cardinal find(Integer cardinal) {
+    public Cardinal findByAdminSide(Integer cardinal) {
+        return cardinalRepository.findByCardinalNumber(cardinal)
+                .orElse(cardinalRepository.save(Cardinal.builder().cardinalNumber(cardinal).build()));
+    }
+
+    public Cardinal findByUserSide(Integer cardinal) {
         return cardinalRepository.findByCardinalNumber(cardinal)
                 .orElseThrow(CardinalNotFoundException::new);
     }

@@ -107,7 +107,7 @@ public class UserUseCaseImpl implements UserUseCase {
             users = userGetService.findAll(pageable);
 
         } else {
-            Cardinal inputCardinal = cardinalGetService.find(cardinal);
+            Cardinal inputCardinal = cardinalGetService.findByUserSide(cardinal);
             users = userGetService.findAll(pageable, inputCardinal);
         }
 
@@ -149,7 +149,7 @@ public class UserUseCaseImpl implements UserUseCase {
     public void apply(SignUp dto) {
         validate(dto);
 
-        Cardinal cardinal = cardinalGetService.find(dto.cardinal());
+        Cardinal cardinal = cardinalGetService.findByUserSide(dto.cardinal());
         User user = mapper.from(dto, passwordEncoder);
         UserCardinal userCardinal = new UserCardinal(user, cardinal);
 
@@ -162,7 +162,7 @@ public class UserUseCaseImpl implements UserUseCase {
     public void socialRegister(Register dto) {
         validate(dto);
 
-        Cardinal cardinal = cardinalGetService.find(dto.cardinal());
+        Cardinal cardinal = cardinalGetService.findByUserSide(dto.cardinal());
 
         User user = mapper.from(dto);
         UserCardinal userCardinal = new UserCardinal(user, cardinal);
