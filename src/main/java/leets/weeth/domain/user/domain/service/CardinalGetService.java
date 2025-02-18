@@ -31,6 +31,11 @@ public class CardinalGetService {
                 .orElseThrow(CardinalNotFoundException::new);
     }
 
+    public Cardinal findById(long cardinalId) {
+        return cardinalRepository.findById(cardinalId)
+                .orElseThrow(CardinalNotFoundException::new);
+    }
+
     public List<Cardinal> findAll() {
         return cardinalRepository.findAll();
     }
