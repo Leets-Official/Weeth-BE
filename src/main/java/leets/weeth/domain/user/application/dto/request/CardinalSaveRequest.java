@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 public record CardinalSaveRequest (
         @NotNull Integer cardinalNumber,
         @NotNull Integer year,
-        @NotNull Integer semester
+        @NotNull Integer semester,
+        boolean inProgress
 ){
 }

@@ -26,7 +26,11 @@ public class CardinalUseCase {
     public void save(CardinalSaveRequest dto) {
         cardinalGetService.validateCardinal(dto.cardinalNumber());
 
-        cardinalSaveService.save(cardinalMapper.from(dto));
+        Cardinal cardinal = cardinalSaveService.save(cardinalMapper.from(dto));
+
+        if (dto.inProgress()) {
+            updateCardinalStatus(cardinal);
+        }
     }
 
     @Transactional
@@ -34,6 +38,10 @@ public class CardinalUseCase {
         Cardinal cardinal = cardinalGetService.find(dto.cardinalNumber());
 
         cardinal.update(dto);
+
+        if (dto.inProgress()) {
+            updateCardinalStatus(cardinal);
+        }
     }
 
     public List<CardinalResponse> findAll() {
@@ -41,5 +49,15 @@ public class CardinalUseCase {
         return cardinals.stream()
                 .map(cardinalMapper::to)
                 .toList();
+    }
+
+    private void updateCardinalStatus(Cardinal cardinal) {
+        List<Cardinal> cardinals = cardinalGetService.findInProgress();
+
+        if (!cardinals.isEmpty()) {
+            cardinals.forEach(Cardinal::done);
+        }
+
+        cardinal.inProgress();
     }
 }

@@ -3,6 +3,7 @@ package leets.weeth.domain.user.domain.service;
 import leets.weeth.domain.user.application.exception.CardinalNotFoundException;
 import leets.weeth.domain.user.application.exception.DuplicateCardinalException;
 import leets.weeth.domain.user.domain.entity.Cardinal;
+import leets.weeth.domain.user.domain.entity.enums.CardinalStatus;
 import leets.weeth.domain.user.domain.repository.CardinalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,10 @@ public class CardinalGetService {
 
     public List<Cardinal> findAll() {
         return cardinalRepository.findAll();
+    }
+
+    public List<Cardinal> findInProgress() {
+        return cardinalRepository.findAllByStatus(CardinalStatus.IN_PROGRESS);
     }
 
     public void validateCardinal(Integer cardinal) {

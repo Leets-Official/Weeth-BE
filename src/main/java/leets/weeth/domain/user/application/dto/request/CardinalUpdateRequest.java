@@ -6,6 +6,7 @@ public record CardinalUpdateRequest(
         @NotNull Long id,
         @NotNull Integer cardinalNumber,
         @NotNull Integer year,
-        @NotNull Integer semester
+        @NotNull Integer semester,
+        boolean inProgress
 ) {
 }
