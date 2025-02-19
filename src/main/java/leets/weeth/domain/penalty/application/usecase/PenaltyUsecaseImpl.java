@@ -64,7 +64,7 @@ public class PenaltyUsecaseImpl implements PenaltyUsecase{
     @Override
     public PenaltyDTO.Response find(Long userId) {
         User user = userGetService.find(userId);
-        List<Penalty> penalties = penaltyFindService.findAll();
+        List<Penalty> penalties = penaltyFindService.findAll(userId);
 
         return toPenaltyDto(userId, penalties);
     }
