@@ -8,6 +8,8 @@ import leets.weeth.domain.penalty.domain.service.PenaltyDeleteService;
 import leets.weeth.domain.penalty.domain.service.PenaltyFindService;
 import leets.weeth.domain.penalty.domain.service.PenaltySaveService;
 import leets.weeth.domain.user.domain.entity.User;
+import leets.weeth.domain.user.domain.entity.UserCardinal;
+import leets.weeth.domain.user.domain.service.UserCardinalGetService;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ public class PenaltyUsecaseImpl implements PenaltyUsecase{
     private final PenaltyDeleteService penaltyDeleteService;
 
     private final UserGetService userGetService;
+
+    private final UserCardinalGetService userCardinalGetService;
 
     private final PenaltyMapper mapper;
 
@@ -80,11 +84,13 @@ public class PenaltyUsecaseImpl implements PenaltyUsecase{
 
     private PenaltyDTO.Response toPenaltyDto(Long userId, List<Penalty> penalties) {
         User user = userGetService.find(userId);
+        List<UserCardinal> userCardinals = userCardinalGetService.getUserCardinals(user);
+
         List<PenaltyDTO.Penalties> penaltyDTOs = penalties.stream()
                 .map(mapper::toPenalties)
                 .toList();
 
-        return mapper.toPenaltyDto(user, penaltyDTOs);
+        return mapper.toPenaltyDto(user, penaltyDTOs, userCardinals);
     }
 
 }

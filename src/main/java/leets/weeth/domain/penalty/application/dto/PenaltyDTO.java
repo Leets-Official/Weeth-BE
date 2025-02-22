@@ -24,6 +24,7 @@ public class PenaltyDTO {
         Long userId,
         Integer penaltyCount,
         String name,
+        List<Integer> cardinals,
         List<PenaltyDTO.Penalties> Penalties
     ){}
 

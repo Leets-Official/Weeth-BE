@@ -37,7 +37,7 @@ public class PenaltyAdminController {
     @GetMapping
     @Operation(summary="전체 패널티 조회")
     public CommonResponse<List<PenaltyDTO.Response>> findAll(){
-        return CommonResponse.createSuccess(PENALTY_FIND_ALL_SUCCESS.getMessage(),penaltyUsecase.find());
+        return CommonResponse.createSuccess(PENALTY_FIND_ALL_SUCCESS.getMessage(), penaltyUsecase.find());
     }
 
     @DeleteMapping
