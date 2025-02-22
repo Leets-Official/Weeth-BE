@@ -11,7 +11,7 @@ public class CardinalSaveService {
 
     private final CardinalRepository cardinalRepository;
 
-    public void save(Cardinal cardinal) {
-        cardinalRepository.save(cardinal);
+    public Cardinal save(Cardinal cardinal) {
+        return cardinalRepository.save(cardinal);
     }
 }

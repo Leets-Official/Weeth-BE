@@ -135,7 +135,7 @@ public class UserManageUseCaseImpl implements UserManageUseCase {
     public void applyOB(List<UserApplyOB> requests) {
         requests.forEach(request -> {
             User user = userGetService.find(request.userId());
-            Cardinal nextCardinal = cardinalGetService.find(request.cardinal());
+            Cardinal nextCardinal = cardinalGetService.findByAdminSide(request.cardinal());
 
             if (userCardinalGetService.notContains(user, nextCardinal)) {
                 if (userCardinalGetService.isCurrent(user, nextCardinal)) {

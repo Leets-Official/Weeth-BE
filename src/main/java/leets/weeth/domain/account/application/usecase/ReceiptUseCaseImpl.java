@@ -11,6 +11,7 @@ import leets.weeth.domain.file.domain.entity.File;
 import leets.weeth.domain.file.domain.service.FileDeleteService;
 import leets.weeth.domain.file.domain.service.FileGetService;
 import leets.weeth.domain.file.domain.service.FileSaveService;
+import leets.weeth.domain.user.domain.service.CardinalGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,8 @@ public class ReceiptUseCaseImpl implements ReceiptUseCase {
     private final FileSaveService fileSaveService;
     private final FileDeleteService fileDeleteService;
 
+    private final CardinalGetService cardinalGetService;
+
     private final ReceiptMapper mapper;
     private final FileMapper fileMapper;
 
@@ -37,6 +40,8 @@ public class ReceiptUseCaseImpl implements ReceiptUseCase {
     @Override
     @Transactional
     public void save(ReceiptDTO.Save dto) {
+        cardinalGetService.findByAdminSide(dto.cardinal());
+
         Account account = accountGetService.find(dto.cardinal());
         Receipt receipt = receiptSaveService.save(mapper.from(dto, account));
         account.spend(receipt);

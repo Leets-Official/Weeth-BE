@@ -77,7 +77,7 @@ public class MeetingUseCaseImpl implements MeetingUseCase {
     @Transactional
     public void save(ScheduleDTO.Save dto, Long userId) {
         User user = userGetService.find(userId);
-        Cardinal cardinal = cardinalGetService.find(dto.cardinal());
+        Cardinal cardinal = cardinalGetService.findByUserSide(dto.cardinal());
 
         List<User> userList = userGetService.findAllByCardinal(cardinal);
 

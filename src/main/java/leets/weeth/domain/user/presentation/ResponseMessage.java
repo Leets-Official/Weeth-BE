@@ -28,7 +28,8 @@ public enum ResponseMessage {
 
     // CardinalController 관련
     CARDINAL_FIND_ALL_SUCCESS("전체 기수 조회에 성공했습니다."),
-    CARDINAL_SAVE_SUCCESS("기수 저장에 성공했습니다.");
+    CARDINAL_SAVE_SUCCESS("기수 저장에 성공했습니다."),
+    CARDINAL_UPDATE_SUCCESS("기수 수정에 성공했습니다.");
 
     private final String message;
 }

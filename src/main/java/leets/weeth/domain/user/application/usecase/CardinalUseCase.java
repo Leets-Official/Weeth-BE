@@ -1,7 +1,7 @@
 package leets.weeth.domain.user.application.usecase;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import leets.weeth.domain.user.application.dto.request.CardinalSaveRequest;
+import leets.weeth.domain.user.application.dto.request.CardinalUpdateRequest;
 import leets.weeth.domain.user.application.dto.response.CardinalResponse;
 import leets.weeth.domain.user.application.mapper.CardinalMapper;
 import leets.weeth.domain.user.domain.entity.Cardinal;
@@ -26,7 +26,22 @@ public class CardinalUseCase {
     public void save(CardinalSaveRequest dto) {
         cardinalGetService.validateCardinal(dto.cardinalNumber());
 
-        cardinalSaveService.save(cardinalMapper.from(dto));
+        Cardinal cardinal = cardinalSaveService.save(cardinalMapper.from(dto));
+
+        if (dto.inProgress()) {
+            updateCardinalStatus(cardinal);
+        }
+    }
+
+    @Transactional
+    public void update(CardinalUpdateRequest dto) {
+        Cardinal cardinal = cardinalGetService.findById(dto.id());
+
+        cardinal.update(dto);
+
+        if (dto.inProgress()) {
+            updateCardinalStatus(cardinal);
+        }
     }
 
     public List<CardinalResponse> findAll() {
@@ -34,5 +49,15 @@ public class CardinalUseCase {
         return cardinals.stream()
                 .map(cardinalMapper::to)
                 .toList();
+    }
+
+    private void updateCardinalStatus(Cardinal cardinal) {
+        List<Cardinal> cardinals = cardinalGetService.findInProgress();
+
+        if (!cardinals.isEmpty()) {
+            cardinals.forEach(Cardinal::done);
+        }
+
+        cardinal.inProgress();
     }
 }

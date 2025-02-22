@@ -3,6 +3,7 @@ package leets.weeth.domain.user.domain.service;
 import leets.weeth.domain.user.application.exception.CardinalNotFoundException;
 import leets.weeth.domain.user.application.exception.DuplicateCardinalException;
 import leets.weeth.domain.user.domain.entity.Cardinal;
+import leets.weeth.domain.user.domain.entity.enums.CardinalStatus;
 import leets.weeth.domain.user.domain.repository.CardinalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,12 @@ public class CardinalGetService {
 
     private final CardinalRepository cardinalRepository;
 
-    public Cardinal find(Integer cardinal) {
+    public Cardinal findByAdminSide(Integer cardinal) {
+        return cardinalRepository.findByCardinalNumber(cardinal)
+                .orElse(cardinalRepository.save(Cardinal.builder().cardinalNumber(cardinal).build()));
+    }
+
+    public Cardinal findByUserSide(Integer cardinal) {
         return cardinalRepository.findByCardinalNumber(cardinal)
                 .orElseThrow(CardinalNotFoundException::new);
     }
@@ -25,8 +31,17 @@ public class CardinalGetService {
                 .orElseThrow(CardinalNotFoundException::new);
     }
 
+    public Cardinal findById(long cardinalId) {
+        return cardinalRepository.findById(cardinalId)
+                .orElseThrow(CardinalNotFoundException::new);
+    }
+
     public List<Cardinal> findAll() {
         return cardinalRepository.findAll();
+    }
+
+    public List<Cardinal> findInProgress() {
+        return cardinalRepository.findAllByStatus(CardinalStatus.IN_PROGRESS);
     }
 
     public void validateCardinal(Integer cardinal) {
