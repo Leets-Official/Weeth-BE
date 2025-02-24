@@ -18,7 +18,7 @@ public class CardinalGetService {
 
     public Cardinal findByAdminSide(Integer cardinal) {
         return cardinalRepository.findByCardinalNumber(cardinal)
-                .orElse(cardinalRepository.save(Cardinal.builder().cardinalNumber(cardinal).build()));
+                .orElseGet(() -> cardinalRepository.save(Cardinal.builder().cardinalNumber(cardinal).build()));
     }
 
     public Cardinal findByUserSide(Integer cardinal) {
