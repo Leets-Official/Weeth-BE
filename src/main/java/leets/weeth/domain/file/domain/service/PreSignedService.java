@@ -23,9 +23,6 @@ public class PreSignedService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("${cloud.aws.region.static}")
-    private String region;
-
     public UrlResponse generateUrl(String fileName) {
         String key = generateKey(fileName);
 
@@ -46,13 +43,11 @@ public class PreSignedService {
         return fileMapper.toUrlResponse(fileName, putUrl);
     }
 
-    public String generateGetUrl(String key) {
-        return String.format("https://%s.s3.%s.amazonaws.com/%s", bucket, region, key);
-    }
+    // 파일 이름을 고유하게 생성하는 메서드(확장자 포함)
+    private String generateKey(String fileName) {
+        String key = UUID.randomUUID().toString();
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
 
-    // 파일 이름을 고유하게 생성하는 메서드
-    private String generateKey(String originalFileName) {
-        String uuid = UUID.randomUUID().toString();
-        return uuid + "_" + originalFileName.replaceAll("\\s+", "_");
+        return key + "." + extension;
     }
 }
