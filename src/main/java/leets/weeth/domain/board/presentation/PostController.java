@@ -19,7 +19,7 @@ import static leets.weeth.domain.board.presentation.ResponseMessage.*;
 @Tag(name = "BOARD", description = "게시판 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/posts")
+@RequestMapping("/api/v1/boards")
 public class PostController {
 
     private final PostUsecase postUsecase;
@@ -39,25 +39,25 @@ public class PostController {
         return CommonResponse.createSuccess(POST_FIND_ALL_SUCCESS.getMessage(), postUsecase.findPosts(pageNumber, pageSize));
     }
 
-    @GetMapping("/{postId}")
+    @GetMapping("/{boardId}")
     @Operation(summary="특정 게시글 조회")
-    public CommonResponse<PostDTO.Response> findPost(@PathVariable Long postId) {
-        return CommonResponse.createSuccess(POST_FIND_BY_ID_SUCCESS.getMessage(),postUsecase.findPost(postId));
+    public CommonResponse<PostDTO.Response> findPost(@PathVariable Long boardId) {
+        return CommonResponse.createSuccess(POST_FIND_BY_ID_SUCCESS.getMessage(),postUsecase.findPost(boardId));
     }
 
-    @PatchMapping(value = "/{postId}")
+    @PatchMapping(value = "/{boardId}")
     @Operation(summary="특정 게시글 수정")
-    public CommonResponse<String> update(@PathVariable Long postId,
+    public CommonResponse<String> update(@PathVariable Long boardId,
                                          @RequestBody @Valid PostDTO.Update dto,
                                          @Parameter(hidden = true) @CurrentUser Long userId) throws UserNotMatchException {
-        postUsecase.update(postId, dto, userId);
+        postUsecase.update(boardId, dto, userId);
         return CommonResponse.createSuccess(POST_UPDATED_SUCCESS.getMessage());
     }
 
-    @DeleteMapping("/{postId}")
+    @DeleteMapping("/{boardId}")
     @Operation(summary="특정 게시글 삭제")
-    public CommonResponse<String> delete(@PathVariable Long postId, @Parameter(hidden = true) @CurrentUser Long userId) throws UserNotMatchException {
-        postUsecase.delete(postId, userId);
+    public CommonResponse<String> delete(@PathVariable Long boardId, @Parameter(hidden = true) @CurrentUser Long userId) throws UserNotMatchException {
+        postUsecase.delete(boardId, userId);
         return CommonResponse.createSuccess(POST_DELETED_SUCCESS.getMessage());
     }
 
