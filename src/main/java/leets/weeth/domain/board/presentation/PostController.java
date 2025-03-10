@@ -19,7 +19,7 @@ import static leets.weeth.domain.board.presentation.ResponseMessage.*;
 @Tag(name = "BOARD", description = "게시판 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/boards")
+@RequestMapping("/api/v1/board")
 public class PostController {
 
     private final PostUsecase postUsecase;

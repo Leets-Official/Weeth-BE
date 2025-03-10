@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "COMMENT-BOARD", description = "게시판 댓글 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/boards/{boardId}/comments")
+@RequestMapping("/api/v1/board/{boardId}/comments")
 public class PostCommentController {
 
     private final PostCommentUsecase postCommentUsecase;
