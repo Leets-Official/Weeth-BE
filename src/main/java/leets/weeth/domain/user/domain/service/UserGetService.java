@@ -41,14 +41,6 @@ public class UserGetService {
         return !userRepository.existsByEmail(email);
     }
 
-    public List<User> findAllByStatus(Status status) {
-        return userRepository.findAllByStatusOrderByName(status);
-    }
-
-    public List<User> findAll() {
-        return userRepository.findAllByOrderByNameAsc();
-    }
-
     public List<User> findAll(List<Long> userId) {
         return userRepository.findAllById(userId);
     }
@@ -58,11 +50,23 @@ public class UserGetService {
     }
 
     public Slice<User> findAll(Pageable pageable) {
-        return userRepository.findAllByStatusOrderedByCardinalAndName(Status.ACTIVE, pageable);
+        Slice<User> users = userRepository.findAllByStatusOrderedByCardinalAndName(Status.ACTIVE, pageable);
+
+        if (users.isEmpty()) {
+            throw new UserNotFoundException();
+        }
+
+        return users;
     }
 
     public Slice<User> findAll(Pageable pageable, Cardinal cardinal) {
-        return userRepository.findAllByCardinalOrderByNameAsc(Status.ACTIVE, cardinal, pageable);
+        Slice<User> users = userRepository.findAllByCardinalOrderByNameAsc(Status.ACTIVE, cardinal, pageable);
+
+        if (users.isEmpty()) {
+            throw new UserNotFoundException();
+        }
+
+        return users;
     }
 
     public boolean validateStudentId(String studentId) {
