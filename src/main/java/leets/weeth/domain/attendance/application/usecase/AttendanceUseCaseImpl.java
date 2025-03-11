@@ -113,9 +113,11 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
             if (attendance.getStatus() == Status.ATTEND) {
                 attendance.close();
                 user.removeAttend();
+                user.absent();
             } else {
                 attendance.attend();
                 user.removeAbsent();
+                user.attend();
             }
         });
     }
