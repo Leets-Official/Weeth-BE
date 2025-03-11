@@ -92,6 +92,8 @@ public class PostUseCaseImpl implements PostUsecase {
         if (pageNumber < 0) {
             throw new PageNotFoundException();
         }
+        keyword = keyword.strip();  // 문자열 앞뒤 공백 제거
+
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Slice<Post> posts = postFindService.search(keyword, pageable);
 
