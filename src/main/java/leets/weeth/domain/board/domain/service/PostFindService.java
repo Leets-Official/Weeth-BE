@@ -30,7 +30,7 @@ public class PostFindService {
     }
 
     public Slice<Post> search(String keyword, Pageable pageable) {
-        return postRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
+        return postRepository.findByTitleContainingOrContentContainingIgnoreCase(keyword, keyword, pageable);
     }
 
 }
