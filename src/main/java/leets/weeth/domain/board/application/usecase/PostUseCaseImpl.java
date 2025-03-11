@@ -88,6 +88,17 @@ public class PostUseCaseImpl implements PostUsecase {
     }
 
     @Override
+    public Slice<PostDTO.ResponseAll> searchPost(String keyword, int pageNumber, int pageSize){
+        if (pageNumber < 0) {
+            throw new PageNotFoundException();
+        }
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        Slice<Post> posts = postFindService.search(keyword, pageable);
+
+        return posts.map(post->mapper.toAll(post, checkFileExistsByPost(post.id)));
+    }
+
+    @Override
     @Transactional
     public void update(Long postId, PostDTO.Update dto, Long userId) {
         Post post = validateOwner(postId, userId);

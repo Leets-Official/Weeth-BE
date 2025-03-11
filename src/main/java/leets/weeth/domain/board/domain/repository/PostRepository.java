@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     Slice<Post> findPageBy(Pageable page);
+
+	Slice<Post> findByTitleContainingOrContentContaining(String keyword1, String keyword2, Pageable pageable);
 }

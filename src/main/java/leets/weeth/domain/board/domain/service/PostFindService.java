@@ -29,4 +29,8 @@ public class PostFindService {
         return postRepository.findPageBy(pageable);
     }
 
+    public Slice<Post> search(String keyword, Pageable pageable) {
+        return postRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
+    }
+
 }
