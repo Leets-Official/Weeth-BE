@@ -1,6 +1,7 @@
 package leets.weeth.domain.board.application.usecase;
 
 import leets.weeth.domain.board.application.dto.PostDTO;
+import leets.weeth.domain.board.application.exception.NoSearchResultException;
 import leets.weeth.domain.board.application.exception.PageNotFoundException;
 import leets.weeth.domain.board.application.mapper.PostMapper;
 import leets.weeth.domain.board.domain.entity.Post;
@@ -96,6 +97,10 @@ public class PostUseCaseImpl implements PostUsecase {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Slice<Post> posts = postFindService.search(keyword, pageable);
+
+        if(posts.isEmpty()){
+            throw new NoSearchResultException();
+        }
 
         return posts.map(post->mapper.toAll(post, checkFileExistsByPost(post.id)));
     }
