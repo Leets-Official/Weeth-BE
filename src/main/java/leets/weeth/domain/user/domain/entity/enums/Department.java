@@ -20,7 +20,7 @@ public enum Department {
     KOREAN_LANGUAGE("한국어문학과"),
     URBAN_PLANNING("도시계획학전공"),
     GLOBAL_BUSINESS("글로벌경영학과"),
-    FINANCIAL_MATHEMATICS("금융수학과"),
+    FINANCIAL_MATHEMATICS("금융수학전공"),
     HEALTHCARE_MANAGEMENT("의료산업경영학과"); // 더 필요한 학과는 추후 추가할 예정
 
     private final String value;
