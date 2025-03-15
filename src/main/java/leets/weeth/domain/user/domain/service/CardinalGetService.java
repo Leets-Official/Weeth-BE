@@ -37,7 +37,7 @@ public class CardinalGetService {
     }
 
     public List<Cardinal> findAll() {
-        return cardinalRepository.findAllByOrderByCardinalNumberDesc();
+        return cardinalRepository.findAllByOrderByCardinalNumberAsc();
     }
 
     public List<Cardinal> findInProgress() {

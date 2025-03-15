@@ -15,5 +15,5 @@ public interface CardinalRepository extends JpaRepository<Cardinal, Long> {
 
     List<Cardinal> findAllByStatus(CardinalStatus cardinalStatus);
 
-    List<Cardinal> findAllByOrderByCardinalNumberDesc();
+    List<Cardinal> findAllByOrderByCardinalNumberAsc();
 }
