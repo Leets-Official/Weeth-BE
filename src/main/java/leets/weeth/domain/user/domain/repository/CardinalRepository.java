@@ -14,4 +14,6 @@ public interface CardinalRepository extends JpaRepository<Cardinal, Long> {
     Optional<Cardinal> findByYearAndSemester(Integer year, Integer semester);
 
     List<Cardinal> findAllByStatus(CardinalStatus cardinalStatus);
+
+    List<Cardinal> findAllByOrderByCardinalNumberDesc();
 }

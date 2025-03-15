@@ -18,7 +18,7 @@ public class UserCardinalGetService {
     private final UserCardinalRepository userCardinalRepository;
 
     public List<UserCardinal> getUserCardinals(User user) {
-        return userCardinalRepository.findAllByUser(user);
+        return userCardinalRepository.findAllByUserOrderByCardinalCardinalNumberDesc(user);
     }
 
     public List<UserCardinal> findAll() {
