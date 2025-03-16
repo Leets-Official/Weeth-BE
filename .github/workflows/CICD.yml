@@ -1,4 +1,4 @@
-name: Weeth-BE DEV CI/CD
+name: Weeth-BE PROD CI/CD
 
 on:
   push:
