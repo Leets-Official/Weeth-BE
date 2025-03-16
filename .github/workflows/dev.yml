@@ -45,8 +45,8 @@ jobs:
       - name: Docker build & push
         run: |
           docker login -u ${{ secrets.DEV_DOCKER_USER_EMAIL }} -p ${{ secrets.DEV_DOCKER_USER_TOKEN }}
-          docker build -f Dockerfile-dev -t ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth .
-          docker push ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+          docker build -f Dockerfile-dev -t ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth-dev .
+          docker push ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth-dev
 
   deploy:
     runs-on: ubuntu-latest
@@ -79,11 +79,11 @@ jobs:
               echo "** ${GREEN_PORT} 포트에서 GREEN 컨테이너 실행 준비"
             
               # Docker 이미지 pull
-              sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+              sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth-dev
             
               sudo docker run --name $GREEN_NAME -d -p $GREEN_PORT:$GREEN_PORT \
                 --env-file ./weeth-dev.env -e TZ=Asia/Seoul -e SERVER_PORT=$GREEN_PORT \
-                ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+                ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth-dev
               BEFORE_NAME=$BLUE_NAME
               AFTER_NAME=$GREEN_NAME
               BEFORE_PORT=$BLUE_PORT
@@ -93,11 +93,11 @@ jobs:
               echo "** ${BLUE_PORT} 포트에서 BLUE 컨테이너 실행 준비"
               
               # Docker 이미지 pull
-              sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+              sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth-dev
               
               sudo docker run --name $BLUE_NAME -d -p $BLUE_PORT:$BLUE_PORT \
                 --env-file ./weeth-dev.env -e TZ=Asia/Seoul -e SERVER_PORT=$BLUE_PORT \
-                ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+                ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth-dev
               BEFORE_NAME=$GREEN_NAME
               AFTER_NAME=$BLUE_NAME
               BEFORE_PORT=$GREEN_PORT
@@ -107,11 +107,11 @@ jobs:
               echo "** 초기 상태: BLUE 컨테이너 실행 준비"
             
               # Docker 이미지 pull
-              sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+              sudo docker pull ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth-dev
             
               sudo docker run --name $BLUE_NAME -d -p $BLUE_PORT:$BLUE_PORT \
                 --env-file ./weeth-dev.env -e TZ=Asia/Seoul -e SERVER_PORT=$BLUE_PORT  \
-                ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth
+                ${{ secrets.DEV_DOCKER_USER_NAME }}/weeth-dev
               BEFORE_NAME=$GREEN_NAME
               AFTER_NAME=$BLUE_NAME
               BEFORE_PORT=$GREEN_PORT
@@ -138,23 +138,12 @@ jobs:
               fi
             done
             
-            # 리버스 프록시 설정 업데이트
-            REVERSE_PROXY_CONFIG=$(cat <<EOF
-            {
-              admin 0.0.0.0:2020
-            }
-            3.38.193.157.nip.io {
-              reverse_proxy localhost:${AFTER_PORT}
-            }
-            EOF
-            )
-            
             # Health-Check 결과 확인
             if [ "$HEALTHY" = true ]; then
               echo "** Health-Check 성공: ${AFTER_NAME} 컨테이너 정상 작동"
               
               # 리버스 프록시 설정 업데이트
-              echo "$REVERSE_PROXY_CONFIG" | sudo tee /etc/caddy/Caddyfile
+              sudo bash update-proxy.sh "$AFTER_PORT"
             
               # Caddy 재시작
               echo "** Caddy 서비스 재시작"
