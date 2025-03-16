@@ -97,7 +97,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "https://3.38.193.157.nip.io", "https://develop.d3dk7ck92jhexu.amplifyapp.com"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "https://dev.weeth.site", "https://develop.d3dk7ck92jhexu.amplifyapp.com"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setExposedHeaders(Arrays.asList("Authorization", "Authorization_refresh"));
