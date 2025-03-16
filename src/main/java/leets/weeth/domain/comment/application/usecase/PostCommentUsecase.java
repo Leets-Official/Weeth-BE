@@ -1,7 +1,7 @@
 package leets.weeth.domain.comment.application.usecase;
 
 import leets.weeth.domain.comment.application.dto.CommentDTO;
-import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
+import leets.weeth.domain.user.application.exception.UserNotMatchException;
 
 public interface PostCommentUsecase {
 

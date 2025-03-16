@@ -9,4 +9,6 @@ import java.util.List;
 public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findByStartLessThanEqualAndEndGreaterThanEqualOrderByStartAsc(LocalDateTime end, LocalDateTime start);
+
+    List<Event> findAllByCardinal(int cardinal);
 }

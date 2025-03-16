@@ -30,8 +30,8 @@ public class Notice extends Board {
         comments.add(comment);
     }
 
-    public void update(NoticeDTO.Update dto, List<String> fileUrls){
-        this.updateUpperClass(dto, fileUrls);
+    public void update(NoticeDTO.Update dto){
+        this.updateUpperClass(dto);
     }
 
 }

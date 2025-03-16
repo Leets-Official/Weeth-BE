@@ -12,9 +12,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NoticeUpdateService {
 
-    @Transactional
-    public void update(Notice notice, NoticeDTO.Update dto, List<String> fileUrls){
-        notice.update(dto, fileUrls);
+    public void update(Notice notice, NoticeDTO.Update dto){
+        notice.update(dto);
     }
 
 }

@@ -1,24 +1,37 @@
 package leets.weeth.domain.board.application.usecase;
 
 import leets.weeth.domain.board.application.dto.NoticeDTO;
+import leets.weeth.domain.board.application.exception.PageNotFoundException;
 import leets.weeth.domain.board.application.mapper.NoticeMapper;
 import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.board.domain.service.NoticeDeleteService;
 import leets.weeth.domain.board.domain.service.NoticeFindService;
 import leets.weeth.domain.board.domain.service.NoticeSaveService;
 import leets.weeth.domain.board.domain.service.NoticeUpdateService;
-import leets.weeth.domain.file.service.FileSaveService;
+import leets.weeth.domain.comment.application.dto.CommentDTO;
+import leets.weeth.domain.comment.application.mapper.CommentMapper;
+import leets.weeth.domain.comment.domain.entity.Comment;
+import leets.weeth.domain.file.application.dto.response.FileResponse;
+import leets.weeth.domain.file.application.mapper.FileMapper;
+import leets.weeth.domain.file.domain.entity.File;
+import leets.weeth.domain.file.domain.service.FileDeleteService;
+import leets.weeth.domain.file.domain.service.FileGetService;
+import leets.weeth.domain.file.domain.service.FileSaveService;
+import leets.weeth.domain.user.application.exception.UserNotMatchException;
 import leets.weeth.domain.user.domain.entity.User;
 import leets.weeth.domain.user.domain.service.UserGetService;
-import leets.weeth.global.common.error.exception.custom.NoticeNotFoundException;
-import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,73 +43,107 @@ public class NoticeUsecaseImpl implements NoticeUsecase {
     private final NoticeDeleteService noticeDeleteService;
 
     private final UserGetService userGetService;
+
     private final FileSaveService fileSaveService;
+    private final FileGetService fileGetService;
+    private final FileDeleteService fileDeleteService;
 
     private final NoticeMapper mapper;
+    private final CommentMapper commentMapper;
+    private final FileMapper fileMapper;
 
     @Override
-    public void save(NoticeDTO.Save request, List<MultipartFile> files, Long userId) {
+    @Transactional
+    public void save(NoticeDTO.Save request, Long userId) {
         User user = userGetService.find(userId);
 
-        List<String> fileUrls;
-        fileUrls = fileSaveService.uploadFiles(files);
-        noticeSaveService.save(mapper.fromNoticeDto(request, fileUrls, user));
+        Notice notice = mapper.fromNoticeDto(request, user);
+        noticeSaveService.save(notice);
+
+        List<File> files = fileMapper.toFileList(request.files(), notice);
+        fileSaveService.save(files);
     }
 
     @Override
     public NoticeDTO.Response findNotice(Long noticeId) {
         Notice notice = noticeFindService.find(noticeId);
-        return mapper.toNoticeDto(notice);
-    }
 
-    @Override
-    public List<NoticeDTO.ResponseAll> findNotices(Long noticeId, Integer count) {
-
-        Long finalNoticeId = noticeFindService.findFinalNoticeId();
-
-        // 첫번째 요청인 경우
-        if(noticeId==null){
-            noticeId = finalNoticeId + 1;
-        }
-
-        // postId가 1 이하이거나 최대값보다 클경우
-        if(noticeId < 1 || noticeId > finalNoticeId + 1){
-            throw new NoticeNotFoundException();
-        }
-
-        Pageable pageable = PageRequest.of(0, count); // 첫 페이지, 페이지당 15개 게시글
-
-        List<Notice> notices = noticeFindService.findRecentNotices(noticeId, pageable);
-
-        return notices.stream()
-                .map(mapper::toAll)
+        List<FileResponse> response = getFiles(noticeId).stream()
+                .map(fileMapper::toFileResponse)
                 .toList();
+
+        return mapper.toNoticeDto(notice, response, filterParentComments(notice.getComments()));
     }
 
     @Override
-    public void update(Long noticeId, NoticeDTO.Update dto, List<MultipartFile> files, Long userId) throws UserNotMatchException {
+    public Slice<NoticeDTO.ResponseAll> findNotices(int pageNumber, int pageSize) {
+        if (pageNumber < 0) {
+            throw new PageNotFoundException();
+        }
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id")); // id를 기준으로 내림차순
+        Slice<Notice> notices = noticeFindService.findRecentNotices(pageable);
+        return notices.map(notice->mapper.toAll(notice, checkFileExistsByNotice(notice.id)));
+    }
+
+    @Override
+    @Transactional
+    public void update(Long noticeId, NoticeDTO.Update dto, Long userId) {
         Notice notice = validateOwner(noticeId, userId);
 
-        List<String> fileUrls = notice.getFileUrls();
-        List<String> uploadedFileUrls = fileSaveService.uploadFiles(files);
+        List<File> fileList = getFiles(noticeId);
+        fileDeleteService.delete(fileList);
 
-        fileUrls.addAll(uploadedFileUrls);
+        List<File> files = fileMapper.toFileList(dto.files(), notice);
+        fileSaveService.save(files);
 
-        noticeUpdateService.update(notice, dto, fileUrls);
+        noticeUpdateService.update(notice, dto);
     }
 
     @Override
-    public void delete(Long noticeId, Long userId) throws UserNotMatchException {
+    @Transactional
+    public void delete(Long noticeId, Long userId) {
         validateOwner(noticeId, userId);
+
+        List<File> fileList = getFiles(noticeId);
+        fileDeleteService.delete(fileList);
+
         noticeDeleteService.delete(noticeId);
     }
 
-    private Notice validateOwner(Long noticeId, Long userId) throws UserNotMatchException {
+    private List<File> getFiles(Long noticeId) {
+        return fileGetService.findAllByNotice(noticeId);
+    }
+
+    private Notice validateOwner(Long noticeId, Long userId) {
         Notice notice = noticeFindService.find(noticeId);
         if (!notice.getUser().getId().equals(userId)) {
             throw new UserNotMatchException();
         }
         return notice;
+    }
+
+    private boolean checkFileExistsByNotice(Long noticeId){
+        return !fileGetService.findAllByNotice(noticeId).isEmpty();
+    }
+
+    private List<CommentDTO.Response> filterParentComments(List<Comment> comments) {
+        Map<Long, List<Comment>> commentMap = comments.stream()
+                .filter(comment -> comment.getParent() != null)
+                .collect(Collectors.groupingBy(comment -> comment.getParent().getId()));
+
+        return comments.stream()
+                .filter(comment -> comment.getParent() == null) // 부모 댓글만 가져오기
+                .map(parent -> mapToDtoWithChildren(parent, commentMap))
+                .toList();
+    }
+
+    private CommentDTO.Response mapToDtoWithChildren(Comment comment, Map<Long, List<Comment>> commentMap) {
+        List<CommentDTO.Response> children = commentMap.getOrDefault(comment.getId(), Collections.emptyList())
+                .stream()
+                .map(child -> mapToDtoWithChildren(child, commentMap))
+                .collect(Collectors.toList());
+
+        return commentMapper.toCommentDto(comment, children);
     }
 
 }

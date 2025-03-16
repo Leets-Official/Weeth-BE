@@ -2,84 +2,41 @@ package leets.weeth.global.auth.jwt.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import leets.weeth.domain.user.domain.repository.UserRepository;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import leets.weeth.global.auth.jwt.application.dto.JwtDto;
+import leets.weeth.global.auth.jwt.exception.TokenNotFoundException;
+import leets.weeth.global.common.response.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.io.IOException;
 import java.util.Optional;
 
-@Service
-@RequiredArgsConstructor
-@Getter
 @Slf4j
+@Service
 public class JwtService {
+
+    private static final String EMAIL_CLAIM = "email";
+    private static final String ID_CLAIM = "id";
+    private static final String ROLE_CLAIM = "role";
+    private static final String BEARER = "Bearer ";
+    private static final String LOGIN_SUCCESS_MESSAGE = "자체 로그인 성공.";
 
     @Value("${weeth.jwt.key}")
     private String key;
-
-    @Value("${weeth.jwt.access.expiration}")
-    private Long accessTokenExpirationPeriod;
-
-    @Value("${weeth.jwt.refresh.expiration}")
-    private Long refreshTokenExpirationPeriod;
-
     @Value("${weeth.jwt.access.header}")
     private String accessHeader;
-
     @Value("${weeth.jwt.refresh.header}")
     private String refreshHeader;
 
-    private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
-    private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
-    private static final String EMAIL_CLAIM = "email";
-    private static final String ID_CLAIM = "id";
-    private static final String BEARER = "Bearer ";
-
-    private final UserRepository userRepository;
-
-    public String createAccessToken(Long id, String email) {
-        Date now = new Date();
-        return JWT.create()
-                .withSubject(ACCESS_TOKEN_SUBJECT)
-                .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
-                .withClaim(ID_CLAIM, id)
-                .withClaim(EMAIL_CLAIM, email)
-                .sign(Algorithm.HMAC512(key));
-    }
-
-    public String createRefreshToken() {
-        Date now = new Date();
-        return JWT.create()
-                .withSubject(REFRESH_TOKEN_SUBJECT)
-                .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
-                .sign(Algorithm.HMAC512(key));
-    }
-
-    public void sendAccessToken(HttpServletResponse response, String accessToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setHeader(accessHeader, accessToken);
-
-        log.info("재발급된 Access Token : {}", accessToken);
-    }
-
-    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
-        setAccessTokenHeader(response, accessToken);
-        setRefreshTokenHeader(response, refreshToken);
-
-        log.info("Access Token, Refresh Token 헤더 설정 완료");
-    }
-
-    public Optional<String> extractRefreshToken(HttpServletRequest request) {
+    public String extractRefreshToken(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(refreshHeader))
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
-                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+                .map(refreshToken -> refreshToken.replace(BEARER, ""))
+                .orElseThrow(TokenNotFoundException::new);
     }
 
     public Optional<String> extractAccessToken(HttpServletRequest request) {
@@ -101,11 +58,11 @@ public class JwtService {
         }
     }
 
-    public Optional<Long> extractId(String accessToken) {
+    public Optional<Long> extractId(String token) {
         try {
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(key))
                     .build()
-                    .verify(accessToken)
+                    .verify(token)
                     .getClaim(ID_CLAIM)
                     .asLong());
         } catch (Exception e) {
@@ -114,21 +71,27 @@ public class JwtService {
         }
     }
 
-    public void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
-        response.setHeader(accessHeader, accessToken);
-    }
-
-    public void setRefreshTokenHeader(HttpServletResponse response, String refreshToken) {
-        response.setHeader(refreshHeader, refreshToken);
-    }
-
-    public boolean isTokenValid(String token) {
+    public Optional<String> extractRole(String token) {
         try {
-            JWT.require(Algorithm.HMAC512(key)).build().verify(token);
-            return true;
+            return Optional.ofNullable(JWT.require(Algorithm.HMAC512(key))
+                    .build()
+                    .verify(token)
+                    .getClaim(ROLE_CLAIM)
+                    .asString());
         } catch (Exception e) {
-            log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
-            return false;
+            log.error("액세스 토큰이 유효하지 않습니다.");
+            return Optional.empty();
         }
     }
+
+    // header -> body로 수정
+    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        String message = new ObjectMapper().writeValueAsString(CommonResponse.createSuccess(LOGIN_SUCCESS_MESSAGE, new JwtDto(accessToken, refreshToken)));
+        response.getWriter().write(message);
+    }
+
 }

@@ -8,6 +8,8 @@ import leets.weeth.domain.penalty.domain.service.PenaltyDeleteService;
 import leets.weeth.domain.penalty.domain.service.PenaltyFindService;
 import leets.weeth.domain.penalty.domain.service.PenaltySaveService;
 import leets.weeth.domain.user.domain.entity.User;
+import leets.weeth.domain.user.domain.entity.UserCardinal;
+import leets.weeth.domain.user.domain.service.UserCardinalGetService;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,8 @@ public class PenaltyUsecaseImpl implements PenaltyUsecase{
 
     private final UserGetService userGetService;
 
+    private final UserCardinalGetService userCardinalGetService;
+
     private final PenaltyMapper mapper;
 
     @Override
@@ -37,8 +41,15 @@ public class PenaltyUsecaseImpl implements PenaltyUsecase{
 
         penaltySaveService.save(penalty);
 
-        user.addPenalty(penalty);
         user.incrementPenaltyCount();
+    }
+
+    @Override
+    @Transactional
+    public void update(PenaltyDTO.Update dto) {
+        Penalty penalty = penaltyFindService.find(dto.penaltyId());
+
+        penalty.update(dto.penaltyDescription());
     }
 
     @Override
@@ -57,12 +68,13 @@ public class PenaltyUsecaseImpl implements PenaltyUsecase{
     @Override
     public PenaltyDTO.Response find(Long userId) {
         User user = userGetService.find(userId);
-        List<Penalty> penalties = penaltyFindService.findAll();
+        List<Penalty> penalties = penaltyFindService.findAll(userId);
 
         return toPenaltyDto(userId, penalties);
     }
 
     @Override
+    @Transactional
     public void delete(Long penaltyId) {
         Penalty penalty = penaltyFindService.find(penaltyId);
         penalty.getUser().decrementPenaltyCount();
@@ -72,11 +84,13 @@ public class PenaltyUsecaseImpl implements PenaltyUsecase{
 
     private PenaltyDTO.Response toPenaltyDto(Long userId, List<Penalty> penalties) {
         User user = userGetService.find(userId);
+        List<UserCardinal> userCardinals = userCardinalGetService.getUserCardinals(user);
+
         List<PenaltyDTO.Penalties> penaltyDTOs = penalties.stream()
                 .map(mapper::toPenalties)
                 .toList();
 
-        return mapper.toPenaltyDto(user, penaltyDTOs);
+        return mapper.toPenaltyDto(user, penaltyDTOs, userCardinals);
     }
 
 }

@@ -1,15 +1,18 @@
 package leets.weeth.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import leets.weeth.domain.user.domain.repository.UserRepository;
+import leets.weeth.domain.user.domain.service.UserGetService;
+import leets.weeth.global.auth.authentication.CustomAccessDeniedHandler;
+import leets.weeth.global.auth.authentication.CustomAuthenticationEntryPoint;
+import leets.weeth.global.auth.jwt.application.usecase.JwtManageUseCase;
 import leets.weeth.global.auth.jwt.filter.JwtAuthenticationProcessingFilter;
+import leets.weeth.global.auth.jwt.service.JwtProvider;
 import leets.weeth.global.auth.jwt.service.JwtService;
 import leets.weeth.global.auth.login.filter.CustomJsonUsernamePasswordAuthenticationFilter;
 import leets.weeth.global.auth.login.handler.LoginFailureHandler;
 import leets.weeth.global.auth.login.handler.LoginSuccessHandler;
 import leets.weeth.global.auth.login.service.LoginService;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,9 +43,14 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     private final LoginService loginService;
+    private final JwtProvider jwtProvider;
     private final JwtService jwtService;
-    private final UserRepository userRepository;
+    private final JwtManageUseCase jwtManageUseCase;
+    private final UserGetService userGetService;
     private final ObjectMapper objectMapper;
+
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -65,9 +73,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
-                                        .requestMatchers("/api/v1/users/apply", "/api/v1/users/email").permitAll()
+                                        .requestMatchers("/api/v1/users/kakao/login", "api/v1/users/kakao/register", "api/v1/users/kakao/link", "/api/v1/users/apply", "/api/v1/users/email", "/api/v1/users/refresh").permitAll()
                                         .requestMatchers("/health-check").permitAll()
-                                        .requestMatchers("/admin","/admin/login","/admin/account", "/admin/meeting", "/admin/member","/admin/penalty",
+                                        .requestMatchers("/admin", "/admin/login", "/admin/account", "/admin/meeting", "/admin/member", "/admin/penalty",
                                                 "/js/**", "/img/**", "/scss/**", "/vendor/**").permitAll()
                                         // 스웨거 경로
                                         .requestMatchers("/v3/api-docs", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/swagger/**").permitAll()
@@ -77,6 +85,10 @@ public class SecurityConfig {
 
                 .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)
                 .addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
+                                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                                .accessDeniedHandler(customAccessDeniedHandler))
                 .build();
     }
 
@@ -85,10 +97,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://weeth.site", "https://www.weeth.site", "https://api.weeth.site", "http://192.168.45.100:3000", "https://release.d20ak9a5jaa0tr.amplifyapp.com"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "https://dev.weeth.site", "https://develop.d3dk7ck92jhexu.amplifyapp.com"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization, Authorization_refresh"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Authorization_refresh"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -111,7 +123,7 @@ public class SecurityConfig {
 
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(jwtService, userRepository);
+        return new LoginSuccessHandler(jwtManageUseCase, userGetService);
     }
 
     @Bean
@@ -131,6 +143,6 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
-        return new JwtAuthenticationProcessingFilter(jwtService, userRepository);
+        return new JwtAuthenticationProcessingFilter(jwtProvider, jwtService, userGetService);
     }
 }

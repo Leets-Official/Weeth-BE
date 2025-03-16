@@ -3,8 +3,9 @@ package leets.weeth.domain.schedule.domain.service;
 import leets.weeth.domain.schedule.application.dto.ScheduleDTO;
 import leets.weeth.domain.schedule.application.mapper.ScheduleMapper;
 import leets.weeth.domain.schedule.domain.entity.Meeting;
+import leets.weeth.domain.schedule.domain.entity.enums.MeetingStatus;
 import leets.weeth.domain.schedule.domain.repository.MeetingRepository;
-import leets.weeth.global.common.error.exception.custom.MeetingNotFoundException;
+import leets.weeth.domain.schedule.application.exception.MeetingNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,21 @@ public class MeetingGetService {
         return meetingRepository.findAllByCardinalOrderByStartAsc(cardinal);
     }
 
+    public List<Meeting> findMeetingByCardinal(Integer cardinal) {
+        return meetingRepository.findAllByCardinalOrderByStartDesc(cardinal);
+    }
+
     public List<Meeting> findAll() {
-        return meetingRepository.findAll();
+        return meetingRepository.findAllByOrderByStartDesc();
+    }
+
+    public List<ScheduleDTO.Response> findByCardinal(Integer cardinal) {
+        return meetingRepository.findAllByCardinal(cardinal).stream()
+                .map(meeting -> mapper.toScheduleDTO(meeting, true))
+                .toList();
+    }
+
+    public List<Meeting> findAllOpenMeetingsBeforeNow() {
+        return meetingRepository.findAllByMeetingStatusAndEndBeforeOrderByEndAsc(MeetingStatus.OPEN, LocalDateTime.now());
     }
 }

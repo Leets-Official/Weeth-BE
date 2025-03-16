@@ -8,6 +8,8 @@ public interface PenaltyUsecase {
 
     void save(PenaltyDTO.Save dto);
 
+    void update(PenaltyDTO.Update dto);
+
     List<PenaltyDTO.Response> find();
 
     PenaltyDTO.Response find(Long userId);

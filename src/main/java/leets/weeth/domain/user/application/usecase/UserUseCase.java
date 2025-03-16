@@ -1,31 +1,40 @@
 package leets.weeth.domain.user.application.usecase;
 
-import java.util.List;
-import java.util.Map;
+import leets.weeth.domain.user.application.dto.request.UserRequestDto;
+import leets.weeth.domain.user.application.dto.response.UserResponseDto;
+import leets.weeth.global.auth.jwt.application.dto.JwtDto;
+import org.springframework.data.domain.Slice;
 
-import static leets.weeth.domain.user.application.dto.UserDTO.*;
+import java.util.List;
+
+import static leets.weeth.domain.user.application.dto.request.UserRequestDto.*;
+import static leets.weeth.domain.user.application.dto.response.UserResponseDto.*;
+
 
 public interface UserUseCase {
 
+    SocialLoginResponse login(Login dto);
+
+    SocialAuthResponse authenticate(Login dto);
+
+    SocialLoginResponse integrate(NormalLogin dto);
+
+    UserResponseDto.Response find(Long userId);
+
+    Slice<SummaryResponse> findAllUser(int pageNumber, int pageSize, Integer cardinal);
+
+    UserResponseDto.UserResponse findUserDetails(Long userId);
+
+    void update(UserRequestDto.Update dto, Long userId);
+
     void apply(SignUp dto);
 
-    Response find(Long userId);
+    void socialRegister(Register dto);
 
-    Map<Integer, List<Response>> findAll();
+    JwtDto refresh(String refreshToken);
 
-    List<AdminResponse> findAllByAdmin();
+    UserResponseDto.UserInfo findUserInfo(Long userId);
 
-    void update(Update dto, Long userId);
+    List<SummaryResponse> searchUser(String keyword);
 
-    void accept(Long userId);
-
-    void update(Long userId, String role);
-
-    void leave(Long userId);
-
-    void ban(Long userId);
-
-    void applyOB(Long userId, Integer cardinal);
-
-    void reset(Long userId);
 }

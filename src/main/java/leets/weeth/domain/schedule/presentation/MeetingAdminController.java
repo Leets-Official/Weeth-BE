@@ -1,18 +1,18 @@
 package leets.weeth.domain.schedule.presentation;
 
-import jakarta.validation.Valid;
-import leets.weeth.domain.schedule.application.dto.MeetingDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import leets.weeth.domain.schedule.application.usecase.MeetingUseCase;
-import leets.weeth.global.auth.annotation.CurrentUser;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import static leets.weeth.domain.schedule.presentation.ResponseMessage.MEETING_DELETE_SUCCESS;
 
-import static leets.weeth.domain.schedule.application.dto.MeetingDTO.Save;
-import static leets.weeth.domain.schedule.application.dto.MeetingDTO.Update;
-
+@Tag(name = "MEETING ADMIN", description = "[ADMIN] 정기모임 어드민 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/meetings")
@@ -20,32 +20,10 @@ public class MeetingAdminController {
 
     private final MeetingUseCase meetingUseCase;
 
-    @PostMapping
-    public CommonResponse<Void> save(@RequestBody @Valid Save dto, @CurrentUser Long userId) {
-        meetingUseCase.save(dto, userId);
-        return CommonResponse.createSuccess();
-    }
-
-    @PostMapping("/{cardinal}")
-    public CommonResponse<List<MeetingDTO.ResponseAll>> findAll(@PathVariable Integer cardinal) {
-        return CommonResponse.createSuccess(meetingUseCase.findAll(cardinal));
-
-    }
-
-    @GetMapping
-    public CommonResponse<List<MeetingDTO.ResponseAll>> findAll() {
-        return CommonResponse.createSuccess(meetingUseCase.findAll());
-    }
-
-    @PatchMapping("/{meetingId}")
-    public CommonResponse<Void> update(@RequestBody @Valid Update dto, @CurrentUser Long userId, @PathVariable Long meetingId) {
-        meetingUseCase.update(dto, userId, meetingId);
-        return CommonResponse.createSuccess();
-    }
-
     @DeleteMapping("/{meetingId}")
+    @Operation(summary = "정기모임 삭제")
     public CommonResponse<Void> delete(@PathVariable Long meetingId) {
         meetingUseCase.delete(meetingId);
-        return CommonResponse.createSuccess();
+        return CommonResponse.createSuccess(MEETING_DELETE_SUCCESS.getMessage());
     }
 }

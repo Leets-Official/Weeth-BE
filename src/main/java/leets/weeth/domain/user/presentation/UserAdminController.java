@@ -1,53 +1,65 @@
 package leets.weeth.domain.user.presentation;
 
-import leets.weeth.domain.user.application.usecase.UserUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import leets.weeth.domain.user.application.usecase.UserManageUseCase;
+import leets.weeth.domain.user.domain.entity.enums.UsersOrderBy;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static leets.weeth.domain.user.application.dto.UserDTO.AdminResponse;
+import static leets.weeth.domain.user.application.dto.request.UserRequestDto.*;
+import static leets.weeth.domain.user.application.dto.response.UserResponseDto.AdminResponse;
+import static leets.weeth.domain.user.presentation.ResponseMessage.*;
 
+@Tag(name = "USER ADMIN", description = "[ADMIN] 사용자 어드민 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/users")
 public class UserAdminController {
 
-    private final UserUseCase userUseCase;
+    private final UserManageUseCase userManageUseCase;
 
     @GetMapping("/all")
-    public CommonResponse<List<AdminResponse>> findAll() {
-        return CommonResponse.createSuccess(userUseCase.findAllByAdmin());
+    @Operation(summary = "어드민용 회원 조회")
+    public CommonResponse<List<AdminResponse>> findAll(@RequestParam UsersOrderBy orderBy) {
+        return CommonResponse.createSuccess(USER_FIND_ALL_SUCCESS.getMessage(), userManageUseCase.findAllByAdmin(orderBy));
     }
 
     @PatchMapping
-    public CommonResponse<Void> accept(@RequestParam Long userId) {
-        userUseCase.accept(userId);
-        return CommonResponse.createSuccess();
+    @Operation(summary = "가입 신청 승인")
+    public CommonResponse<Void> accept(@RequestBody UserId userId) {
+        userManageUseCase.accept(userId);
+        return CommonResponse.createSuccess(USER_ACCEPT_SUCCESS.getMessage());
     }
 
     @DeleteMapping
-    public CommonResponse<Void> ban(@RequestParam Long userId) {
-        userUseCase.ban(userId);
-        return CommonResponse.createSuccess();
+    @Operation(summary = "유저 추방")
+    public CommonResponse<Void> ban(@RequestBody UserId userId) {
+        userManageUseCase.ban(userId);
+        return CommonResponse.createSuccess(USER_BAN_SUCCESS.getMessage());
     }
 
     @PatchMapping("/role")
-    public CommonResponse<Void> update(@RequestParam Long userId, @RequestParam String role) {
-        userUseCase.update(userId, role);
-        return CommonResponse.createSuccess();
+    @Operation(summary = "관리자로 승격/강등")
+    public CommonResponse<Void> update(@RequestBody List<UserRoleUpdate> request) {
+        userManageUseCase.update(request);
+        return CommonResponse.createSuccess(USER_ROLE_UPDATE_SUCCESS.getMessage());
     }
 
     @PatchMapping("/apply")
-    public CommonResponse<Void> applyOB(@RequestParam Long userId, @RequestParam Integer cardinal) {
-        userUseCase.applyOB(userId, cardinal);
-        return CommonResponse.createSuccess();
+    @Operation(summary = "다음 기수도 이어서 진행")
+    public CommonResponse<Void> applyOB(@RequestBody List<UserApplyOB> request) {
+        userManageUseCase.applyOB(request);
+        return CommonResponse.createSuccess(USER_APPLY_OB_SUCCESS.getMessage());
     }
 
     @PatchMapping("/reset")
-    public CommonResponse<Void> resetPassword(@RequestParam Long userId) {
-        userUseCase.reset(userId);
-        return CommonResponse.createSuccess();
+    @Operation(summary = "회원 비밀번호 초기화")
+    public CommonResponse<Void> resetPassword(@RequestBody UserId userId) {
+        userManageUseCase.reset(userId);
+        return CommonResponse.createSuccess(USER_PASSWORD_RESET_SUCCESS.getMessage());
     }
 }

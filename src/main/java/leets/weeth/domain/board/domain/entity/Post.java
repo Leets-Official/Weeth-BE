@@ -30,8 +30,8 @@ public class Post extends Board {
         comments.add(comment);
     }
 
-    public void update(PostDTO.Update dto, List<String> fileUrls) {
-        this.updateUpperClass(dto, fileUrls);
+    public void update(PostDTO.Update dto) {
+        this.updateUpperClass(dto);
     }
 
 }

@@ -12,7 +12,6 @@ public class PostSaveService {
 
     private final PostRepository postRepository;
 
-    @Transactional
     public void save(Post post) {
         postRepository.save(post);
     }

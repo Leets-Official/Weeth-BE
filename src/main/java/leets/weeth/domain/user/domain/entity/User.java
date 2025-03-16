@@ -2,15 +2,11 @@ package leets.weeth.domain.user.domain.entity;
 
 import jakarta.persistence.*;
 import leets.weeth.domain.attendance.domain.entity.Attendance;
-import leets.weeth.domain.penalty.domain.entity.Penalty;
-import leets.weeth.domain.user.application.converter.CardinalListConverter;
-import leets.weeth.domain.user.application.dto.UserDTO;
 import leets.weeth.domain.user.domain.entity.enums.Department;
 import leets.weeth.domain.user.domain.entity.enums.Position;
 import leets.weeth.domain.user.domain.entity.enums.Role;
 import leets.weeth.domain.user.domain.entity.enums.Status;
 import leets.weeth.global.common.entity.BaseEntity;
-import leets.weeth.global.common.error.exception.custom.CardinalNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static leets.weeth.domain.user.application.dto.request.UserRequestDto.Update;
 
 @Entity
 @Getter
@@ -33,6 +31,8 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
+
+    private Long kakaoId;
 
     private String name;
 
@@ -50,16 +50,11 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Department department;
 
-    @Convert(converter = CardinalListConverter.class)
-    private List<Integer> cardinals;
-
     @Enumerated(EnumType.STRING)
     private Status status;
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    private String refreshToken;
 
     private Integer attendanceCount;
 
@@ -72,9 +67,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Attendance> attendances = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Penalty> penalties = new ArrayList<>();
-
     @PrePersist
     public void init() {
         status = Status.WAITING;
@@ -85,26 +77,24 @@ public class User extends BaseEntity {
         penaltyCount = 0;
     }
 
-    public void updateRefreshToken(String updatedToken) {
-        this.refreshToken = updatedToken;
+    public void addKakaoId(long kakaoId) {
+        this.kakaoId = kakaoId;
     }
 
     public void leave() {
         this.status = Status.LEFT;
     }
 
-    public void applyOB(Integer cardinal) {
-        this.cardinals.add(cardinal);
-    }
-
+    /*
+    todo 차후 일반 로그인 비활성화시 해당 메서드에서 예외를 날리도록 수정
+     */
     public boolean isInactive() {
         return this.status != Status.ACTIVE;
     }
 
-    public void update(UserDTO.Update dto, PasswordEncoder passwordEncoder) {
+    public void update(Update dto) {
         this.name = dto.name();
         this.email = dto.email();
-        this.password = passwordEncoder.encode(dto.password());
         this.studentId = dto.studentId();
         this.tel = dto.tel();
         this.department = Department.to(dto.department());
@@ -122,20 +112,12 @@ public class User extends BaseEntity {
         this.role = Role.valueOf(role);
     }
 
-    public boolean notContains(Integer cardinal) {
-        return !this.cardinals.contains(cardinal);
-    }
-
     public void reset(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(studentId);
     }
 
     public void add(Attendance attendance) {
         this.attendances.add(attendance);
-    }
-
-    public void addPenalty(Penalty penalty){
-        this.penalties.add(penalty);
     }
 
     public void initAttendance() {
@@ -145,16 +127,16 @@ public class User extends BaseEntity {
         this.attendanceRate = 0;
     }
 
-    public boolean isCurrent(Integer cardinal) {
-        Integer max = this.cardinals.stream().max(Integer::compareTo)
-                .orElseThrow(CardinalNotFoundException::new);
-
-        return max < cardinal;
-    }
-
     public void attend() {
         attendanceCount++;
         calculateRate();
+    }
+
+    public void removeAttend() {
+        if (attendanceCount > 0) {
+            attendanceCount--;
+            calculateRate();
+        }
     }
 
     public void absent() {
@@ -162,8 +144,19 @@ public class User extends BaseEntity {
         calculateRate();
     }
 
+    public void removeAbsent() {
+        if (absenceCount > 0) {
+            absenceCount--;
+            calculateRate();
+        }
+    }
+
     private void calculateRate() {
-        attendanceRate = (attendanceCount * 100) / (attendanceCount + absenceCount);
+        if (attendanceCount + absenceCount > 0) {
+            attendanceRate = (attendanceCount * 100) / (attendanceCount + absenceCount);
+        } else {
+            attendanceRate = 0;
+        }
     }
 
     public void incrementPenaltyCount() {

@@ -1,0 +1,165 @@
+name: Weeth-BE DEV CI/CD
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # gradle caching
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*gradle*','**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # gradle 빌드
+      - name: Build with Gradle Wrapper
+        run: ./gradlew build
+
+      # 빌드된 JAR 파일 확인
+      - name: List JAR files
+        run: ls build/libs
+
+      # Docker build & push
+      - name: Docker build & push
+        run: |
+          docker login -u ${{ secrets.DOCKER_USER_EMAIL }} -p ${{ secrets.DOCKER_USER_TOKEN }}
+          docker build -f Dockerfile-dev -t ${{ secrets.DOCKER_USER_NAME }}/weeth-dev .
+          docker push ${{ secrets.DOCKER_USER_NAME }}/weeth-dev
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_EC2_SECRET_HOST }}
+          username: ubuntu
+          key: ${{ secrets.DEV_EC2_SECRET_PEM }}
+          envs: GITHUB_SHA
+          script: |  
+            # Blue-Green Deployment 포트 및 컨테이너 이름 설정
+            BLUE_PORT=8080
+            GREEN_PORT=8081
+            BLUE_NAME="blue"
+            GREEN_NAME="green"
+            
+            # 현재 실행 중인 컨테이너 확인
+            IS_BLUE_ON=$(sudo docker ps --filter "name=$BLUE_NAME" --filter "status=running" -q)
+            IS_GREEN_ON=$(sudo docker ps --filter "name=$GREEN_NAME" --filter "status=running" -q)
+            
+            # 실행 중인 컨테이너에 따라 blue/green 컨테이너 실행
+            if [ -n "$IS_BLUE_ON" ]; then
+              echo "** ${GREEN_PORT} 포트에서 GREEN 컨테이너 실행 준비"
+            
+              # Docker 이미지 pull
+              sudo docker pull ${{ secrets.DOCKER_USER_NAME }}/weeth-dev
+            
+              sudo docker run --name $GREEN_NAME -d -p $GREEN_PORT:$GREEN_PORT \
+                --env-file ./weeth-dev.env -e TZ=Asia/Seoul -e SERVER_PORT=$GREEN_PORT \
+                ${{ secrets.DOCKER_USER_NAME }}/weeth-dev
+              BEFORE_NAME=$BLUE_NAME
+              AFTER_NAME=$GREEN_NAME
+              BEFORE_PORT=$BLUE_PORT
+              AFTER_PORT=$GREEN_PORT
+            
+            elif [ -n "$IS_GREEN_ON" ]; then
+              echo "** ${BLUE_PORT} 포트에서 BLUE 컨테이너 실행 준비"
+              
+              # Docker 이미지 pull
+              sudo docker pull ${{ secrets.DOCKER_USER_NAME }}/weeth-dev
+              
+              sudo docker run --name $BLUE_NAME -d -p $BLUE_PORT:$BLUE_PORT \
+                --env-file ./weeth-dev.env -e TZ=Asia/Seoul -e SERVER_PORT=$BLUE_PORT \
+                ${{ secrets.DOCKER_USER_NAME }}/weeth-dev
+              BEFORE_NAME=$GREEN_NAME
+              AFTER_NAME=$BLUE_NAME
+              BEFORE_PORT=$GREEN_PORT
+              AFTER_PORT=$BLUE_PORT
+            
+            else
+              echo "** 초기 상태: BLUE 컨테이너 실행 준비"
+            
+              # Docker 이미지 pull
+              sudo docker pull ${{ secrets.DOCKER_USER_NAME }}/weeth-dev
+            
+              sudo docker run --name $BLUE_NAME -d -p $BLUE_PORT:$BLUE_PORT \
+                --env-file ./weeth-dev.env -e TZ=Asia/Seoul -e SERVER_PORT=$BLUE_PORT  \
+                ${{ secrets.DOCKER_USER_NAME }}/weeth-dev
+              BEFORE_NAME=$GREEN_NAME
+              AFTER_NAME=$BLUE_NAME
+              BEFORE_PORT=$GREEN_PORT
+              AFTER_PORT=$BLUE_PORT
+            fi
+            
+            # 컨테이너 실행 후 대기
+            echo "** 컨테이너 초기화 중... 30초 대기"
+            sleep 30
+            
+            # Health-Check 수행
+            for i in {1..5}; do
+              RESPONSE=$(curl -i -s "http://localhost:${AFTER_PORT}/health-check" | grep "HTTP/1.1 200" || echo "fail")
+              
+              echo "** Health-Check 응답: $RESPONSE"
+              if [[ "$RESPONSE" == *"HTTP/1.1 200"* ]]; then
+                echo "** Health-Check 성공: 서버가 정상적으로 작동 중입니다."
+                HEALTHY=true
+                break
+              else
+                echo "** Health-Check 실패, 재시도 중... (${i}/5)"
+                HEALTHY=false
+                sleep 5
+              fi
+            done
+            
+            # Health-Check 결과 확인
+            if [ "$HEALTHY" = true ]; then
+              echo "** Health-Check 성공: ${AFTER_NAME} 컨테이너 정상 작동"
+              
+              # 리버스 프록시 설정 업데이트
+              sudo bash update-proxy.sh "$AFTER_PORT"
+            
+              # Caddy 재시작
+              echo "** Caddy 서비스 재시작"
+              sudo systemctl reload caddy
+            
+              # 이전 컨테이너 중지 및 삭제
+              echo "** 이전 컨테이너(${BEFORE_NAME}) 종료 및 삭제"
+              sudo docker stop $BEFORE_NAME || true
+              sudo docker rm $BEFORE_NAME || true
+            else
+              echo "** Health-Check 실패: ${AFTER_NAME} 컨테이너 제거"
+              sudo docker stop $AFTER_NAME || true
+              sudo docker rm $AFTER_NAME || true
+              echo "** 이전 컨테이너(${BEFORE_NAME})를 유지합니다"
+            fi
+          
+            # 사용하지 않는 이미지 정리
+            echo "** 사용하지 않는 Docker 이미지 정리"
+            sudo docker image prune -a -f

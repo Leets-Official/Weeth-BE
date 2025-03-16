@@ -1,11 +1,11 @@
 package leets.weeth.domain.board.domain.service;
 
-import leets.weeth.domain.board.domain.entity.Notice;
 import leets.weeth.domain.board.domain.entity.Post;
 import leets.weeth.domain.board.domain.repository.PostRepository;
-import leets.weeth.global.common.error.exception.custom.PostNotFoundException;
+import leets.weeth.domain.board.application.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,13 +25,8 @@ public class PostFindService {
         return postRepository.findAll();
     }
 
-    public Long findFinalPostId() {
-        return postRepository.findLastId()
-                .orElseThrow(PostNotFoundException::new);
-    }
-
-    public List<Post> findRecentPosts(Long postId, Pageable pageable) {
-        return postRepository.findRecentPosts(postId, pageable);
+    public Slice<Post> findRecentPosts(Pageable pageable) {
+        return postRepository.findPageBy(pageable);
     }
 
 }

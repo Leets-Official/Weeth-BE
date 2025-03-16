@@ -1,56 +1,63 @@
 package leets.weeth.domain.board.presentation;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import leets.weeth.domain.board.application.dto.PostDTO;
 import leets.weeth.domain.board.application.usecase.PostUsecase;
 import leets.weeth.global.auth.annotation.CurrentUser;
-import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
+import leets.weeth.domain.user.application.exception.UserNotMatchException;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 
-import static leets.weeth.domain.board.domain.entity.enums.ResponseMessage.*;
+import static leets.weeth.domain.board.presentation.ResponseMessage.*;
 
+@Tag(name = "BOARD", description = "게시판 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/posts")
+@RequestMapping("/api/v1/board")
 public class PostController {
 
     private final PostUsecase postUsecase;
 
     @PostMapping
-    public CommonResponse<String> save(@RequestPart @Valid PostDTO.Save dto,
-                                       @RequestPart(value = "files", required = false) List<MultipartFile> files,
-                                       @CurrentUser Long userId) {
-        postUsecase.save(dto, files, userId);
+    @Operation(summary="게시글 생성")
+    public CommonResponse<String> save(@RequestBody @Valid PostDTO.Save dto,
+                                       @Parameter(hidden = true) @CurrentUser Long userId) {
+        postUsecase.save(dto, userId);
         return CommonResponse.createSuccess(POST_CREATED_SUCCESS.getMessage());
     }
 
     @GetMapping
-    public CommonResponse<List<PostDTO.ResponseAll>> findPosts(@RequestParam(required = false) Long postId, @RequestParam Integer count) {
-        return CommonResponse.createSuccess(postUsecase.findPosts(postId, count));
+    @Operation(summary="게시글 목록 조회 [무한스크롤]")
+    public CommonResponse<Slice<PostDTO.ResponseAll>> findPosts(@RequestParam("pageNumber") int pageNumber,
+                                                                      @RequestParam("pageSize") int pageSize) {
+        return CommonResponse.createSuccess(POST_FIND_ALL_SUCCESS.getMessage(), postUsecase.findPosts(pageNumber, pageSize));
     }
 
-    @GetMapping("/{postId}")
-    public CommonResponse<PostDTO.Response> findPost(@PathVariable Long postId) {
-        return CommonResponse.createSuccess(postUsecase.findPost(postId));
+    @GetMapping("/{boardId}")
+    @Operation(summary="특정 게시글 조회")
+    public CommonResponse<PostDTO.Response> findPost(@PathVariable Long boardId) {
+        return CommonResponse.createSuccess(POST_FIND_BY_ID_SUCCESS.getMessage(),postUsecase.findPost(boardId));
     }
 
-    @PatchMapping("/{postId}")
-    public CommonResponse<String> update(@PathVariable Long postId,
-                                         @RequestPart @Valid PostDTO.Update dto,
-                                         @RequestPart(value = "files", required = false) List<MultipartFile> files,
-                                         @CurrentUser Long userId) throws UserNotMatchException {
-        postUsecase.update(postId, dto, files, userId);
+    @PatchMapping(value = "/{boardId}")
+    @Operation(summary="특정 게시글 수정")
+    public CommonResponse<String> update(@PathVariable Long boardId,
+                                         @RequestBody @Valid PostDTO.Update dto,
+                                         @Parameter(hidden = true) @CurrentUser Long userId) throws UserNotMatchException {
+        postUsecase.update(boardId, dto, userId);
         return CommonResponse.createSuccess(POST_UPDATED_SUCCESS.getMessage());
     }
 
-    @DeleteMapping("/{postId}")
-    public CommonResponse<String> delete(@PathVariable Long postId, @CurrentUser Long userId) throws UserNotMatchException {
-        postUsecase.delete(postId, userId);
+    @DeleteMapping("/{boardId}")
+    @Operation(summary="특정 게시글 삭제")
+    public CommonResponse<String> delete(@PathVariable Long boardId, @Parameter(hidden = true) @CurrentUser Long userId) throws UserNotMatchException {
+        postUsecase.delete(boardId, userId);
         return CommonResponse.createSuccess(POST_DELETED_SUCCESS.getMessage());
     }
 

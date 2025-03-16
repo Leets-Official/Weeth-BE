@@ -14,10 +14,17 @@ public class PenaltyDTO {
     ){}
 
     @Builder
+    public record Update(
+            Long penaltyId,
+            String penaltyDescription
+    ){}
+
+    @Builder
     public record Response(
         Long userId,
         Integer penaltyCount,
         String name,
+        List<Integer> cardinals,
         List<PenaltyDTO.Penalties> Penalties
     ){}
 

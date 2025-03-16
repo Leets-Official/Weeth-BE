@@ -1,21 +1,19 @@
 package leets.weeth.domain.board.application.usecase;
 
 import leets.weeth.domain.board.application.dto.NoticeDTO;
-import leets.weeth.global.common.error.exception.custom.UserNotMatchException;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import leets.weeth.domain.user.application.exception.UserNotMatchException;
+import org.springframework.data.domain.Slice;
 
-import java.util.List;
 
 public interface NoticeUsecase {
 
-    void save(NoticeDTO.Save dto, List<MultipartFile> files, Long userId);
+    void save(NoticeDTO.Save dto, Long userId);
 
     NoticeDTO.Response findNotice(Long noticeId);
 
-    List<NoticeDTO.ResponseAll> findNotices(Long noticeId, Integer count);
+    Slice<NoticeDTO.ResponseAll> findNotices(int pageNumber, int pageSize);
 
-    void update(Long noticeId, NoticeDTO.Update dto, List<MultipartFile> files, Long userId) throws UserNotMatchException;
+    void update(Long noticeId, NoticeDTO.Update dto, Long userId) throws UserNotMatchException;
 
     void delete(Long noticeId, Long userId) throws UserNotMatchException;
 

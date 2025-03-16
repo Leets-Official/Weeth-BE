@@ -1,3 +1,10 @@
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+server:
+  port: ${SERVER_PORT}
 spring:
   datasource:
     url: ${DB_URL}
@@ -11,6 +18,11 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: validate
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
 weeth:
   jwt:
     key: ${JWT_KEY}

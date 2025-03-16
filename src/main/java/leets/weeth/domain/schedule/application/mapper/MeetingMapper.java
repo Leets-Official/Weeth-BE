@@ -1,35 +1,35 @@
 package leets.weeth.domain.schedule.application.mapper;
 
+import leets.weeth.domain.schedule.application.dto.ScheduleDTO;
 import leets.weeth.domain.schedule.domain.entity.Meeting;
 import leets.weeth.domain.user.domain.entity.User;
-import leets.weeth.domain.user.domain.entity.enums.Status;
 import org.mapstruct.*;
 
 import java.util.Random;
 
-import static leets.weeth.domain.schedule.application.dto.MeetingDTO.*;
+import static leets.weeth.domain.schedule.application.dto.MeetingDTO.Info;
+import static leets.weeth.domain.schedule.application.dto.MeetingDTO.Response;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MeetingMapper {
 
-    @Mapping(target = "memberCount", expression = "java( getMemberCount(meeting) )")
-    @Mapping(target = "requiredItem", expression = "java(\"노트북\")")
     @Mapping(target = "name", source = "user.name")
+    @Mapping(target = "code", ignore = true)
+    @Mapping(target = "type", expression = "java(Type.MEETING)")
     Response to(Meeting meeting);
 
-    @Mapping(target = "memberCount", expression = "java( getMemberCount(meeting) )")
+    Info toInfo(Meeting meeting);
+
     @Mapping(target = "name", source = "user.name")
-    ResponseAll toAll(Meeting meeting);
+    @Mapping(target = "type", expression = "java(Type.MEETING)")
+    Response toAdminResponse(Meeting meeting);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "code", expression = "java( generateCode() )"),
             @Mapping(target = "user", source = "user")
     })
-    Meeting from(Save dto, User user);
-
-    @Mapping(target = "user", source = "user")
-    Meeting update(Long id, Update dto, User user);
+    Meeting from(ScheduleDTO.Save dto, User user);
 
     default Integer generateCode() {
         return new Random().nextInt(9000) + 1000;
@@ -40,10 +40,10 @@ public interface MeetingMapper {
     -> 정기 모임의 참여하는 인원의 멤버수를 어떻게 관리할지.
     해당 코드는 일시적인 대안책임
      */
-    default Integer getMemberCount(Meeting meeting) {
-        return (int)meeting.getAttendances().stream()
-                .filter(attendance -> !attendance.getUser().getStatus().equals(Status.BANNED))
-                .filter(attendance -> !attendance.getUser().getStatus().equals(Status.LEFT))
-                .count();
-    }
+//    default Integer getMemberCount(Meeting meeting) {
+//        return (int)meeting.getAttendances().stream()
+//                .filter(attendance -> !attendance.getUser().getStatus().equals(Status.BANNED))
+//                .filter(attendance -> !attendance.getUser().getStatus().equals(Status.LEFT))
+//                .count();
+//    }
 }

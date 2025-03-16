@@ -11,7 +11,6 @@ public class PostDeleteService {
 
     private final PostRepository postRepository;
 
-    @Transactional
     public void delete(Long postId) {
         postRepository.deleteById(postId);
     }

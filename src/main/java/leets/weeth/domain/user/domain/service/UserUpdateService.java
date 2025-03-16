@@ -6,15 +6,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static leets.weeth.domain.user.application.dto.UserDTO.Update;
+import static leets.weeth.domain.user.application.dto.request.UserRequestDto.Update;
+
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class UserUpdateService {
 
-    public void update(User user, Update dto, PasswordEncoder passwordEncoder) {
-        user.update(dto, passwordEncoder);
+    public void update(User user, Update dto) {
+        user.update(dto);
     }
 
     public void accept(User user) {
@@ -23,10 +24,6 @@ public class UserUpdateService {
 
     public void update(User user, String role) {
         user.update(role);
-    }
-
-    public void applyOB(User user, Integer cardinal) {
-        user.applyOB(cardinal);
     }
 
     public void reset(User user, PasswordEncoder passwordEncoder) {

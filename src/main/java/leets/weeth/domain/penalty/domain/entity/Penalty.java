@@ -25,4 +25,8 @@ public class Penalty extends BaseEntity {
 
     private String penaltyDescription;
 
+    public void update(String penaltyDescription) {
+        this.penaltyDescription = penaltyDescription;
+    }
+
 }

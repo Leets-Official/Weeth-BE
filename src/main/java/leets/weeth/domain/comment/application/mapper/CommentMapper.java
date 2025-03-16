@@ -7,6 +7,8 @@ import leets.weeth.domain.comment.domain.entity.Comment;
 import leets.weeth.domain.user.domain.entity.User;
 import org.mapstruct.*;
 
+import java.util.List;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CommentMapper {
 
@@ -36,7 +38,11 @@ public interface CommentMapper {
     })
     Comment fromCommentDto(CommentDTO.Save dto, Notice notice, User user, Comment parent);
 
-    @Mapping(target = "name", source = "user.name")
-    @Mapping(target = "time", source = "modifiedAt")
-    CommentDTO.Response toCommentDto(Comment comment);
+
+    @Mapping(target = "name", source = "comment.user.name")
+    @Mapping(target = "position", source = "comment.user.position")
+    @Mapping(target = "role", source = "comment.user.role")
+    @Mapping(target = "time", source = "comment.modifiedAt")
+    @Mapping(target = "children", source = "children")
+    CommentDTO.Response toCommentDto(Comment comment, List<CommentDTO.Response> children);
 }
