@@ -1,6 +1,7 @@
 package leets.weeth.domain.schedule.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import leets.weeth.domain.schedule.domain.entity.enums.Type;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +16,7 @@ public class MeetingDTO {
             String requiredItem,
             String name,
             Integer cardinal,
+            Type type,
             Integer code,
             LocalDateTime start,
             LocalDateTime end,

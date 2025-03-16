@@ -27,6 +27,6 @@ public class MeetingController {
     @Operation(summary="정기모임 상세 조회")
     public CommonResponse<MeetingDTO.Response> find(@Parameter(hidden = true) @CurrentUser Long userId,
                                                     @PathVariable Long meetingId) {
-        return CommonResponse.createSuccess(MEETING_FIND_SUCCESS.getMessage(),meetingUseCase.find(userId, meetingId));
+        return CommonResponse.createSuccess(MEETING_FIND_SUCCESS.getMessage(), meetingUseCase.find(userId, meetingId));
     }
 }

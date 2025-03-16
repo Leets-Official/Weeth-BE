@@ -15,11 +15,13 @@ public interface MeetingMapper {
 
     @Mapping(target = "name", source = "user.name")
     @Mapping(target = "code", ignore = true)
+    @Mapping(target = "type", expression = "java(Type.MEETING)")
     Response to(Meeting meeting);
 
     Info toInfo(Meeting meeting);
 
     @Mapping(target = "name", source = "user.name")
+    @Mapping(target = "type", expression = "java(Type.MEETING)")
     Response toAdminResponse(Meeting meeting);
 
     @Mappings({

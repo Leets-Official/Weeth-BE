@@ -1,5 +1,7 @@
 package leets.weeth.domain.schedule.application.dto;
 
+import leets.weeth.domain.schedule.domain.entity.enums.Type;
+
 import java.time.LocalDateTime;
 
 public class EventDTO {
@@ -12,6 +14,7 @@ public class EventDTO {
             String requiredItem,
             String name,
             Integer cardinal,
+            Type type,
             LocalDateTime start,
             LocalDateTime end,
             LocalDateTime createdAt,
