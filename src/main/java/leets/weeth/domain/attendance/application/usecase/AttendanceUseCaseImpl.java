@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -64,18 +65,20 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
     }
 
     /*
-    todo 출석 끝난 후 다음 기수 진행 시 다음 기수의 출석 정보만 나오는지 확인 필요
+    todo 후에 쿼리 최적화, 기수별 정렬 추가
      */
     @Override
     public AttendanceDTO.Detail findAll(Long userId) {
         User user = userGetService.find(userId);
 
         List<AttendanceDTO.Response> responses = user.getAttendances().stream()
+                .sorted(Comparator.comparing(attendance -> attendance.getMeeting().getStart()))
                 .map(mapper::toResponseDto)
                 .toList();
 
         return mapper.toDetailDto(user, responses);
     }
+
     @Override
     public List<AttendanceDTO.AttendanceInfo> findAllAttendanceByMeeting(Long meetingId) {
         Meeting meeting = meetingGetService.find(meetingId);
@@ -86,6 +89,7 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
                 .map(mapper::toAttendanceInfoDto)
                 .toList();
     }
+
     @Override
     public void close(LocalDate now, Integer cardinal) {
         List<Meeting> meetings = meetingGetService.find(cardinal);
@@ -103,6 +107,7 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
 
         attendanceUpdateService.close(attendanceList);
     }
+
     @Override
     @Transactional
     public void updateAttendanceStatus(List<AttendanceDTO.UpdateStatus> attendanceUpdates) {
