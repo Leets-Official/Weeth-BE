@@ -30,7 +30,12 @@ public class PostFindService {
     }
 
     public Slice<Post> search(String keyword, Pageable pageable) {
-        return postRepository.findByTitleContainingOrContentContainingIgnoreCase(keyword, keyword, pageable);
+        if(keyword == null || keyword.isEmpty()){
+            return findRecentPosts(pageable);
+        }
+        else{
+            return postRepository.findByTitleContainingOrContentContainingIgnoreCase(keyword, keyword, pageable);
+        }
     }
 
 }
