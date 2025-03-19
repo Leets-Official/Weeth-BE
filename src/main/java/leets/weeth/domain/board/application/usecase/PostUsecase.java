@@ -17,4 +17,5 @@ public interface PostUsecase {
 
     void delete(Long postId, Long userId) throws UserNotMatchException;
 
+    Slice<PostDTO.ResponseAll> searchPost(String keyword, int pageNumber, int pageSize);
 }

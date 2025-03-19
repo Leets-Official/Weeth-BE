@@ -45,6 +45,13 @@ public class PostController {
         return CommonResponse.createSuccess(POST_FIND_BY_ID_SUCCESS.getMessage(),postUsecase.findPost(boardId));
     }
 
+    @GetMapping("/search")
+    @Operation(summary="게시글 검색 [무한스크롤]")
+    public CommonResponse<Slice<PostDTO.ResponseAll>> findPost(@RequestParam String keyword, @RequestParam("pageNumber") int pageNumber,
+                                                                    @RequestParam("pageSize") int pageSize) {
+        return CommonResponse.createSuccess(POST_FIND_BY_ID_SUCCESS.getMessage(),postUsecase.searchPost(keyword, pageNumber, pageSize));
+    }
+
     @PatchMapping(value = "/{boardId}")
     @Operation(summary="특정 게시글 수정")
     public CommonResponse<String> update(@PathVariable Long boardId,
