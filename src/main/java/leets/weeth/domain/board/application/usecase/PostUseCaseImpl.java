@@ -79,9 +79,8 @@ public class PostUseCaseImpl implements PostUsecase {
 
     @Override
     public Slice<PostDTO.ResponseAll> findPosts(int pageNumber, int pageSize) {
-        if (pageNumber < 0) {
-            throw new PageNotFoundException();
-        }
+        validatePageNumber(pageNumber);
+
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Slice<Post> posts = postFindService.findRecentPosts(pageable);
 
@@ -90,9 +89,8 @@ public class PostUseCaseImpl implements PostUsecase {
 
     @Override
     public Slice<PostDTO.ResponseAll> searchPost(String keyword, int pageNumber, int pageSize){
-        if (pageNumber < 0) {
-            throw new PageNotFoundException();
-        }
+        validatePageNumber(pageNumber);
+
         keyword = keyword.strip();  // 문자열 앞뒤 공백 제거
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id"));
@@ -165,6 +163,12 @@ public class PostUseCaseImpl implements PostUsecase {
                 .collect(Collectors.toList());
 
         return commentMapper.toCommentDto(comment, children);
+    }
+
+    private void validatePageNumber(int pageNumber){
+        if (pageNumber < 0) {
+            throw new PageNotFoundException();
+        }
     }
 
 }
