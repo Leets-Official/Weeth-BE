@@ -110,7 +110,9 @@ public class AttendanceUseCaseImpl implements AttendanceUseCase {
             Attendance attendance = attendanceGetService.findByAttendanceId(update.attendanceId());
             User user = attendance.getUser();
 
-            if (attendance.getStatus() == Status.ATTEND) {
+            Status newStatus = Status.valueOf(update.status());
+
+            if (newStatus == Status.ABSENT) {
                 attendance.close();
                 user.removeAttend();
                 user.absent();
