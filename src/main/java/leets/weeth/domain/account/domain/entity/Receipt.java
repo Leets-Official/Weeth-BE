@@ -41,4 +41,5 @@ public class Receipt extends BaseEntity {
         this.amount = dto.amount();
         this.date = dto.date();
     }
+
 }
