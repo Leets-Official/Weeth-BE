@@ -5,8 +5,6 @@ import leets.weeth.domain.file.domain.entity.File;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class FileUpdateService {
@@ -15,12 +13,4 @@ public class FileUpdateService {
         file.update(dto.fileName(), dto.fileUrl());
     }
 
-    public void updateFiles(List<File> fileList, List<FileUpdateRequest> dto) {
-        for (File file : fileList) {
-            dto.stream()
-                    .filter(updateRequest -> updateRequest.fileId().equals(file.getId()))
-                    .findFirst()
-                    .ifPresent(updateRequest -> file.update(updateRequest.fileName(), updateRequest.fileUrl()));
-        }
-    }
 }
