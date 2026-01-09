@@ -14,7 +14,10 @@ public class TestContainersConfig {
     @Bean
     @ServiceConnection
     public MySQLContainer mysqlContainer() {
-        return new MySQLContainer(DockerImageName.parse(MYSQL_IMAGE))
-                .withReuse(true);
+        MySQLContainer<?> container =
+            new MySQLContainer<>(DockerImageName.parse(MYSQL_IMAGE));
+
+        container.withReuse(true);
+        return container;
     }
 }
