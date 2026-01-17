@@ -2,6 +2,8 @@ package leets.weeth.global.common.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import leets.weeth.domain.schedule.application.exception.EventErrorCode;
+import leets.weeth.domain.schedule.application.exception.MeetingErrorCode;
 import leets.weeth.domain.user.application.exception.UserErrorCode;
 import leets.weeth.global.auth.jwt.exception.JwtErrorCode;
 import leets.weeth.global.common.exception.ApiErrorCodeExample;
@@ -25,5 +27,11 @@ public class ExceptionDocController {
     @Operation(summary = "인증/인가 에러 코드 목록")
     @ApiErrorCodeExample({JwtErrorCode.class})
     public void authErrorCodes() {
+    }
+
+    @GetMapping("/Schedule")
+    @Operation(summary = "Schedule 도메인 에러 코드 목록")
+    @ApiErrorCodeExample({EventErrorCode.class, MeetingErrorCode.class})
+    public void scheduleErrorCodes() {
     }
 }

@@ -2,7 +2,9 @@ package leets.weeth.domain.schedule.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import leets.weeth.domain.schedule.application.exception.EventErrorCode;
 import leets.weeth.domain.schedule.application.usecase.EventUseCase;
+import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import static leets.weeth.domain.schedule.presentation.ResponseMessage.EVENT_FIN
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/events")
+@ApiErrorCodeExample(EventErrorCode.class)
 public class EventController {
 
     private final EventUseCase eventUseCase;
