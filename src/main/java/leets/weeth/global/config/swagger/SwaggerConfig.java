@@ -44,10 +44,7 @@ public class SwaggerConfig {
     @Value("${weeth.jwt.refresh.header}")
     private String refreshHeader;
 
-    private final ApplicationContext applicationContext;
-
     public SwaggerConfig(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
     }
 
     @Bean
@@ -77,7 +74,9 @@ public class SwaggerConfig {
             }
 
             if (apiErrorCodeExample != null) {
-                generateErrorCodeResponseExample(operation.getResponses(), apiErrorCodeExample.value());
+                for (Class<? extends ErrorCodeInterface> type : apiErrorCodeExample.value()) {
+                    generateErrorCodeResponseExample(operation.getResponses(), type);
+                }
             }
 
             return operation;
