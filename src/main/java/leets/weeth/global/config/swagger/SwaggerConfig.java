@@ -91,10 +91,12 @@ public class SwaggerConfig {
                 Arrays.stream(errorCodes)
                         .map(errorCode -> {
                             try {
+                                String enumName = ((Enum<?>) errorCode).name();
+
                                 return ExampleHolder.builder()
                                         .holder(getSwaggerExample(errorCode.getExplainError(), errorCode))
                                         .code(errorCode.getStatus().value())
-                                        .name(errorCode.getMessage()) // 한글로된 드롭다운을 만들기 위해 예외 메시지를 이름으로 사용
+                                        .name("[" + enumName + "] " + errorCode.getMessage()) // 한글로된 드롭다운을 만들기 위해 예외 메시지를 이름으로 사용
                                         .build();
                             } catch (NoSuchFieldException e) {
                                 throw new RuntimeException(e);
@@ -118,16 +120,33 @@ public class SwaggerConfig {
     // 스웨거의 Example 객체를 만들어 Operation.Responses에 예시 데이터를 추가하는 메서드
     private void addExamplesToResponses(ApiResponses responses, Map<Integer, List<ExampleHolder>> statusWithExampleHolders) {
         statusWithExampleHolders.forEach((status, exampleHolders) -> {
-            Content content = new Content();
-            MediaType mediaType = new MediaType();
-            ApiResponse apiResponse = new ApiResponse();
+            // ApiResponse가 없으면 생성
+            ApiResponse apiResponse = responses.computeIfAbsent(String.valueOf(status), k -> new ApiResponse());
 
-            exampleHolders.forEach(holder -> mediaType.addExamples(holder.getName(), holder.getHolder()));
+            // application/json 타입의 MediaType 가져오기 (없으면 생성)
+            MediaType mediaType = getOrCreateMediaType(apiResponse);
 
-            content.addMediaType("application/json", mediaType);
-            apiResponse.setContent(content);
-            responses.addApiResponse(status.toString(), apiResponse);
+            // 예시 데이터 추가
+            exampleHolders.forEach(holder ->
+                    mediaType.addExamples(holder.getName(), holder.getHolder())
+            );
         });
+    }
+
+    private MediaType getOrCreateMediaType(ApiResponse apiResponse) {
+        Content content = apiResponse.getContent();
+        if (content == null) {
+            content = new Content();
+            apiResponse.setContent(content);
+        }
+
+        MediaType mediaType = content.get("application/json");
+        if (mediaType == null) {
+            mediaType = new MediaType();
+            content.addMediaType("application/json", mediaType);
+        }
+
+        return mediaType;
     }
 
     private SecurityScheme getAccessSecurityScheme() {
