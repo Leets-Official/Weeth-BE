@@ -13,11 +13,8 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import leets.weeth.global.common.exception.ApiErrorCodeExample;
-import leets.weeth.global.common.exception.ApiErrorExceptionsExample;
 import leets.weeth.global.common.exception.ErrorCodeInterface;
 import leets.weeth.global.common.exception.ExampleHolder;
-import leets.weeth.global.common.exception.ExplainError;
-import leets.weeth.global.common.exception.BusinessLogicException;
 import leets.weeth.global.common.response.CommonResponse;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +22,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -70,29 +66,25 @@ public class SwaggerConfig {
                 ));
     }
 
+    // 스웨서 문서를 커스텀하기 위한 설정
     @Bean
     public OperationCustomizer operationCustomizer() {
         return (operation, handlerMethod) -> {
-            // 메서드 레벨 어노테이션 우선, 없으면 클래스 레벨 체크
+            // 메서드 레벨 어노테이션이 존재하는지 확인, 없으면 클래스 레벨 체크
             ApiErrorCodeExample apiErrorCodeExample = handlerMethod.getMethodAnnotation(ApiErrorCodeExample.class);
             if (apiErrorCodeExample == null) {
                 apiErrorCodeExample = handlerMethod.getBeanType().getAnnotation(ApiErrorCodeExample.class);
             }
 
-            ApiErrorExceptionsExample apiErrorExceptionsExample = handlerMethod.getMethodAnnotation(ApiErrorExceptionsExample.class);
-
             if (apiErrorCodeExample != null) {
                 generateErrorCodeResponseExample(operation.getResponses(), apiErrorCodeExample.value());
-            }
-
-            if (apiErrorExceptionsExample != null) {
-                generateExceptionResponseExample(operation.getResponses(), apiErrorExceptionsExample.value());
             }
 
             return operation;
         };
     }
 
+    // 예외 예시를 스웨거 문서에 추가하기 위한 객체를 생성하는 메서드
     private void generateErrorCodeResponseExample(ApiResponses responses, Class<? extends ErrorCodeInterface> type) {
         ErrorCodeInterface[] errorCodes = type.getEnumConstants();
 
@@ -103,7 +95,7 @@ public class SwaggerConfig {
                                 return ExampleHolder.builder()
                                         .holder(getSwaggerExample(errorCode.getExplainError(), errorCode))
                                         .code(errorCode.getStatus().value())
-                                        .name(errorCode.getMessage())
+                                        .name(errorCode.getMessage()) // 한글로된 드롭다운을 만들기 위해 예외 메시지를 이름으로 사용
                                         .build();
                             } catch (NoSuchFieldException e) {
                                 throw new RuntimeException(e);
@@ -114,44 +106,17 @@ public class SwaggerConfig {
         addExamplesToResponses(responses, statusWithExampleHolders);
     }
 
-    private void generateExceptionResponseExample(ApiResponses responses, Class<?> type) {
-        Object bean = applicationContext.getBean(type);
-        Field[] declaredFields = bean.getClass().getDeclaredFields();
-
-        Map<Integer, List<ExampleHolder>> statusWithExampleHolders =
-                Arrays.stream(declaredFields)
-                        .filter(field -> field.getAnnotation(ExplainError.class) != null)
-                        .filter(field -> BusinessLogicException.class.isAssignableFrom(field.getType()))
-                        .map(field -> {
-                            try {
-                                field.setAccessible(true);
-                                BusinessLogicException exception = (BusinessLogicException) field.get(bean);
-                                ExplainError annotation = field.getAnnotation(ExplainError.class);
-                                String description = annotation.value();
-                                ErrorCodeInterface errorCode = exception.getErrorCode();
-
-                                return ExampleHolder.builder()
-                                        .holder(getSwaggerExample(description, errorCode))
-                                        .code(exception.getStatusCode())
-                                        .name(field.getName())
-                                        .build();
-                            } catch (IllegalAccessException e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-                        .collect(groupingBy(ExampleHolder::getCode));
-
-        addExamplesToResponses(responses, statusWithExampleHolders);
-    }
-
+    // ExplainError 설명과 에러코드 객체를 받아 Swagger의 Example 객체를 생성하는 메서드
     private Example getSwaggerExample(String description, ErrorCodeInterface errorCode) {
         CommonResponse<Void> errorResponse = CommonResponse.createFailure(errorCode.getCode(), errorCode.getMessage());
         Example example = new Example();
         example.description(description);
         example.setValue(errorResponse);
+
         return example;
     }
 
+    // 스웨거의 Example 객체를 만들어 Operation.Responses에 예시 데이터를 추가하는 메서드
     private void addExamplesToResponses(ApiResponses responses, Map<Integer, List<ExampleHolder>> statusWithExampleHolders) {
         statusWithExampleHolders.forEach((status, exampleHolders) -> {
             Content content = new Content();
