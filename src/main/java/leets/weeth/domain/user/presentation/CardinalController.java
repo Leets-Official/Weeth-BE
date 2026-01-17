@@ -8,6 +8,7 @@ import leets.weeth.domain.user.application.dto.request.CardinalUpdateRequest;
 import leets.weeth.domain.user.application.dto.response.CardinalResponse;
 import leets.weeth.domain.user.application.exception.UserErrorCode;
 import leets.weeth.domain.user.application.usecase.CardinalUseCase;
+import leets.weeth.global.auth.jwt.exception.JwtErrorCode;
 import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import static leets.weeth.domain.user.presentation.ResponseMessage.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-@ApiErrorCodeExample(UserErrorCode.class)
+@ApiErrorCodeExample({UserErrorCode.class, JwtErrorCode.class})
 public class CardinalController {
 
     private final CardinalUseCase cardinalUseCase;

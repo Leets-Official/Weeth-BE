@@ -3,6 +3,7 @@ package leets.weeth.global.common.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import leets.weeth.domain.user.application.exception.UserErrorCode;
+import leets.weeth.global.auth.jwt.exception.JwtErrorCode;
 import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,5 +18,12 @@ public class ExceptionDocController {
     @Operation(summary = "User 도메인 에러 코드 목록")
     @ApiErrorCodeExample(UserErrorCode.class)
     public void userErrorCodes() {
+    }
+
+    //todo: SAS 관련 예외도 추가
+    @GetMapping("/auth")
+    @Operation(summary = "인증/인가 에러 코드 목록")
+    @ApiErrorCodeExample({JwtErrorCode.class})
+    public void authErrorCodes() {
     }
 }

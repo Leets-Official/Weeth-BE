@@ -13,6 +13,7 @@ import leets.weeth.domain.user.application.usecase.UserUseCase;
 import leets.weeth.domain.user.domain.service.UserGetService;
 import leets.weeth.global.auth.annotation.CurrentUser;
 import leets.weeth.global.auth.jwt.application.dto.JwtDto;
+import leets.weeth.global.auth.jwt.exception.JwtErrorCode;
 import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ import static leets.weeth.domain.user.presentation.ResponseMessage.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
-@ApiErrorCodeExample(UserErrorCode.class)
+@ApiErrorCodeExample({UserErrorCode.class, JwtErrorCode.class})
 public class UserController {
 
     private final UserUseCase userUseCase;
