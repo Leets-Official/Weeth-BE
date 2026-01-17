@@ -1,25 +1,26 @@
 package leets.weeth.domain.comment.presentation;
 
-import static leets.weeth.domain.comment.presentation.ResponseMessage.COMMENT_CREATED_SUCCESS;
-import static leets.weeth.domain.comment.presentation.ResponseMessage.COMMENT_DELETED_SUCCESS;
-import static leets.weeth.domain.comment.presentation.ResponseMessage.COMMENT_UPDATED_SUCCESS;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import leets.weeth.domain.comment.application.dto.CommentDTO;
+import leets.weeth.domain.comment.application.exception.CommentErrorCode;
 import leets.weeth.domain.comment.application.usecase.NoticeCommentUsecase;
-import leets.weeth.global.auth.annotation.CurrentUser;
 import leets.weeth.domain.user.application.exception.UserNotMatchException;
+import leets.weeth.global.auth.annotation.CurrentUser;
+import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import static leets.weeth.domain.comment.presentation.ResponseMessage.*;
 
 @Tag(name = "COMMENT-NOTICE", description = "공지사항 댓글 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/notices/{noticeId}/comments")
+@ApiErrorCodeExample(CommentErrorCode.class)
 public class NoticeCommentController {
 
     private final NoticeCommentUsecase noticeCommentUsecase;

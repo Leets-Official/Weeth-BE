@@ -1,28 +1,26 @@
 package leets.weeth.domain.board.presentation;
 
 
-import static leets.weeth.domain.board.presentation.ResponseMessage.NOTICE_FIND_ALL_SUCCESS;
-import static leets.weeth.domain.board.presentation.ResponseMessage.NOTICE_FIND_BY_ID_SUCCESS;
-import static leets.weeth.domain.board.presentation.ResponseMessage.NOTICE_SEARCH_SUCCESS;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import leets.weeth.domain.board.application.dto.NoticeDTO;
+import leets.weeth.domain.board.application.exception.BoardErrorCode;
+import leets.weeth.domain.board.application.exception.NoticeErrorCode;
 import leets.weeth.domain.board.application.usecase.NoticeUsecase;
+import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static leets.weeth.domain.board.presentation.ResponseMessage.*;
 
 
 @Tag(name = "NOTICE", description = "공지사항 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/notices")
+@ApiErrorCodeExample({BoardErrorCode.class, NoticeErrorCode.class})
 public class NoticeController {
 
     private final NoticeUsecase noticeUsecase;
