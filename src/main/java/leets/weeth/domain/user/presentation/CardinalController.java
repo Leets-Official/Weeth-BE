@@ -6,7 +6,9 @@ import jakarta.validation.Valid;
 import leets.weeth.domain.user.application.dto.request.CardinalSaveRequest;
 import leets.weeth.domain.user.application.dto.request.CardinalUpdateRequest;
 import leets.weeth.domain.user.application.dto.response.CardinalResponse;
+import leets.weeth.domain.user.application.exception.UserErrorCode;
 import leets.weeth.domain.user.application.usecase.CardinalUseCase;
+import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import static leets.weeth.domain.user.presentation.ResponseMessage.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
+@ApiErrorCodeExample(UserErrorCode.class)
 public class CardinalController {
 
     private final CardinalUseCase cardinalUseCase;
