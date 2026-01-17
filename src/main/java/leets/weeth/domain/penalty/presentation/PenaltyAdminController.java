@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import leets.weeth.domain.penalty.application.dto.PenaltyDTO;
+import leets.weeth.domain.penalty.application.exception.PenaltyErrorCode;
 import leets.weeth.domain.penalty.application.usecase.PenaltyUsecase;
+import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import static leets.weeth.domain.penalty.presentation.ResponseMessage.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/penalties")
+@ApiErrorCodeExample(PenaltyErrorCode.class)
 public class PenaltyAdminController {
 
     private final PenaltyUsecase penaltyUsecase;
