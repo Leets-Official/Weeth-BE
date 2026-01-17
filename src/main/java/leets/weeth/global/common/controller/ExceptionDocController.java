@@ -2,7 +2,13 @@ package leets.weeth.global.common.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import leets.weeth.domain.account.application.exception.AccountErrorCode;
 import leets.weeth.domain.attendance.application.exception.AttendanceErrorCode;
+import leets.weeth.domain.board.application.exception.BoardErrorCode;
+import leets.weeth.domain.board.application.exception.NoticeErrorCode;
+import leets.weeth.domain.board.application.exception.PostErrorCode;
+import leets.weeth.domain.comment.application.exception.CommentErrorCode;
+import leets.weeth.domain.penalty.application.exception.PenaltyErrorCode;
 import leets.weeth.domain.schedule.application.exception.EventErrorCode;
 import leets.weeth.domain.schedule.application.exception.MeetingErrorCode;
 import leets.weeth.domain.user.application.exception.UserErrorCode;
@@ -17,6 +23,36 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Exception Document", description = "API 에러 코드 문서")
 public class ExceptionDocController {
 
+    @GetMapping("/Account")
+    @Operation(summary = "Account 도메인 에러 코드 목록")
+    @ApiErrorCodeExample(AccountErrorCode.class)
+    public void accountErrorCodes() {
+    }
+
+    @GetMapping("/Attendance")
+    @Operation(summary = "Attendance 도메인 에러 코드 목록")
+    @ApiErrorCodeExample(AttendanceErrorCode.class)
+    public void attendanceErrorCodes() {
+    }
+
+    @GetMapping("/Board")
+    @Operation(summary = "Board 도메인 에러 코드 목록")
+    @ApiErrorCodeExample({BoardErrorCode.class, NoticeErrorCode.class, PostErrorCode.class, CommentErrorCode.class})
+    public void boardErrorCodes() {
+    }
+
+    @GetMapping("/Penalty")
+    @Operation(summary = "Penalty 도메인 에러 코드 목록")
+    @ApiErrorCodeExample(PenaltyErrorCode.class)
+    public void penaltyErrorCodes() {
+    }
+
+    @GetMapping("/Schedule")
+    @Operation(summary = "Schedule 도메인 에러 코드 목록")
+    @ApiErrorCodeExample({EventErrorCode.class, MeetingErrorCode.class})
+    public void scheduleErrorCodes() {
+    }
+
     @GetMapping("/user")
     @Operation(summary = "User 도메인 에러 코드 목록")
     @ApiErrorCodeExample(UserErrorCode.class)
@@ -28,17 +64,5 @@ public class ExceptionDocController {
     @Operation(summary = "인증/인가 에러 코드 목록")
     @ApiErrorCodeExample({JwtErrorCode.class})
     public void authErrorCodes() {
-    }
-
-    @GetMapping("/Schedule")
-    @Operation(summary = "Schedule 도메인 에러 코드 목록")
-    @ApiErrorCodeExample({EventErrorCode.class, MeetingErrorCode.class})
-    public void scheduleErrorCodes() {
-    }
-
-    @GetMapping("/Attendance")
-    @Operation(summary = "Attendance 도메인 에러 코드 목록")
-    @ApiErrorCodeExample(AttendanceErrorCode.class)
-    public void attendanceErrorCodes() {
     }
 }
