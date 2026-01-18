@@ -63,7 +63,7 @@ public class SwaggerConfig {
                 ));
     }
 
-    // 스웨서 문서를 커스텀하기 위한 설정
+    // 스웨거 문서를 커스텀하기 위한 설정
     @Bean
     public OperationCustomizer operationCustomizer() {
         return (operation, handlerMethod) -> {

@@ -53,14 +53,14 @@ public class ExceptionDocController {
     public void scheduleErrorCodes() {
     }
 
-    @GetMapping("/user")
+    @GetMapping("/User")
     @Operation(summary = "User 도메인 에러 코드 목록")
     @ApiErrorCodeExample(UserErrorCode.class)
     public void userErrorCodes() {
     }
 
     //todo: SAS 관련 예외도 추가
-    @GetMapping("/auth")
+    @GetMapping("/Auth")
     @Operation(summary = "인증/인가 에러 코드 목록")
     @ApiErrorCodeExample({JwtErrorCode.class})
     public void authErrorCodes() {
