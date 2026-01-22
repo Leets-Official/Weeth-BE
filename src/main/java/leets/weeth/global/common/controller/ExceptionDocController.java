@@ -19,48 +19,48 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/exceptions")
+@RequestMapping("/api/v1/docs/exceptions")
 @Tag(name = "Exception Document", description = "API 에러 코드 문서")
 public class ExceptionDocController {
 
-    @GetMapping("/Account")
+    @GetMapping("/account")
     @Operation(summary = "Account 도메인 에러 코드 목록")
     @ApiErrorCodeExample(AccountErrorCode.class)
     public void accountErrorCodes() {
     }
 
-    @GetMapping("/Attendance")
+    @GetMapping("/attendance")
     @Operation(summary = "Attendance 도메인 에러 코드 목록")
     @ApiErrorCodeExample(AttendanceErrorCode.class)
     public void attendanceErrorCodes() {
     }
 
-    @GetMapping("/Board")
+    @GetMapping("/board")
     @Operation(summary = "Board 도메인 에러 코드 목록")
     @ApiErrorCodeExample({BoardErrorCode.class, NoticeErrorCode.class, PostErrorCode.class, CommentErrorCode.class})
     public void boardErrorCodes() {
     }
 
-    @GetMapping("/Penalty")
+    @GetMapping("/penalty")
     @Operation(summary = "Penalty 도메인 에러 코드 목록")
     @ApiErrorCodeExample(PenaltyErrorCode.class)
     public void penaltyErrorCodes() {
     }
 
-    @GetMapping("/Schedule")
+    @GetMapping("/schedule")
     @Operation(summary = "Schedule 도메인 에러 코드 목록")
     @ApiErrorCodeExample({EventErrorCode.class, MeetingErrorCode.class})
     public void scheduleErrorCodes() {
     }
 
-    @GetMapping("/User")
+    @GetMapping("/user")
     @Operation(summary = "User 도메인 에러 코드 목록")
     @ApiErrorCodeExample(UserErrorCode.class)
     public void userErrorCodes() {
     }
 
     //todo: SAS 관련 예외도 추가
-    @GetMapping("/Auth")
+    @GetMapping("/auth")
     @Operation(summary = "인증/인가 에러 코드 목록")
     @ApiErrorCodeExample({JwtErrorCode.class})
     public void authErrorCodes() {
