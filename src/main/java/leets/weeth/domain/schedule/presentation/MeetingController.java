@@ -4,8 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import leets.weeth.domain.schedule.application.dto.MeetingDTO;
+import leets.weeth.domain.schedule.application.exception.MeetingErrorCode;
 import leets.weeth.domain.schedule.application.usecase.MeetingUseCase;
 import leets.weeth.global.auth.annotation.CurrentUser;
+import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import static leets.weeth.domain.schedule.presentation.ResponseMessage.MEETING_F
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/meetings")
+@ApiErrorCodeExample(MeetingErrorCode.class)
 public class MeetingController {
 
     private final MeetingUseCase meetingUseCase;

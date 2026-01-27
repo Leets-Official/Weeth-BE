@@ -4,9 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import leets.weeth.domain.attendance.application.dto.AttendanceDTO;
+import leets.weeth.domain.attendance.application.exception.AttendanceErrorCode;
 import leets.weeth.domain.attendance.application.usecase.AttendanceUseCase;
 import leets.weeth.global.auth.annotation.CurrentUser;
 import leets.weeth.domain.attendance.application.exception.AttendanceCodeMismatchException;
+import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ import static leets.weeth.domain.attendance.presentation.ResponseMessage.ATTENDA
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/attendances")
+@ApiErrorCodeExample(AttendanceErrorCode.class)
 public class AttendanceController {
 
     private final AttendanceUseCase attendanceUseCase;

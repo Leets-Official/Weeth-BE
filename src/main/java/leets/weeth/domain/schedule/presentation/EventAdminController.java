@@ -5,10 +5,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import leets.weeth.domain.schedule.application.dto.ScheduleDTO;
+import leets.weeth.domain.schedule.application.exception.EventErrorCode;
 import leets.weeth.domain.schedule.application.usecase.EventUseCase;
 import leets.weeth.domain.schedule.application.usecase.MeetingUseCase;
 import leets.weeth.domain.schedule.domain.entity.enums.Type;
 import leets.weeth.global.auth.annotation.CurrentUser;
+import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import static leets.weeth.domain.schedule.presentation.ResponseMessage.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/events")
+@ApiErrorCodeExample(EventErrorCode.class)
 public class EventAdminController {
 
     private final EventUseCase eventUseCase;
