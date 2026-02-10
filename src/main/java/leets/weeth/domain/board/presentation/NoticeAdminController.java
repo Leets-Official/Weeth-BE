@@ -5,9 +5,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import leets.weeth.domain.board.application.dto.NoticeDTO;
+import leets.weeth.domain.board.application.exception.BoardErrorCode;
+import leets.weeth.domain.board.application.exception.NoticeErrorCode;
 import leets.weeth.domain.board.application.usecase.NoticeUsecase;
 import leets.weeth.domain.user.application.exception.UserNotMatchException;
 import leets.weeth.global.auth.annotation.CurrentUser;
+import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,7 @@ import static leets.weeth.domain.board.presentation.ResponseMessage.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/notices")
+@ApiErrorCodeExample({BoardErrorCode.class, NoticeErrorCode.class})
 public class NoticeAdminController {
 
     private final NoticeUsecase noticeUsecase;

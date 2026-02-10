@@ -2,8 +2,11 @@ package leets.weeth.domain.user.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import leets.weeth.domain.user.application.exception.UserErrorCode;
 import leets.weeth.domain.user.application.usecase.UserManageUseCase;
 import leets.weeth.domain.user.domain.entity.enums.UsersOrderBy;
+import leets.weeth.global.auth.jwt.exception.JwtErrorCode;
+import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,7 @@ import static leets.weeth.domain.user.presentation.ResponseMessage.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/users")
+@ApiErrorCodeExample({UserErrorCode.class, JwtErrorCode.class})
 public class UserAdminController {
 
     private final UserManageUseCase userManageUseCase;

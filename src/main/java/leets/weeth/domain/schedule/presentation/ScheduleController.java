@@ -2,7 +2,10 @@ package leets.weeth.domain.schedule.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import leets.weeth.domain.schedule.application.exception.EventErrorCode;
+import leets.weeth.domain.schedule.application.exception.MeetingErrorCode;
 import leets.weeth.domain.schedule.application.usecase.ScheduleUseCase;
+import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,6 +26,7 @@ import static leets.weeth.domain.schedule.presentation.ResponseMessage.SCHEDULE_
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/schedules")
+@ApiErrorCodeExample({EventErrorCode.class, MeetingErrorCode.class})
 public class ScheduleController {
 
     private final ScheduleUseCase scheduleUseCase;

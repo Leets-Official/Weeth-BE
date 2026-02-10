@@ -15,6 +15,6 @@ public class TestContainersConfig {
     @ServiceConnection
     public MySQLContainer mysqlContainer() {
         return new MySQLContainer(DockerImageName.parse(MYSQL_IMAGE))
-                .withReuse(true);
+            .withReuse(true);
     }
 }

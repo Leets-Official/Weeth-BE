@@ -4,6 +4,6 @@ import leets.weeth.global.common.exception.BusinessLogicException;
 
 public class InvalidTokenException extends BusinessLogicException {
     public InvalidTokenException() {
-        super(400, "올바르지 않은 Token 입니다.");
+        super(JwtErrorCode.INVALID_TOKEN);
     }
 }

@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import leets.weeth.domain.account.application.dto.ReceiptDTO;
+import leets.weeth.domain.account.application.exception.AccountErrorCode;
 import leets.weeth.domain.account.application.usecase.ReceiptUseCase;
+import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,7 @@ import static leets.weeth.domain.account.presentation.ResponseMessage.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/receipts")
+@ApiErrorCodeExample(AccountErrorCode.class)
 public class ReceiptAdminController {
 
     private final ReceiptUseCase receiptUseCase;

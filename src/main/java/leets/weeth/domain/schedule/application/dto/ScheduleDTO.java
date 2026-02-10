@@ -26,7 +26,7 @@ public class ScheduleDTO {
             @NotBlank String title,
             @NotBlank String content,
             @NotBlank String location,
-            @NotBlank String requiredItem,
+            String requiredItem,
             @NotNull Type type,
             @NotNull Integer cardinal,
             @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
@@ -37,7 +37,7 @@ public class ScheduleDTO {
             @NotBlank String title,
             @NotBlank String content,
             @NotBlank String location,
-            @NotBlank String requiredItem,
+            String requiredItem,
             @NotNull Type type,
             @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end

@@ -4,9 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import leets.weeth.domain.attendance.application.dto.AttendanceDTO;
+import leets.weeth.domain.attendance.application.exception.AttendanceErrorCode;
 import leets.weeth.domain.attendance.application.usecase.AttendanceUseCase;
 import leets.weeth.domain.schedule.application.dto.MeetingDTO;
 import leets.weeth.domain.schedule.application.usecase.MeetingUseCase;
+import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ import static leets.weeth.domain.attendance.presentation.ResponseMessage.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/attendances")
+@ApiErrorCodeExample(AttendanceErrorCode.class)
 public class AttendanceAdminController {
 
     private final AttendanceUseCase attendanceUseCase;
@@ -34,8 +37,8 @@ public class AttendanceAdminController {
 
     @GetMapping("/meetings")
     @Operation(summary = "정기모임 조회")
-    public CommonResponse<List<MeetingDTO.Info>> getMeetings(@RequestParam(required = false) Integer cardinal) {
-        List<MeetingDTO.Info> response = meetingUseCase.find(cardinal);
+    public CommonResponse<MeetingDTO.Infos> getMeetings(@RequestParam(required = false) Integer cardinal) {
+        MeetingDTO.Infos response = meetingUseCase.find(cardinal);
 
         return CommonResponse.createSuccess(MEETING_FIND_SUCCESS.getMessage(), response);
     }

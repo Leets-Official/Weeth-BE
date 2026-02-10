@@ -5,9 +5,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import leets.weeth.domain.board.application.dto.PostDTO;
+import leets.weeth.domain.board.application.exception.BoardErrorCode;
+import leets.weeth.domain.board.application.exception.PostErrorCode;
 import leets.weeth.domain.board.application.usecase.PostUsecase;
 import leets.weeth.domain.user.application.exception.UserNotMatchException;
 import leets.weeth.global.auth.annotation.CurrentUser;
+import leets.weeth.global.common.exception.ApiErrorCodeExample;
 import leets.weeth.global.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +22,7 @@ import static leets.weeth.domain.board.presentation.ResponseMessage.POST_CREATED
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/educations")
+@ApiErrorCodeExample({BoardErrorCode.class, PostErrorCode.class})
 public class EducationAdminController {
     private final PostUsecase postUsecase;
 
