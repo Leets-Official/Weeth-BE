@@ -21,7 +21,11 @@ public enum Department {
     URBAN_PLANNING("도시계획학전공"),
     GLOBAL_BUSINESS("글로벌경영학과"),
     FINANCIAL_MATHEMATICS("금융수학전공"),
-    HEALTHCARE_MANAGEMENT("의료산업경영학과"); // 더 필요한 학과는 추후 추가할 예정
+    HEALTHCARE_MANAGEMENT("의료산업경영학과"),
+    PSYCHOLOGY("심리학과"),
+    ENGLISH_LANGUAGE("영미어문학과"),
+    GAME_AND_INTERACTIVE_MEDIA("게임영상학과"),
+    ; // 더 필요한 학과는 추후 추가할 예정
 
     private final String value;
 
